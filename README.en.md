@@ -7,15 +7,18 @@
 <p align="center">A private video library: local drives, cloud drives and the creators you follow, all in one place.</p>
 
 <p align="center">
-  <a href="https://peach.video">Website</a> ·
-  <a href="https://github.com/peach-mitao/peach/releases">Download installers</a> ·
-  <a href="https://demo.peach.video">Live demo</a> ·
+  <a href="https://github.com/sanchezrobertodev/peach">Fork repository</a> ·
+  <a href="https://peach.video">Upstream website</a> ·
+  <a href="https://github.com/peach-mitao/peach/releases">Upstream installers</a> ·
+  <a href="https://demo.peach.video">Upstream demo</a> ·
   <a href="https://github.com/peach-mitao/peach/releases/tag/intro-video">Intro video</a> ·
-  <a href="https://github.com/peach-mitao/peach/issues">Report a problem</a> ·
+  <a href="https://github.com/sanchezrobertodev/peach/issues">Report a fork problem</a> ·
   <a href="https://github.com/orgs/peach-mitao/projects/7/views/1">Requests board</a> ·
   <a href="https://github.com/orgs/peach-mitao/projects/7/views/3">Roadmap</a> ·
   <a href="#documentation">Documentation</a> ·
-  <a href="README.md">中文</a>
+  <a href="README.en.md">English</a> ·
+  <a href="README.es.md">Español</a> ·
+  <a href="README.zh-CN.md">简体中文</a>
 </p>
 
 <p align="center">
@@ -30,6 +33,14 @@
 https://github.com/user-attachments/assets/a5610874-e611-41bb-be22-7d99f0d64b62
 
 > **18+** For adults managing their own adult-content collections. The repository contains no media or site data. Access to outside sites requires the appropriate accounts and permissions.
+
+This is the [English and Spanish localization fork](https://github.com/sanchezrobertodev/peach) of [peach-mitao/peach](https://github.com/peach-mitao/peach), created by longmeidao and the upstream contributors. The website, demo, screenshots, release badges, installers and roadmap linked here belong to the upstream project. Upstream installers do not include this fork's localization changes; run this fork from source to use them.
+
+## Interface language
+
+Choose **English**, **Español** or **简体中文** on the setup or login page, or in settings. Peach uses your browser's language when no choice is saved, with English as the fallback. The choice is saved in the current browser; changing it reloads the page.
+
+Localization covers interface text progressively. Media titles, tags, source metadata, some server messages, the desktop tray and most detailed documentation may still appear in their original language. See the [language and source-install guide](docs/LOCALIZATION.md) for the scope and contributor guidance.
 
 ## Features
 
@@ -53,7 +64,7 @@ Sharing library and taste details is a separate option in the installer and sett
 
 ## Screenshots
 
-Try search, filters and profiles in the [read-only demo](https://demo.peach.video). Click a screenshot for the original image.
+Try search, filters and profiles in the [upstream read-only demo](https://demo.peach.video). The following upstream screenshots show the Chinese interface. Click a screenshot for the original image.
 
 <table>
   <tr>
@@ -82,6 +93,8 @@ Try search, filters and profiles in the [read-only demo](https://demo.peach.vide
 
 ## Download and use
 
+For this fork's localized interface, use the [source-install instructions](docs/LOCALIZATION.md#run-this-fork-from-source). The packaged downloads described below are upstream builds; they are not localized builds of this fork.
+
 ### Windows
 
 1. Download the full installer, `Peach-<version>-windows-x64-setup.exe`, from [Releases](https://github.com/peach-mitao/peach/releases) and run it. No administrator rights needed. Alternatively, extract the full portable package and run `Peach.exe`.
@@ -90,7 +103,7 @@ Try search, filters and profiles in the [read-only demo](https://demo.peach.vide
 
 The full installer includes media tools for offline installation. The smaller lite installer downloads tools as needed during setup.
 
-Test builds are unsigned. If Windows says “Windows protected your PC”, confirm the file came from this project's Releases, then choose “More info → Run anyway”. See the [Windows guide](docs/TESTING_DESKTOP.md) for installation, updates and troubleshooting.
+Test builds are unsigned. If Windows says “Windows protected your PC”, confirm the file came from the upstream project's Releases, then choose “More info → Run anyway”. See the [Windows guide](docs/TESTING_DESKTOP.md) for installation, updates and troubleshooting.
 
 ### Build on macOS
 
@@ -100,7 +113,7 @@ The release workflow generates separate Apple Silicon (`macos-arm64.dmg`) and In
 
 ### Run from source (Windows, macOS)
 
-Requires Git, uv and Python 3.14 or newer. See [running from source](docs/OPERATIONS.md#从源码运行windowsmacos).
+Requires Git, uv and Python 3.14 or newer. Follow the [English source-install guide for this fork](docs/LOCALIZATION.md#run-this-fork-from-source). The detailed [operations guide](docs/OPERATIONS.md#从源码运行windowsmacos) is in Chinese and uses the upstream repository URL.
 
 ### Docker (VPS / NAS)
 
@@ -115,9 +128,13 @@ See [Docker deployment](docs/DOCKER.md) for setup and supported configurations.
 
 ## Reporting problems
 
-Check [user feedback](https://github.com/peach-mitao/peach/issues), or [open an issue](https://github.com/peach-mitao/peach/issues/new/choose) with the version, steps, expected result and actual result. Hide credentials, LAN addresses and full paths in screenshots; do not upload databases or media. Report security issues privately through the [security policy](SECURITY.md).
+Report localization and fork-specific problems in [this fork's issue tracker](https://github.com/sanchezrobertodev/peach/issues). Include the version or commit, selected language, steps, expected result and actual result. For upstream behavior, consult [upstream feedback](https://github.com/peach-mitao/peach/issues). Hide credentials, LAN addresses and full paths in screenshots; do not upload databases or media. Report security issues privately through the [security policy](SECURITY.md).
 
 ## Documentation
+
+[Language and source-install guide](docs/LOCALIZATION.md) · [Español](README.es.md) · [Original Chinese README](README.zh-CN.md)
+
+Most detailed guides below are in Chinese.
 
 [Operations](docs/OPERATIONS.md) · [Sourcing](docs/SOURCING.md) · [External players](docs/EXTERNAL_PLAYERS.md) · [Changelog](CHANGELOG.md)
 
@@ -127,7 +144,7 @@ Contributing: [Development guide](AGENTS.md) · [Testing and dependencies](docs/
 
 Thanks to [amane](https://github.com/sqzw-x/amane), [Gfriends](https://github.com/gfriends/gfriends), [CloudDrive2](https://www.clouddrive2.com/) and others. See the [reuse inventory](docs/REUSE.md) for full credits and details.
 
-## Star History
+## Upstream Star History
 
 <a href="https://www.star-history.com/?repos=peach-mitao%2Fpeach&amp;type=date&amp;logscale=&amp;releases=&amp;legend=top-left">
   <picture>

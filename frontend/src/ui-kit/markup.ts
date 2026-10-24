@@ -4,6 +4,8 @@
  * 由共享源码直接引用，随 `peach-app.js` 发出；island 里用 `dangerouslySetInnerHTML` 插入。
  * 它们内部已经对文本做转义，且是 Peach 唯一那份 Geist 控件实现——在 island 里另画一遍空态或 Note
  * 就是同一语义的第二份实现，`peach-web-ui` 的门槛不允许。 */
+import { locale as peachLocale } from "../i18n/index";
+import { t as peachT } from "../i18n/index";
 import { esc, icon, requestErrorMessage } from '../core';
 import { islandShortcutsEntry } from '../island-skeleton';
 
@@ -58,15 +60,15 @@ export function projectBannerHtml(message:unknown,{variant='gray',href,label,val
   variant?: string; href?: string; label?: string; value?: unknown; max?: unknown;
 }={}):string{
   const kind=['gray','success','warning','error'].includes(variant)?variant:'gray';
-  return `<aside class="ui-project-banner ${PROJECT_BANNER_CLASSES[kind]}" role="${kind==='error'?'alert':'status'}"><div>${Number(max)>0?gaugeHtml('任务完成率',value,max):icon(kind==='error'||kind==='warning'?'alert':'info')}<p>${esc(message)}</p></div><a href="${esc(href)}">${esc(label)}</a></aside>`;
+  return `<aside class="ui-project-banner ${PROJECT_BANNER_CLASSES[kind]}" role="${kind==='error'?'alert':'status'}"><div>${Number(max)>0?gaugeHtml(peachT("任务完成率"),value,max):icon(kind==='error'||kind==='warning'?'alert':'info')}<p>${esc(message)}</p></div><a href="${esc(href)}">${esc(label)}</a></aside>`;
 }
 
 export function gaugeHtml(label:string,value:unknown,max:unknown=100,{usage=false,compact=false}={}):string{
   const ceiling=Number(max), current=Number(value);
-  if(!Number.isFinite(ceiling)||ceiling<=0||!Number.isFinite(current))return `<span>${esc(label)}：未取得</span>`;
+  if(!Number.isFinite(ceiling)||ceiling<=0||!Number.isFinite(current))return peachT("<span>{{v0}}：未取得</span>", { v0: esc(label) });
   const percent=Math.max(0,Math.min(100,current/ceiling*100));
   const level=usage?(percent>=95?'error':percent>=80?'warning':'normal'):'normal';
-  const status=usage?(level==='error'?'空间即将用满':level==='warning'?'空间使用偏高':'空间充足'):'';
+  const status=usage?(level==='error'?peachT("空间即将用满"):level==='warning'?peachT("空间使用偏高"):peachT("空间充足")):'';
   return `<span class="ui-geist-gauge" data-level="${level}" role="progressbar" aria-label="${esc(label+(status?'：'+status:''))}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"/><circle cx="16" cy="16" r="13" pathLength="100" stroke-dasharray="${percent} 100"/></svg></span>${status&&!compact?`<span class="ui-gauge-status">${status}</span>`:''}`;
 }
 
@@ -92,7 +94,7 @@ export function progressHtml(label:string,value:unknown,max:unknown=100,{variant
  * that has its own accessible name: repeating that name announces the same
  * words twice and tells the reader nothing changed.
  */
-export function spinnerHtml(label='加载中'):string{
+export function spinnerHtml(label=peachT("加载中")):string{
   const bars=Array.from({length:10},(_,index)=>
     `<i aria-hidden="true" style="--spinner-angle:${index*36}deg;--spinner-delay:${index*100-900}ms"></i>`).join('');
   return `<span class="ui-geist-spinner" role="status" aria-label="${esc(label)}">${bars}</span>`;
@@ -123,7 +125,7 @@ export function searchInputHtml({label,id='',name='',value='',placeholder='',att
 }
 
 /** Geist Loading Dots: indeterminate work continuing in the background. */
-export function loadingDotsHtml(label='正在处理', {className=''}={}):string{
+export function loadingDotsHtml(label=peachT("正在处理"), {className=''}={}):string{
   return `<span class="ui-geist-loading${className?` ${esc(className)}`:''}" role="status">
     <span class="ui-geist-loading-dots" aria-hidden="true"><i></i><i></i><i></i></span>
     <span>${esc(label)}</span></span>`;
@@ -140,12 +142,12 @@ export function loadingDotsHtml(label='正在处理', {className=''}={}):string{
  * 时出现。
  */
 export function boardTabsHtml(items:{value:unknown;label:unknown;count?:unknown;symbol?:string}[],
-  {active='',attr='data-tab',label='页面视图',className='',panel=''}:{
+  {active='',attr='data-tab',label=peachT("页面视图"),className='',panel=''}:{
     active?: unknown; attr?: string; label?: string; className?: string; panel?: string;
   }={}):string{
   const tabs=items.map(({value,label:text,count,symbol})=>{
     const selected=String(value)===String(active);
-    const badge=count==null?'':`<span class="ui-board-tab-count">${esc(Number(count).toLocaleString())}</span>`;
+    const badge=count==null?'':`<span class="ui-board-tab-count">${esc(Number(count).toLocaleString(peachLocale))}</span>`;
     return `<button type="button" role="tab" ${attr}="${esc(value)}" aria-selected="${selected}"${
       panel?` aria-controls="${esc(panel)}"`:''}>${symbol?icon(symbol):''}${esc(text)}${badge}</button>`;
   }).join('');

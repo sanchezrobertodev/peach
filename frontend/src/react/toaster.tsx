@@ -4,6 +4,7 @@
  * 滑动关闭与悬停暂停计时照 Sonner；面、线、圆角、阴影取 Board 的浮层那一套，写在
  * `web/css/17-overlay.css` 的 `#toasts` 一节。宿主不带 `.peach-react`：那一层的 Preflight 会把
  * Sonner 自己的按钮样式清掉，而这里用到的 Board token 本来就挂在 `:root` 上。 */
+import { t as peachT } from "../i18n/index";
 import type { CSSProperties } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { Toaster, toast } from 'sonner';
@@ -40,13 +41,13 @@ export const mountToaster: typeof Bundle.mountToaster = (host, icons) => {
       style={{ ...FRAME, '--width': 'min(560px, calc(100vw - 48px))' } as CSSProperties}
       offset={{ right: 24, bottom: 'calc(var(--toast-bottom, 24px) + var(--processing-toast-space, 0px))' }}
       mobileOffset={{ right: 16, left: 16, bottom: 'calc(var(--toast-bottom, 16px) + var(--processing-toast-space, 0px))' }}
-      toastOptions={{ closeButtonAriaLabel: '关闭提示' }} containerAriaLabel="通知"
+      toastOptions={{ closeButtonAriaLabel: peachT("关闭提示") }} containerAriaLabel={peachT("通知")}
       icons={{ success: glyph(icons.success, true), error: glyph(icons.error, false) }} />
       <Toaster id="processing" position="bottom-right" gap={8} expand
         style={{ ...FRAME, '--width': 'min(400px, calc(100vw - 32px))' } as CSSProperties}
         offset={{ right: 24, bottom: 'var(--toast-bottom, 24px)' }}
         mobileOffset={{ right: 16, left: 16, bottom: 'var(--toast-bottom, 16px)' }}
-        toastOptions={{ closeButtonAriaLabel: '关闭任务提示' }} containerAriaLabel="后台任务" />
+        toastOptions={{ closeButtonAriaLabel: peachT("关闭任务提示") }} containerAriaLabel={peachT("后台任务")} />
     </Providers>,
   );
 };

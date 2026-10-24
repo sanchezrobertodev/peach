@@ -3,6 +3,7 @@
  * 创作者卡片、表格视图和别名清单读的是同一份，所以这几格摆在这里而不是各画一次：
  * 同一条来源在两种视图里的状态写法一旦分开写，就会出现同一行在卡片里说「未检查」、
  * 在表格里说「正常」。 */
+import { t as peachT } from "../../i18n/index";
 import { useLayoutEffect, useRef, useState } from 'react';
 import { VisuallyHidden } from 'react-aria-components';
 
@@ -42,7 +43,7 @@ export function AuthorAvatar({ group, name }: { group: FollowSource[]; name: str
   const current = chain[at];
   if (!current) {
     return (
-      <span title="没有可用头像"
+      <span title={peachT("没有可用头像")}
         className="inline-grid size-8 shrink-0 place-items-center rounded-full bg-background-tertiary-default text-caption-1-semibold text-text-secondary">
         {authorInitial(name)}
       </span>
@@ -66,7 +67,7 @@ export function StatusBadge({ source }: { source: FollowSource }) {
 /** 来源名连到站上的原页面。新标签页不继承这一页的会话，来源地址也不带走 Peach 自己的地址。 */
 export function SourceLink({ source }: { source: FollowSource }) {
   return (
-    <a href={source.url} target="_blank" rel="noreferrer noopener" title="打开原来源"
+    <a href={source.url} target="_blank" rel="noreferrer noopener" title={peachT("打开原来源")}
       className="min-w-0 text-body-medium wrap-anywhere text-text-primary underline-offset-2 hover:underline">
       {source.label}
     </a>
@@ -99,7 +100,7 @@ export function ErrorLine({ text, prefix = '', tone = 'error' }: { text: string;
       {more ? (
         <Button variant="ghost" size="xs" data-error-line-toggle="" aria-expanded={open} className="-ml-2"
           onClick={() => setOpen(!open)}>
-          {open ? '收起详情' : '查看详情'}
+          {open ? peachT("收起详情") : peachT("查看详情")}
         </Button>
       ) : null}
     </span>

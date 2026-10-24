@@ -7,6 +7,7 @@
  * 框的坐标一律是**源图像素**，进出这一层时各换算一次；屏幕上量到的显示像素不
  * 往外传。确认之后由后端按同一组整数裁，两边不会各取各的整。
  */
+import { t as peachT } from "../../i18n/index";
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type {
   CSSProperties, PointerEvent as ReactPointerEvent, KeyboardEvent as ReactKeyboardEvent,
@@ -154,7 +155,7 @@ export function CropFrame({ src, aspect, box, size, onBox, onSize, label }: Crop
         </>
       )}
       {failed
-        ? <p className="p-4 text-body-2-regular text-text-secondary">这张图读不出来，换一张再框。</p>
+        ? <p className="p-4 text-body-2-regular text-text-secondary">{peachT("这张图读不出来，换一张再框。")}</p>
         : null}
     </div>
   );

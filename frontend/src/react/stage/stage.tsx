@@ -12,6 +12,7 @@
  * 两座详情是这一面的子组件，和页面共用路由树的 QueryClient（`providers.tsx`）。两座详情画出来时报给壳的 `present` 排到微任务里：壳收到后
  * 会画侧栏与顶栏，那几座常驻组件的句柄内部 `flushSync`，在路由树的提交阶段里画不出来。微任务在浏览器绘制前
  * 跑完；那一条已经换走（原地换条或重开）或舞台已经收起就不报。 */
+import { t as peachT } from "../../i18n/index";
 import { useLayoutEffect, useRef, useSyncExternalStore, type MouseEvent, type PointerEvent } from 'react';
 import { flushSync } from 'react-dom';
 
@@ -65,7 +66,7 @@ const stageDialog = (): HTMLDialogElement | null => {
 };
 
 function stageHost(): StageHost {
-  if (!host) throw new Error('舞台还没有接上宿主（configureStage）');
+  if (!host) throw new Error(peachT("舞台还没有接上宿主（configureStage）"));
   return host;
 }
 
@@ -93,7 +94,7 @@ function StageTree({ view: current }: { view: View | null }) {
 }
 
 const DetailSkeleton = () => (
-  <div data-skeleton="detail" role="status" aria-label="正在读取作品详情" dangerouslySetInnerHTML={{ __html: detailSkeletonBody() }} />
+  <div data-skeleton="detail" role="status" aria-label={peachT("正在读取作品详情")} dangerouslySetInnerHTML={{ __html: detailSkeletonBody() }} />
 );
 
 /* 点浮窗外面就退出。原生模态里「外面」还是这个 dialog 自己——遮罩归它，落在遮罩上的事件 target
@@ -126,7 +127,7 @@ function StageDialog({ view: current }: { view: View }) {
     : content.kind === 'jav' ? <JavDetailPage key={content.props.code} {...content.props} />
     : <FollowDetailPage key={content.props.id} {...content.props} />;
   return (
-    <dialog ref={ref} id="stage" data-stage="" data-stage-kind={content.kind} aria-label="作品详情"
+    <dialog ref={ref} id="stage" data-stage="" data-stage-kind={content.kind} aria-label={peachT("作品详情")}
       onKeyDown={(event) => {
         /* 里层弹层（标签搜索框、右键菜单）先处理 Escape 并 `preventDefault`，这一下就不再关浮窗。 */
         if (event.key !== 'Escape' || event.defaultPrevented) return;
@@ -181,7 +182,7 @@ function contentFor(request: StageRequest): Content {
       present: (item, queue) => {
         const performers = item.performers as string[] | undefined;
         player.setStageMeta({ kind: 'item', item, title: String(item.title || item.name || ''),
-          sub: String(performers?.[0] || item.creator || '未归属') });
+          sub: String(performers?.[0] || item.creator || peachT("未归属")) });
         toggleStageModes(settings().ambientMode, settings().theaterMode);
         queueMicrotask(() => { if (live()) base.present(item, queue) });
       },

@@ -1,3 +1,4 @@
+import { t as peachT } from "../i18n/index";
 import { indexPath as pathForIndex, personAvatar as avatarForPerson, onlineAuthorRingHtml as avatarForOnline, createIndexController } from '../react/index/index-controller';
 import { followManageParams as manageParams, followManagePath as managePath, followManageEntry as manageEntry } from '../react/follow-manage/manage-route';
 import { followView, adoptFollowView } from './follow.js';
@@ -54,7 +55,7 @@ export function openFollowTagFromIndex(tag){indexState.controller.openFollowTag(
 export function installIndex16() {
 followState.FOLLOW_MANAGE_TABS = ['list','add','feeds'];
 applicationEffects.listen(document, 'click', event=>{
-  if(event.target.closest?.('[data-empty-settings]')){openConfigurationSection('媒体库与入库');return}
+  if(event.target.closest?.('[data-empty-settings]')){openConfigurationSection(peachT("媒体库与入库"));return}
   const link=event.target.closest?.('a[href="/subscriptions?tab=add"]');
   if(!link||event.defaultPrevented||event.button||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
   event.preventDefault();

@@ -6,6 +6,7 @@
  *
  * 窗口弹在**服务端那台机器**上：本机浏览时它自己就是回执，从别的设备浏览时这边屏幕
  * 什么都不会发生，所以成功仍要报一句。失败留在路径旁边，等人重试。 */
+import { t as peachT } from "../../i18n/index";
 import { useEffect, useRef, useState } from 'react';
 
 import { IconButton } from '@/components/base/buttons/icon-button';
@@ -25,7 +26,7 @@ function FolderOpenIcon({ className }: { className?: string }) {
 }
 
 /** 请求没发出去（断网、页面换了口令）时的说法。服务端答得上来的原因由它自己写成中文。 */
-const UNREACHED = '打开文件管理器失败，请重试';
+const UNREACHED = peachT("打开文件管理器失败，请重试");
 
 export function PathLine(
   { path, prefix, className, onRevealed }:
@@ -50,7 +51,7 @@ export function PathLine(
     setProblem('');
     try {
       await apiSend('/api/reveal', { path });
-      onRevealed?.('已在资源管理器中显示');
+      onRevealed?.(peachT("已在资源管理器中显示"));
     } catch (error) {
       if (alive.current) setProblem(error instanceof ApiError ? error.message : UNREACHED);
     } finally {
@@ -64,7 +65,7 @@ export function PathLine(
         <p className={cx('min-w-0 break-all', className)}>
           {prefix}{path}
         </p>
-        <IconButton icon={FolderOpenIcon} size="small" className="shrink-0" aria-label="在资源管理器中显示"
+        <IconButton icon={FolderOpenIcon} size="small" className="shrink-0" aria-label={peachT("在资源管理器中显示")}
           onClick={() => void reveal()} {...busyProps(busy)} />
       </div>
       {problem ? <p className="text-caption-1-regular text-text-error-primary">{problem}</p> : null}

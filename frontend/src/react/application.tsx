@@ -2,6 +2,8 @@
 import { useLayoutEffect, useState } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { flushSync } from 'react-dom';
+import { I18nProvider } from 'react-aria';
+import { locale } from '../i18n';
 import { initializeApplication } from '../application/initialize.js';
 import { connectApplication, disposeApplicationResidents } from './application-residents';
 import { renewApplicationEffects, type ApplicationEffects } from '../application/effects';
@@ -72,6 +74,6 @@ export function mountApplication(host: Element): Root {
     unmount();
     if (resources) finalizeResources(resources);
   };
-  flushSync(() => root.render(<Application />));
+  flushSync(() => root.render(<I18nProvider locale={locale}><Application /></I18nProvider>));
   return root;
 }

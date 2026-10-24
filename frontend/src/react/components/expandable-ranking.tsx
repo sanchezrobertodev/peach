@@ -1,3 +1,4 @@
+import { t as peachT } from "../../i18n/index";
 import { RiArrowDownSLine } from '@remixicon/react';
 import {
   Children, cloneElement, isValidElement, useId, useLayoutEffect, useRef, useState,
@@ -53,7 +54,7 @@ export function ExpandableRanking(
       </ol>
       {expandable ? (
         <button type="button" data-ranking-toggle aria-controls={listId} aria-expanded={expanded}
-          aria-label={expanded ? '收起排名' : '展开更多排名'}
+          aria-label={expanded ? peachT("收起排名") : peachT("展开更多排名")}
           onClick={() => { setAnimating(true); setExpanded((current) => !current) }}>
           <RiArrowDownSLine aria-hidden />
         </button>

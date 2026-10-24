@@ -7,6 +7,8 @@
  *
  * 选择跨页也跨视图：换页、换排序、从卡片切到表格，选中的仍是同一批来源，底部那条批量
  * 操作发出去的也是整个 ID 集合，而不是屏幕上这一页。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   RiArrowDownLine, RiArrowDownSLine, RiArrowUpLine, RiArrowUpSLine, RiCheckDoubleLine,
@@ -61,7 +63,7 @@ const sourceTableFeatures = tableFeatures({
   paginatedRowModel: createPaginatedRowModel(),
 });
 
-const count = (value: unknown) => (Number(value) || 0).toLocaleString();
+const count = (value: unknown) => (Number(value) || 0).toLocaleString(peachLocale);
 
 /** 列头点的就是工具栏里的那一档排序，所以两边共用同一张对照表，方向也共用一个值。 */
 const SORT_COLUMN = Object.fromEntries(
@@ -92,8 +94,8 @@ function useCompactToolbar(): [(node: HTMLDivElement | null) => void, boolean] {
 }
 
 const COLUMN_LABELS: Record<string, string> = {
-  select: '选择', author: '创作者', source: '来源', provider: '站点',
-  status: '状态', checked: '上次检查', actions: '操作',
+  select: peachT("选择"), author: peachT("创作者"), source: peachT("来源"), provider: peachT("站点"),
+  status: peachT("状态"), checked: peachT("上次检查"), actions: peachT("操作"),
 };
 
 /** 行上那两个动作由调用方给，但列定义不该跟着每一次渲染重建；两者之间放一个当前值的盒子。 */
@@ -138,7 +140,7 @@ function SourceRow(
     <div data-selected={selected || undefined} data-follow-source-row=""
       className="flex min-h-16 flex-wrap items-center gap-3 px-2 py-3 max-sm:gap-x-2"
       onClick={(event) => { if (clickedBlank(event, event.currentTarget)) onToggle(!selected) }}>
-      <Checkbox isSelected={selected} onChange={onToggle} aria-label={`选择 ${source.label}`} />
+      <Checkbox isSelected={selected} onChange={onToggle} aria-label={peachT("选择 {{v0}}", { v0: source.label })} />
       {/* 名字列从零宽起长：长名字和报错在列内折行或截断，不把站标、状态和操作键挤到下一行。 */}
       <span className="flex min-w-0 grow basis-0 flex-col gap-0.5">
         <SourceLink source={source} />
@@ -156,15 +158,15 @@ function SourceRow(
         <span className="shrink-0 text-body-2-regular whitespace-nowrap text-text-secondary max-sm:mr-auto max-sm:text-caption-1-regular">
           {checkedText(source)}
         </span>
-        <Switch aria-label={`启用 ${source.label}`} isSelected={source.enabled}
+        <Switch aria-label={peachT("启用 {{v0}}", { v0: source.label })} isSelected={source.enabled}
           isDisabled={handlers.readOnly} onChange={(on) => handlers.toggle(source, on)} />
         <span className="flex shrink-0 items-center gap-1">
           <Button variant="secondary" size="small" iconOnly leadingIcon={RiRefreshLine}
-            aria-label={`检查 ${source.label} 的更新`}
+            aria-label={peachT("检查 {{v0}} 的更新", { v0: source.label })}
             disabled={!source.enabled || handlers.readOnly} {...busyProps(handlers.busy)}
             onClick={() => handlers.check([source.id])} />
           <Button variant="secondary" size="small" iconOnly leadingIcon={RiDeleteBinLine}
-            aria-label={`移除 ${source.label}`} disabled={handlers.readOnly}
+            aria-label={peachT("移除 {{v0}}", { v0: source.label })} disabled={handlers.readOnly}
             onClick={() => handlers.remove(source)} />
         </span>
       </span>
@@ -190,7 +192,7 @@ function AuthorCard(
   const panel = `follow-author-${group[0]!.id}`;
   const state = selectionState(selected, ids);
   return (
-    <section aria-label={`${name} 的关注来源`}
+    <section aria-label={peachT("{{v0}} 的关注来源", { v0: name })}
       className={cardClass({
         variant: 'raised', padding: 'none', className: 'flex flex-col overflow-hidden p-2',
       })}>
@@ -199,7 +201,7 @@ function AuthorCard(
         <AuthorAvatar group={group} name={name} />
         <b className="min-w-0 grow text-body-medium wrap-anywhere text-text-primary max-sm:basis-0">{name}</b>
         <Button variant="secondary" size="small" iconOnly leadingIcon={RiRefreshLine}
-          aria-label={`检查 ${name} 的全部来源`} disabled={!enabled.length || handlers.readOnly}
+          aria-label={peachT("检查 {{v0}} 的全部来源", { v0: name })} disabled={!enabled.length || handlers.readOnly}
           {...busyProps(handlers.busy)} onClick={() => handlers.check(enabled)} />
         {/* 窄屏固定两行：上一行头像、名字与检查键，下一行站标、失败数与全选、收起。 */}
         <span data-follow-author-controls="" className="contents max-sm:flex max-sm:w-full max-sm:items-center max-sm:gap-2">
@@ -207,19 +209,19 @@ function AuthorCard(
             {group.map((source) => <SourceIcon key={source.id} provider={source.provider} />)}
             {/* 只读屏用的文字走 `VisuallyHidden`：它把样式写在元素上，不会生成一个和旧
                 样式表同名的工具类（`web/css/01-base.css` 里那条 `.sr-only` 带 !important）。 */}
-            <VisuallyHidden>{`来源：${providers}`}</VisuallyHidden>
+            <VisuallyHidden>{peachT("来源：{{v0}}", { v0: providers })}</VisuallyHidden>
           </span>
           {bad
-            ? <span className="shrink-0 text-body-2-regular text-text-error-primary">{`${bad} 个失败`}</span>
+            ? <span className="shrink-0 text-body-2-regular text-text-error-primary">{peachT("{{v0}} 个失败", { v0: bad })}</span>
             : null}
           <Button variant="secondary" size="small" leadingIcon={RiCheckDoubleLine}
             aria-pressed={state.all ? 'true' : state.some ? 'mixed' : 'false'}
-            aria-label={`${state.all ? '取消全选' : '全选'} ${name} 的来源`}
-            onClick={() => onToggleGroup(!state.all)}>{state.all ? '取消全选' : '全选'}</Button>
+            aria-label={peachT("{{v0}} {{v1}} 的来源", { v0: state.all ? peachT("取消全选") : peachT("全选"), v1: name })}
+            onClick={() => onToggleGroup(!state.all)}>{state.all ? peachT("取消全选") : peachT("全选")}</Button>
           <Button variant="secondary" size="small" aria-expanded={open} aria-controls={panel}
             leadingIcon={open ? RiArrowUpSLine : RiArrowDownSLine}
-            aria-label={`${open ? '收起' : '展开'} ${name} 的来源`}
-            onClick={() => onOpen(!open)}>{open ? '收起' : '展开'}</Button>
+            aria-label={peachT("{{v0}} {{v1}} 的来源", { v0: open ? peachT("收起") : peachT("展开"), v1: name })}
+            onClick={() => onOpen(!open)}>{open ? peachT("收起") : peachT("展开")}</Button>
         </span>
       </div>
       <div id={panel} hidden={!open} data-source-divider>
@@ -254,7 +256,7 @@ export function SourceList(props: SourceListProps) {
     onError: (cause) => setProblem(errorMessage(cause)),
     onFinish: (state) => {
       void reloadFollowManage();
-      toast(state.status === 'failed' ? (state.error || '检查失败') : checkReceipt(state));
+      toast(state.status === 'failed' ? (state.error || peachT("检查失败")) : checkReceipt(state));
     },
   });
 
@@ -274,7 +276,7 @@ export function SourceList(props: SourceListProps) {
     onSuccess: (_result, id) => {
       dropSources([id]);
       onSelected(toggleGroup(selected, [id], false));
-      toast('已取消关注来源');
+      toast(peachT("已取消关注来源"));
     },
     onError: (cause) => setProblem(errorMessage(cause)),
   });
@@ -291,8 +293,8 @@ export function SourceList(props: SourceListProps) {
   });
 
   const removeSourceRow = (source: FollowSource) => void confirmModal({
-    title: '取消关注来源', body: '将移除这个来源及已抓取的条目，媒体文件保留。',
-    confirmLabel: '取消关注来源', danger: true,
+    title: peachT("取消关注来源"), body: peachT("将移除这个来源及已抓取的条目，媒体文件保留。"),
+    confirmLabel: peachT("取消关注来源"), danger: true,
     onConfirm: () => remove.mutateAsync(source.id),
   });
 
@@ -311,12 +313,12 @@ export function SourceList(props: SourceListProps) {
       onSelected(toggleGroup(selected, result.done, false));
       const failed = result.results.filter((row) => !row.ok);
       if (failed.length) {
-        setProblem(`${failed.length}/${result.ids.length} 个来源未更新：${errorMessage(failed[0]?.error)}`);
+        setProblem(peachT("{{v0}}/{{v1}} 个来源未更新：{{v2}}", { v0: failed.length, v1: result.ids.length, v2: errorMessage(failed[0]?.error) }));
         return;
       }
       setProblem('');
-      const word = result.action === 'remove' ? '删除' : result.action === 'enabled' ? '启用' : '暂停';
-      toast(`已${word} ${result.done.length} 个关注来源`);
+      const word = result.action === 'remove' ? peachT("删除") : result.action === 'enabled' ? peachT("启用") : peachT("暂停");
+      toast(peachT("已{{v0}} {{v1}} 个关注来源", { v0: word, v1: result.done.length }));
     },
     onError: (cause) => setProblem(errorMessage(cause)),
   });
@@ -334,11 +336,11 @@ export function SourceList(props: SourceListProps) {
     onSuccess: (result) => {
       void reloadFollowManage();
       if (result.failed.length) {
-        setProblem(`批量更新 ${result.failed.length}/${result.ids.length} 项未完成`);
+        setProblem(peachT("批量更新 {{v0}}/{{v1}} 项未完成", { v0: result.failed.length, v1: result.ids.length }));
         return;
       }
       setProblem('');
-      toast(`已批量标记 ${result.ids.length} 项`);
+      toast(peachT("已批量标记 {{v0}} 项", { v0: result.ids.length }));
     },
     onError: (cause) => setProblem(errorMessage(cause)),
   });
@@ -371,7 +373,7 @@ export function SourceList(props: SourceListProps) {
         cell: (context) => (
           <Checkbox slot={null} isSelected={context.row.getIsSelected()}
             onChange={(on) => context.row.toggleSelected(on)}
-            aria-label={`选择 ${context.row.original.source.label}`} />
+            aria-label={peachT("选择 {{v0}}", { v0: context.row.original.source.label })} />
         ),
       }),
       column.accessor((row) => row.author, {
@@ -419,16 +421,16 @@ export function SourceList(props: SourceListProps) {
         header: label('actions'),
         cell: (context) => (
           <span className="flex items-center gap-1">
-            <Switch aria-label={`启用 ${context.row.original.source.label}`}
+            <Switch aria-label={peachT("启用 {{v0}}", { v0: context.row.original.source.label })}
               isSelected={context.row.original.source.enabled} isDisabled={rowHandlers.readOnly}
               onChange={(on) => handlers.current.toggle(context.row.original.source, on)} />
             <Button variant="secondary" size="small" iconOnly leadingIcon={RiRefreshLine}
-              aria-label={`检查 ${context.row.original.source.label} 的更新`}
+              aria-label={peachT("检查 {{v0}} 的更新", { v0: context.row.original.source.label })}
               disabled={!context.row.original.source.enabled || rowHandlers.readOnly}
               {...busyProps(rowHandlers.busy)}
               onClick={() => handlers.current.check([context.row.original.source.id])} />
             <Button variant="secondary" size="small" iconOnly leadingIcon={RiDeleteBinLine}
-              aria-label={`移除 ${context.row.original.source.label}`} disabled={rowHandlers.readOnly}
+              aria-label={peachT("移除 {{v0}}", { v0: context.row.original.source.label })} disabled={rowHandlers.readOnly}
               onClick={() => handlers.current.remove(context.row.original.source)} />
           </span>
         ),
@@ -493,9 +495,9 @@ export function SourceList(props: SourceListProps) {
   if (!sources.length) {
     return (
       /* 去处写成地址：遗留层那个全局点击处理器认这条链接，已经在关注管理页上时只换到「添加关注」页签。 */
-      <EmptyState shell="plain" icon={RiRssLine} title="还没有关注来源" actions={
-        <ButtonLink variant="primary" size="small" href="/subscriptions?tab=add">添加关注</ButtonLink>
-      }>关注来源及其检查状态会显示在这里。</EmptyState>
+      <EmptyState shell="plain" icon={RiRssLine} title={peachT("还没有关注来源")} actions={
+        <ButtonLink variant="primary" size="small" href="/subscriptions?tab=add">{peachT("添加关注")}</ButtonLink>
+      }>{peachT("关注来源及其检查状态会显示在这里。")}</EmptyState>
     );
   }
 
@@ -510,18 +512,18 @@ export function SourceList(props: SourceListProps) {
           窄屏固定两行：上一行标题、读数与检查全部，下一行版式、排序与全部收起。 */}
       <div ref={toolbar} data-follow-toolbar="" className="flex flex-wrap items-center gap-2">
         <span className="contents max-sm:flex max-sm:min-w-0 max-sm:flex-1 max-sm:flex-col">
-          <h3 className="mr-auto text-title-2-medium text-text-primary">关注列表</h3>
+          <h3 className="mr-auto text-title-2-medium text-text-primary">{peachT("关注列表")}</h3>
           <span className="text-body-2-regular text-text-secondary">
-            {`${sources.length.toLocaleString()} 个来源${counts.new ? ` · ${count(counts.new)} 条未看` : ''}`}
+            {peachT("{{v0}} 个来源{{v1}}", { v0: sources.length.toLocaleString(peachLocale), v1: counts.new ? peachT(" · {{v0}} 条未看", { v0: count(counts.new) }) : '' })}
           </span>
         </span>
         <Button variant="primary" leadingIcon={RiRefreshLine} disabled={readOnly}
-          aria-label="检查全部" iconOnly={compact}
-          {...busyProps(rowHandlers.busy)} onClick={() => startChecking([])}>检查全部</Button>
+          aria-label={peachT("检查全部")} iconOnly={compact}
+          {...busyProps(rowHandlers.busy)} onClick={() => startChecking([])}>{peachT("检查全部")}</Button>
         {failedSourceIds.length ? <Button variant="secondary" disabled={readOnly}
-          {...busyProps(rowHandlers.busy)} onClick={() => startChecking(failedSourceIds)}>检查失败项</Button> : null}
+          {...busyProps(rowHandlers.busy)} onClick={() => startChecking(failedSourceIds)}>{peachT("检查失败项")}</Button> : null}
         <span data-follow-toolbar-controls="" className="contents max-sm:flex max-sm:w-full max-sm:items-center max-sm:gap-2">
-          <span data-button-group role="group" aria-label="关注列表版式">
+          <span data-button-group role="group" aria-label={peachT("关注列表版式")}>
             <Button variant="ghost" iconOnly
               leadingIcon={RiLayoutGridLine} aria-label={LAYOUTS[0][1]} aria-pressed={!asTable}
               onClick={() => onLayout('default')} />
@@ -529,7 +531,7 @@ export function SourceList(props: SourceListProps) {
               leadingIcon={RiTableLine} aria-label={LAYOUTS[1][1]} aria-pressed={asTable}
               onClick={() => onLayout('table')} />
           </span>
-          <Select aria-label="关注列表排序" selectedKey={sort}
+          <Select aria-label={peachT("关注列表排序")} selectedKey={sort}
             onSelectionChange={(key) => {
               if (key === null) return;
               const next = String(key) as SortKey;
@@ -545,11 +547,11 @@ export function SourceList(props: SourceListProps) {
           {asTable ? null : (
             <Button variant="secondary" iconOnly={compact}
               leadingIcon={allCollapsed ? RiArrowDownSLine : RiArrowUpSLine}
-              aria-label={allCollapsed ? '全部展开' : '全部收起'}
+              aria-label={allCollapsed ? peachT("全部展开") : peachT("全部收起")}
               onClick={() => setCollapsed(allCollapsed
                 ? new Set<string>()
                 : new Set(groups.map((group) => String(group[0]!.author_key || group[0]!.id))))}>
-              {allCollapsed ? '全部展开' : '全部收起'}
+              {allCollapsed ? peachT("全部展开") : peachT("全部收起")}
             </Button>
           )}
         </span>
@@ -558,47 +560,45 @@ export function SourceList(props: SourceListProps) {
       {/* 这一趟在后台跑，关掉页面还在继续，所以状态留在页面上而不是只让按钮转一下。 */}
       <div aria-live="polite" className="flex flex-col gap-3 empty:hidden">
         {running ? <TaskProgress embedded label={job?.message || (job?.total
-          ? `${job.older ? '抓取历史' : '检查更新'}：已完成 ${job.checked || 0}/${job.total} 个来源`
-          : '正在准备检查任务')} value={job?.checked} total={job?.total} /> : null}
-        {problem ? <Note tone="error" title="操作未完成">{problem}</Note> : null}
+          ? peachT("{{v0}}：已完成 {{v1}}/{{v2}} 个来源", { v0: job.older ? peachT("抓取历史") : peachT("检查更新"), v1: job.checked || 0, v2: job.total })
+          : peachT("正在准备检查任务"))} value={job?.checked} total={job?.total} /> : null}
+        {problem ? <Note tone="error" title={peachT("操作未完成")}>{problem}</Note> : null}
         {!running && outcome?.results?.length ? (
-          <Note tone="neutral" title="检查结果">{checkSummary(outcome)}</Note>
+          <Note tone="neutral" title={peachT("检查结果")}>{checkSummary(outcome)}</Note>
         ) : null}
         {failures.length ? (
-          <Note tone="error" title={`${failures.length} 个来源检查失败`}
+          <Note tone="error" title={peachT("{{v0}} 个来源检查失败", { v0: failures.length })}
             extra={<ul className="flex flex-col gap-0.5 text-body-2-regular">
               {failures.map((row, at) => (
                 <li key={`${row.provider || ''}-${row.ref || at}`}>
-                  {`${row.provider_label || row.provider || ''} ${row.author || row.label || row.ref || ''}：${errorHeadline(row.error || '') || '未说明原因'}`}
+                  {`${row.provider_label || row.provider || ''} ${row.author || row.label || row.ref || ''}：${errorHeadline(row.error || '') || peachT("未说明原因")}`}
                 </li>
               ))}
-            </ul>}>
-            这些来源这一轮没有取到更新。
-          </Note>
+            </ul>}>{peachT("这些来源这一轮没有取到更新。")}</Note>
         ) : null}
-        {evidence ? <Note tone="warning">{`条目已保存，但这次未保存来源的原始响应：${evidence}`}</Note> : null}
+        {evidence ? <Note tone="warning">{peachT("条目已保存，但这次未保存来源的原始响应：{{v0}}", { v0: evidence })}</Note> : null}
       </div>
 
-        <SelectionDock label="关注来源批量操作" visible={chosen.length > 0} count={`已选 ${chosen.length} 个来源`}>
+        <SelectionDock label={peachT("关注来源批量操作")} visible={chosen.length > 0} count={peachT("已选 {{v0}} 个来源", { v0: chosen.length })}>
           <Button variant="secondary" size="small" disabled={readOnly}
-            {...busyProps(rowHandlers.busy)} onClick={() => startChecking(chosen)}>检查所选</Button>
+            {...busyProps(rowHandlers.busy)} onClick={() => startChecking(chosen)}>{peachT("检查所选")}</Button>
           <Button variant="secondary" size="small" disabled={readOnly} {...busyProps(bulk.isPending)}
-            onClick={() => bulk.mutate({ ids: chosen, action: 'enabled' })}>启用</Button>
+            onClick={() => bulk.mutate({ ids: chosen, action: 'enabled' })}>{peachT("启用")}</Button>
           <Button variant="secondary" size="small" disabled={readOnly} {...busyProps(bulk.isPending)}
-            onClick={() => bulk.mutate({ ids: chosen, action: 'paused' })}>暂停</Button>
+            onClick={() => bulk.mutate({ ids: chosen, action: 'paused' })}>{peachT("暂停")}</Button>
           <Button variant="danger" size="small" disabled={readOnly} {...busyProps(bulk.isPending)}
             onClick={() => void confirmModal({
-              title: `删除 ${chosen.length} 个关注来源`,
-              body: '将移除所选关注来源及其已抓取条目，媒体文件保留。',
-              confirmLabel: '删除所选来源', danger: true,
+              title: peachT("删除 {{v0}} 个关注来源", { v0: chosen.length }),
+              body: peachT("将移除所选关注来源及其已抓取条目，媒体文件保留。"),
+              confirmLabel: peachT("删除所选来源"), danger: true,
               onConfirm: () => bulk.mutateAsync({ ids: chosen, action: 'remove' }),
-            })}>删除</Button>
-          <Button variant="ghost" size="small" onClick={() => onSelected(new Set())}>取消选择</Button>
+            })}>{peachT("删除")}</Button>
+          <Button variant="ghost" size="small" onClick={() => onSelected(new Set())}>{peachT("取消选择")}</Button>
         </SelectionDock>
 
       {asTable ? (
         <DataTableFrame follow onRowClick={(key) => toggleOne(Number(key), !selected.has(Number(key)))}>
-          <Table aria-label="关注来源" size="sm"
+          <Table aria-label={peachT("关注来源")} size="sm"
             sortDescriptor={sorting[0]
               ? { column: sorting[0].id, direction: sorting[0].desc ? 'descending' : 'ascending' }
               : undefined}
@@ -624,7 +624,7 @@ export function SourceList(props: SourceListProps) {
                 );
               })}
             </TableHeader>
-            <TableBody renderEmptyState={() => '这一页没有来源'}>
+            <TableBody renderEmptyState={() => peachT("这一页没有来源")}>
               {pageRows.map((row) => (
                 <TableRow key={row.id} id={row.id}
                   data-follow-selected={row.getIsSelected() || undefined}>
@@ -641,7 +641,7 @@ export function SourceList(props: SourceListProps) {
       ) : (
         <>
           <Checkbox isSelected={pageState.all} isIndeterminate={pageState.some}
-            onChange={(on) => toggleMany(pageIds, on)} aria-label="全选本页来源">全选本页</Checkbox>
+            onChange={(on) => toggleMany(pageIds, on)} aria-label={peachT("全选本页来源")}>{peachT("全选本页")}</Checkbox>
           <div className="flex flex-col gap-3">
             {groups.slice(win.start, win.end).map((group) => {
               const key = String(group[0]!.author_key || group[0]!.id);
@@ -661,27 +661,27 @@ export function SourceList(props: SourceListProps) {
         </>
       )}
 
-      <DataTableFooter label="关注列表" total={win.total} pagination={{ pageIndex: win.page - 1, pageSize }}
-        unit={asTable ? '个来源' : '位创作者'} pageUnit={asTable ? '条' : '位'}
+      <DataTableFooter label={peachT("关注列表")} total={win.total} pagination={{ pageIndex: win.page - 1, pageSize }}
+        unit={asTable ? peachT("个来源") : peachT("位创作者")} pageUnit={asTable ? peachT("条") : peachT("位")}
         onChange={(next) => { if (next.pageSize !== pageSize) table.setPageSize(next.pageSize); else table.setPageIndex(next.pageIndex); }} />
 
       {counts.new ? (
         /* 旧 `.fsecfoot`：汇总与它的动作是卡底那一条带，比卡面暗一点点，通到卡片左右两沿。 */
         <div className="-mx-6 -mb-5 flex flex-wrap items-center gap-2 border-t border-separator-border rounded-b-2xl bg-card-footer px-6 py-4 max-sm:-mx-4 max-sm:px-4">
           <span className="mr-auto text-body-2-regular text-text-secondary">
-            {`未看 ${count(counts.new)} · 已看 ${count(counts.seen)} · 已保存 ${count(counts.saved)} · 已忽略 ${count(counts.ignored)}`}
+            {peachT("未看 {{v0}} · 已看 {{v1}} · 已保存 {{v2}} · 已忽略 {{v3}}", { v0: count(counts.new), v1: count(counts.seen), v2: count(counts.saved), v3: count(counts.ignored) })}
           </span>
-          <Button variant="secondary" size="small" onClick={openFollow}>去看更新</Button>
+          <Button variant="secondary" size="small" onClick={openFollow}>{peachT("去看更新")}</Button>
           <Button variant="secondary" size="small" disabled={readOnly} {...busyProps(markAll.isPending)}
             onClick={() => void confirmModal({
-              title: '标记已看', body: '将把当前未看作品标记为已看。', confirmLabel: '标记已看',
+              title: peachT("标记已看"), body: peachT("将把当前未看作品标记为已看。"), confirmLabel: peachT("标记已看"),
               onConfirm: () => markAll.mutateAsync('seen'),
-            })}>全部标记已看</Button>
+            })}>{peachT("全部标记已看")}</Button>
           <Button variant="secondary" size="small" disabled={readOnly} {...busyProps(markAll.isPending)}
             onClick={() => void confirmModal({
-              title: '标记已忽略', body: '将把当前未看作品标记为已忽略。', confirmLabel: '标记已忽略',
+              title: peachT("标记已忽略"), body: peachT("将把当前未看作品标记为已忽略。"), confirmLabel: peachT("标记已忽略"),
               onConfirm: () => markAll.mutateAsync('ignored'),
-            })}>全部忽略</Button>
+            })}>{peachT("全部忽略")}</Button>
         </div>
       ) : null}
     </div>

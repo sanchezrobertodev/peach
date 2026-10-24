@@ -7,6 +7,8 @@
  * 这一屏要回答的是「换成哪一张」，所以候选网格占掉中间全部高度，头部和底下那排操作
  * 固定不动，只有网格滚。候选到点开弹层才取：资料页每进一次就预取一遍，多数时候没人点。
  * 弹层外壳是 `../components/modal-frame.tsx`。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, CSSProperties } from 'react';
 import { RiAddLine, RiCloseLine, RiUserLine } from '@remixicon/react';
@@ -75,13 +77,13 @@ export function AvatarPicker({ kind, entityId, name, onPicked }: AvatarPickerPro
           悬停时底色透出身后的脸：暗色那档的悬停色本来就带 60% 透明，浅色那档是实色，
           这里给它补同样的 60%，两档读起来是同一个动作。 */}
       <span className="absolute right-1 bottom-1 z-10">
-        <button type="button" aria-haspopup="dialog" aria-label={`更换${name}的头像`}
+        <button type="button" aria-haspopup="dialog" aria-label={peachT("更换{{v0}}的头像", { v0: name })}
           onClick={() => setOpen(true)}
           className="flex size-7 cursor-pointer items-center justify-center rounded-full border border-border-button-default bg-background-primary-default text-foreground-icon-primary shadow-xs outline-none ring-2 ring-background-full transition-colors hover:border-border-button-hover hover:bg-background-primary-hover/60 dark:hover:bg-background-primary-hover focus-visible:ring-border-focus-ring active:bg-background-primary-active">
           <RiAddLine aria-hidden className="size-4" />
         </button>
       </span>
-      <ModalFrame isOpen={open} onOpenChange={setOpen} width="avatar-picker" label="更换头像">
+      <ModalFrame isOpen={open} onOpenChange={setOpen} width="avatar-picker" label={peachT("更换头像")}>
         <PickerBody kind={kind} entityId={entityId} name={name} onPicked={onPicked}
           close={() => setOpen(false)} />
       </ModalFrame>
@@ -166,9 +168,9 @@ function PickerBody({ kind, entityId, name, onPicked, close }: AvatarPickerProps
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <div className="flex flex-wrap items-center gap-2">
             <Heading slot="title" className="text-title-3-semibold text-text-primary">
-              {cropping ? '框出头像那一块' : '更换头像'}
+              {cropping ? peachT("框出头像那一块") : peachT("更换头像")}
             </Heading>
-            {!cropping && choices.length ? <Chip color="soft">{choices.length.toLocaleString()} 张可选</Chip> : null}
+            {!cropping && choices.length ? <Chip color="soft">{choices.length.toLocaleString(peachLocale)}{" " + peachT("张可选")}</Chip> : null}
           </div>
           <p className="text-body-2-regular text-text-secondary">
             {cropping ? cropNote(cropping.choice) : pickerNote(name, data)}
@@ -177,11 +179,11 @@ function PickerBody({ kind, entityId, name, onPicked, close }: AvatarPickerProps
           {problem ? (
             <Note tone="error" action={listingFailed ? (
               <Button variant="secondary" size="small" {...busyProps(listing.isFetching)}
-                onClick={() => { if (!listing.isFetching) void listing.refetch() }}>重试</Button>
+                onClick={() => { if (!listing.isFetching) void listing.refetch() }}>{peachT("重试")}</Button>
             ) : undefined}>{problem}</Note>
           ) : null}
         </div>
-        <IconButton icon={RiCloseLine} size="small" aria-label="关闭" onClick={close} />
+        <IconButton icon={RiCloseLine} size="small" aria-label={peachT("关闭")} onClick={close} />
       </div>
       {cropping ? (
         <CropStep kind={kind} entityId={entityId} choice={cropping.choice} file={cropping.file}
@@ -196,7 +198,7 @@ function PickerBody({ kind, entityId, name, onPicked, close }: AvatarPickerProps
         <div ref={grid} className="flex min-h-0 flex-1 flex-col overflow-y-auto border-t border-separator-border px-5 py-4">
           {/* 候选回来之前摆同一种格子的占位，格子外框、比例与标签那一行都和真格子一样，
               换上真格子时网格不跳。 */}
-          <div role="listbox" aria-label="备选头像" aria-busy={listing.isPending || undefined}
+          <div role="listbox" aria-label={peachT("备选头像")} aria-busy={listing.isPending || undefined}
             data-skeleton={listing.isPending ? 'avatar-choices' : undefined}
             className="inline-grid grid-cols-3 content-start gap-2 sm:grid-cols-4">
             {listing.isPending ? Array.from({ length: SKELETON_TILES }, (_, index) => (
@@ -218,11 +220,11 @@ function PickerBody({ kind, entityId, name, onPicked, close }: AvatarPickerProps
                   choice={choice} />
                 <span className="truncate px-1">{choice.label}</span>
                 {choice.current
-                  ? <span className="absolute top-1 left-1"><Chip variant="caption" color="gray">在用</Chip></span>
+                  ? <span className="absolute top-1 left-1"><Chip variant="caption" color="gray">{peachT("在用")}</Chip></span>
                   : null}
                 {/* 合演封面上最大那张脸多半是领衔的另一位，格子不围着它取景，这里标出人数。 */}
                 {sharedCast(choice)
-                  ? <span className="absolute top-1 right-1"><Chip variant="caption" color="gray">{choice.cast.toLocaleString()} 人</Chip></span>
+                  ? <span className="absolute top-1 right-1"><Chip variant="caption" color="gray">{choice.cast.toLocaleString(peachLocale)}{" " + peachT("人")}</Chip></span>
                   : null}
               </button>
             ))}
@@ -240,24 +242,24 @@ function PickerBody({ kind, entityId, name, onPicked, close }: AvatarPickerProps
             if (code.trim() && !busy) opening.mutate({ via: 'code', code: code.trim() });
           }}>
           <div className="min-w-0 flex-1">
-            <Input aria-label="番号" placeholder="番号，如 ABW-232" value={code} onChange={setCode} />
+            <Input aria-label={peachT("番号")} placeholder={peachT("番号，如 ABW-232")} value={code} onChange={setCode} />
           </div>
           <Button type="submit" variant="secondary" disabled={!code.trim()}
-            {...busyProps(opens('code'))}>取封面来框</Button>
+            {...busyProps(opens('code'))}>{peachT("取封面来框")}</Button>
         </form>
         <div className="flex flex-wrap items-center gap-3">
           <Button variant="secondary" onClick={() => file.current?.click()}
-            {...busyProps(opens('file'))}>从本机选图片</Button>
+            {...busyProps(opens('file'))}>{peachT("从本机选图片")}</Button>
           {/* 原生文件选择器长相不可控，按钮归 BoardUI，输入框只留着接文件。 */}
           <input ref={file} type="file" accept="image/png,image/jpeg" tabIndex={-1} aria-hidden
             className="hidden" onChange={pickFile} />
           {/* 地址一行至少 224px：窄屏下和「从本机选图片」挤不进一行就整行换下去，输入框不被压成一条缝。 */}
           <div className="flex min-w-0 flex-1 basis-56 items-center gap-2">
             <div className="min-w-0 flex-1">
-              <Input type="url" aria-label="图片地址" placeholder="https://…" value={url} onChange={setUrl} />
+              <Input type="url" aria-label={peachT("图片地址")} placeholder="https://…" value={url} onChange={setUrl} />
             </div>
             <Button disabled={!url.trim()} {...busyProps(opens('url'))}
-              onClick={() => { if (!busy) opening.mutate({ via: 'url', url: url.trim() }) }}>用这个地址</Button>
+              onClick={() => { if (!busy) opening.mutate({ via: 'url', url: url.trim() }) }}>{peachT("用这个地址")}</Button>
           </div>
         </div>
       </div>
@@ -346,7 +348,7 @@ function CropStep({ kind, entityId, choice, file, busy, back, confirm }: {
       <div ref={frame} className="flex min-h-0 flex-1 flex-col items-center gap-4 overflow-y-auto border-t border-separator-border px-5 py-4">
         {src ? (
           <CropFrame src={src} aspect={1} box={box} size={size}
-            label={`${choice.label} 的头像取景框`}
+            label={peachT("{{v0}} 的头像取景框", { v0: choice.label })}
             onSize={(next) => {
               setSize(next);
               /* 这一格自己那张图从取景区里落默认框：检出脸就正好是批处理会截的那一块。
@@ -359,7 +361,7 @@ function CropStep({ kind, entityId, choice, file, busy, back, confirm }: {
         ) : null}
         {/* 底图那一排：封面加九宫格九格。一部作品里哪一格有正脸，只能看着换。 */}
         {bases.length > 1 ? (
-          <div role="radiogroup" aria-label="底图" className="flex flex-wrap justify-center gap-2">
+          <div role="radiogroup" aria-label={peachT("底图")} className="flex flex-wrap justify-center gap-2">
             {bases.map((ref) => (
               <button type="button" key={ref} role="radio" aria-checked={ref === base}
                 data-crop-base onClick={() => pickBase(ref)}
@@ -380,13 +382,13 @@ function CropStep({ kind, entityId, choice, file, busy, back, confirm }: {
             '--crop-preview-at': preview.position,
           } as CSSProperties : undefined} />
         <div className="flex flex-1 flex-wrap items-center justify-end gap-3">
-          <Button variant="secondary" onClick={back} {...busyProps(busy)}>返回备选图片</Button>
+          <Button variant="secondary" onClick={back} {...busyProps(busy)}>{peachT("返回备选图片")}</Button>
           {choice.crop ? null : (
             <Button variant="secondary" {...busyProps(busy)}
-              onClick={() => { if (!busy) confirm(null) }}>整张使用</Button>
+              onClick={() => { if (!busy) confirm(null) }}>{peachT("整张使用")}</Button>
           )}
           <Button disabled={!box || !size} {...busyProps(busy)}
-            onClick={() => { if (box && !busy) confirm({ ref: base, crop: box, version }) }}>用这一块</Button>
+            onClick={() => { if (box && !busy) confirm({ ref: base, crop: box, version }) }}>{peachT("用这一块")}</Button>
         </div>
       </div>
     </>

@@ -8,6 +8,8 @@
  * `configurable` 与目录计数都还在壳里。 */
 
 /** `[键, 名称, 字形]`，同壳的 `MANAGE_SECTIONS`。 */
+import { locale as peachLocale } from "./i18n/index";
+import { t as peachT } from "./i18n/index";
 export type ManageEntry = readonly [key: string, label: string, glyph: string];
 
 /** 回收站说明行的读数：目录网格每接一页报一次。 */
@@ -33,12 +35,12 @@ export interface ManageHeaderProps {
    人工复核、回收站、高清版虽也保留侧栏直达入口，层级上仍从数据管理进；资源同步是 hub 上的
    就地操作，没有独立页面。数据管理之下的页面标题也取这里的名字，「数据管理」让给面包屑的上一级。 */
 export const MANAGE_CRUMB_PAGES: Readonly<Record<string, string>> = {
-  '/junk-files': '垃圾文件',
-  '/duplicates': '重复文件',
-  '/review': '人工复核',
-  '/trash': '回收站',
-  '/quality-goals': '高清版',
-  '/sources': '来源和凭证',
+  '/junk-files': peachT("垃圾文件"),
+  '/duplicates': peachT("重复文件"),
+  '/review': peachT("人工复核"),
+  '/trash': peachT("回收站"),
+  '/quality-goals': peachT("高清版"),
+  '/sources': peachT("来源和凭证"),
 };
 
 /* 窄屏（≤760px）上标题收一档到 22px 的页面：正文是 812px 窄列的数据管理 hub、来源和凭证与配置页。
@@ -64,7 +66,7 @@ export interface ManageHeaderView {
 }
 
 export const trashLedeText = ({ total, shown }: TrashCount) =>
-  `${total.toLocaleString()} 个符合 · 显示 ${shown.toLocaleString()}`;
+  peachT("{{v0}} 个符合 · 显示 {{v1}}", { v0: total.toLocaleString(peachLocale), v1: shown.toLocaleString(peachLocale) });
 
 /** 页头这一刻画什么；不在管理区时是 null。 */
 export function manageHeaderView(props: ManageHeaderProps): ManageHeaderView | null {
@@ -101,16 +103,16 @@ export function manageHeaderSkeletonHtml(props: ManageHeaderProps): string {
       + `${glyph(mark)}<span>${escape(label)}</span></button>`;
   }).join('');
   const crumb = view.crumb
-    ? `<nav data-manage-crumb="" aria-label="Breadcrumb"><ol><li><a href="/data-cleanup">数据管理</a>${glyph('chevron-right')}</li>`
+    ? peachT("<nav data-manage-crumb=\"\" aria-label=\"Breadcrumb\"><ol><li><a href=\"/data-cleanup\">数据管理</a>{{v0}}</li>", { v0: glyph('chevron-right') })
       + `<li aria-current="true"><span>${escape(view.crumb)}</span></li></ol></nav>`
     : '';
   const lede = view.lede.kind === 'none' ? ''
     : `<p class="mono" data-manage-lede="">${view.lede.kind === 'skeleton' ? TRASH_LEDE_SKELETON_HTML
       : `<span data-lede-text="">${escape(view.lede.text)}</span>${view.lede.total ? EMPTY_TRASH_HTML : ''}`}</p>`;
-  return `<nav data-manage-bar="" aria-label="管理"><div data-manage-menu="">${menu}</div></nav>`
+  return peachT("<nav data-manage-bar=\"\" aria-label=\"管理\"><div data-manage-menu=\"\">{{v0}}</div></nav>", { v0: menu })
     + crumb
     + `<h2 data-manage-title=""${view.compact ? ' data-compact=""' : ''}>${escape(view.title)}</h2>`
     + lede;
 }
 
-const EMPTY_TRASH_HTML = '<button type="button" data-empty-trash="" title="永久删除回收站内容">清空回收站</button>';
+const EMPTY_TRASH_HTML = peachT("<button type=\"button\" data-empty-trash=\"\" title=\"永久删除回收站内容\">清空回收站</button>");

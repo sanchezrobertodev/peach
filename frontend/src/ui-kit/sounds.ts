@@ -15,6 +15,7 @@
    随主包发出，由共享源码直接引用：开关状态只能有一份，设置面板打开的
    和菜单开合时响的是同一个。 */
 
+import { t as peachT } from "../i18n/index";
 type Recipe = (ctx: AudioContext, now: number) => void;
 
 let audioContext:AudioContext|null=null;
@@ -126,7 +127,7 @@ export function uiSoundsEnabled():boolean{return enabled}
 /** 响一声；关着、浏览器没有 Web Audio 时什么都不做并返回 false。没有这种音效就抛错。 */
 export function playUiSound(name:string):boolean{
   const recipe=RECIPES[name];
-  if(!recipe)throw new Error(`没有「${name}」这种界面音效`);
+  if(!recipe)throw new Error(peachT("没有「{{v0}}」这种界面音效", { v0: name }));
   if(!enabled)return false;
   const ctx=context();
   if(!ctx)return false;

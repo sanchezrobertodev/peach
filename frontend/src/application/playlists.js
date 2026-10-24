@@ -1,3 +1,4 @@
+import { t as peachT } from "../i18n/index";
 /* playlists 域控制器：本域状态与动作，启动由 Application 的生命周期统一安装。 */
 import { pageOpens, playlistsRevision, state, writeShell } from './../shell/index';
 import { buildBars, catalogState, homePath } from './catalog.js';
@@ -23,41 +24,39 @@ export function openTasteSignal(kind,name){
 }
 
 export function playlistNameField(value=''){
-  return `<label class="modalfield"><span>名称</span><input class="geist-input" name="name"
-    maxlength="80" placeholder="输入名称" value="${esc(value)}"></label>`;
+  return peachT("<label class=\"modalfield\"><span>名称</span><input class=\"geist-input\" name=\"name\"\n    maxlength=\"80\" placeholder=\"输入名称\" value=\"{{v0}}\"></label>", { v0: esc(value) });
 }
 
 export async function saveMixAsPlaylist({title,count,save}){
   const modal=formModal({
-    title:'保存为播放列表',
-    description:`这个 Mix 的 ${count} 个视频会存成一份可以继续播放的列表。`,
+    title:peachT("保存为播放列表"),
+    description:peachT("这个 Mix 的 {{v0}} 个视频会存成一份可以继续播放的列表。", { v0: count }),
     body:playlistNameField(title),
-    confirmLabel:'保存为播放列表',
+    confirmLabel:peachT("保存为播放列表"),
     onConfirm:()=>{
       const name=modal.dialog.querySelector('[name="name"]').value.trim();
-      if(!name)throw new Error('播放列表名称不能为空');
+      if(!name)throw new Error(peachT("播放列表名称不能为空"));
       return save(name);
     }});
   modal.dialog.querySelector('[name="name"]').select();
   const {confirmed,result}=await modal.done;
   if(!confirmed)return;
   await openPlaylist(result.id,result.current_asset_id,true);
-  receiptsState.actionReceipt('已保存为播放列表',{undo:async()=>{
+  receiptsState.actionReceipt(peachT("已保存为播放列表"),{undo:async()=>{
     await playlistsState.playlistWrite({action:'delete',id:result.id});openRoutedPage('/playlists');
   }});
 }
 
 export async function openAddToPlaylist(item){
   const lists=(await api('/api/playlists')).items||[];
-  const rows=lists.map(list=>`<label class="pickrow">${checkboxHtml(`data-pick-playlist="${list.id}"`)}
-    <span class="pickrowtext"><b>${esc(list.name)}</b><small>${list.item_count} 个视频</small></span></label>`).join('');
+  const rows=lists.map(list=>peachT("<label class=\"pickrow\">{{v0}}\n    <span class=\"pickrowtext\"><b>{{v1}}</b><small>{{v2}} 个视频</small></span></label>", { v0: checkboxHtml(`data-pick-playlist="${list.id}"`), v1: esc(list.name), v2: list.item_count })).join('');
   const modal=formModal({
-    title:'加入播放列表',
-    description:'勾选要加入的列表，或者填个名称新建一份。',
+    title:peachT("加入播放列表"),
+    description:peachT("勾选要加入的列表，或者填个名称新建一份。"),
     body:playlistNameField()+(rows
-      ?`<div class="picklist" role="group" aria-label="已有播放列表">${rows}</div>`
-      :noteHtml('还没有播放列表，填个名称就能新建一份。',{size:'small'})),
-    confirmLabel:'保存',
+      ?peachT("<div class=\"picklist\" role=\"group\" aria-label=\"已有播放列表\">{{v0}}</div>", { v0: rows })
+      :noteHtml(peachT("还没有播放列表，填个名称就能新建一份。"),{size:'small'})),
+    confirmLabel:peachT("保存"),
     confirmDisabled:true,
     onConfirm:async()=>{
       const name=modal.dialog.querySelector('[name="name"]').value.trim();
@@ -77,7 +76,7 @@ export async function openAddToPlaylist(item){
   const {confirmed,result}=await modal.done;
   if(!confirmed)return;
   const total=(result.created?1:0)+result.added.length;
-  receiptsState.actionReceipt(`已加入 ${total} 个播放列表`,{undo:async()=>{
+  receiptsState.actionReceipt(peachT("已加入 {{v0}} 个播放列表", { v0: total }),{undo:async()=>{
     for(const id of result.added)await playlistsState.playlistWrite({action:'remove',id,asset_id:item.id});
     if(result.created)await playlistsState.playlistWrite({action:'delete',id:result.created.id});
   }});

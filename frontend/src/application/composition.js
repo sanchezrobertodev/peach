@@ -1,3 +1,4 @@
+import { t as peachT } from "../i18n/index";
 /* composition 域控制器：本域状态与动作，启动由 Application 的生命周期统一安装。 */
 import { loadingState, renderInitialSurfaceLoading } from './loading.js';
 import { clearHomeFeed, installEntityShapeBootstrap, loadEntityShapes } from './feed.js';
@@ -173,7 +174,7 @@ applicationEffects.own(peachHistory.listen(navigation=>{
   // 历史通知内先同步页面代次，再由路由元素的微任务领取取数代次。
   if(compositionState.routing&&!navigation.claimed)syncRouteChrome();
 }));
-loadRouter(compositionState.shellActions).catch(error=>console.error('客户端导航装载失败',error));
+loadRouter(compositionState.shellActions).catch(error=>console.error(peachT("客户端导航装载失败"),error));
 mountManageHeader();
 mountBatchDock();
 buildManageBar();
@@ -185,5 +186,5 @@ Promise.all([loadSourceStatus(),loadSyncedSettings(),loadingState.entityShapesRe
     // 路由树里按匹配打开的页面等这一下才开始打开：壳的状态到这时才齐。
     compositionState.routing=true;writeShell({pageOpens:1});syncRouteChrome();
     scheduleStickySurfaces();
-  }).catch(error=>{if(effects.isActive)console.error('应用启动失败',error)});
+  }).catch(error=>{if(effects.isActive)console.error(peachT("应用启动失败"),error)});
 }

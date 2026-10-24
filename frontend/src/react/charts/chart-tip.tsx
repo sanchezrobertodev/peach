@@ -1,3 +1,4 @@
+import { locale as peachLocale } from "../../i18n/index";
 /* 图表的悬停浮层：柱状、径向、雷达与热力图共用这一块面。
  *
  * 面、边线、阴影、字阶与一行的排法照 EvilCharts 的 `ChartTooltipContent`。那一份的容器写的是
@@ -22,7 +23,7 @@ export function TipRow({ swatch, name, value }: { swatch: ReactNode; name: React
       {swatch}
       <div className="flex flex-1 items-center justify-between gap-4 leading-none">
         <span className="text-muted-foreground">{name}</span>
-        <span className="font-mono font-medium tabular-nums text-foreground">{value.toLocaleString()}</span>
+        <span className="font-mono font-medium tabular-nums text-foreground">{value.toLocaleString(peachLocale)}</span>
       </div>
     </div>
   );

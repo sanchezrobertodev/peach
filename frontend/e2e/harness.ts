@@ -46,7 +46,8 @@ export function requiredEnv(name: string): string {
 }
 
 export async function launch(): Promise<Browser> {
-  const args: string[] = [];
+  // 原有用例以中文夹具断言；多语言用例用 lang 参数覆盖。
+  const args: string[] = ['--accept-lang=zh-CN'];
   const networkLogs = process.env.PEACH_E2E_NET_LOG_DIR;
   if (networkLogs) {
     mkdirSync(networkLogs, { recursive: true });

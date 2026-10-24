@@ -1,6 +1,7 @@
 /* 滚动那一组：横排的滚轮转向、拖动与橡皮筋、横排自动滚动、选中底板的滑动、Geist Scroller，
    以及按名单批量挂覆盖式滚动条。由共享源码直接引用，随 `peach-app.js` 发出；
    已绑定的横排、自动滚动的那几排与弹簧取值都是模块级状态，只有一份。 */
+import { t as peachT } from "../i18n/index";
 import { esc } from '../core';
 
 import { attachOverlayScrollbar } from './overlay-scrollbar';
@@ -247,7 +248,7 @@ export function moveGlidePane(
 }
 
 /** Geist Scroller: one-axis overflow with edge fades as the scroll affordance. */
-export function scrollerHtml(content:string,{className='',label='可滚动内容',overflow='y'}={}){
+export function scrollerHtml(content:string,{className='',label=peachT("可滚动内容"),overflow='y'}={}){
   const axis=new Set(['x','y','both']).has(overflow)?overflow:'y';
   return `<div class="ui-geist-scroller${className?` ${esc(className)}`:''}" data-geist-scroller>
     <div class="ui-geist-scroller-overlay" aria-hidden="true"></div>

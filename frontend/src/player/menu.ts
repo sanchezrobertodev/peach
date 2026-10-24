@@ -3,6 +3,7 @@
  * 项目照 YouTube 播放器 f572e43c 的 .ytp-contextmenu 取舍：循环播放、迷你播放器（小窗里是展开）、
  * 画中画、复制视频网址、复制当前时间的视频网址、播放统计；嵌入代码、调试信息和排查播放问题
  * Peach 没有对应能力，不列。 */
+import { t as peachT } from "../i18n/index";
 import { esc, icon } from '@peach/legacy/core';
 import { dismissMenu, presentMenu, scrollMovesAnchor } from '@peach/legacy/ui';
 
@@ -34,7 +35,7 @@ function menuElement(): HTMLElement {
     menu.setAttribute('data-player-context-menu', '');
     menu.id = 'playerMenu';
     menu.setAttribute('role', 'menu');
-    menu.setAttribute('aria-label', '播放器菜单');
+    menu.setAttribute('aria-label', peachT("播放器菜单"));
     menu.hidden = true;
     document.body.append(menu);
   }
@@ -84,21 +85,21 @@ function playerMenuItems(player: VjsPlayer): MenuItem[] {
   };
   const copy = (withTime: boolean, receipt: string) => {
     void copyTextToClipboard(url(withTime)).then((ok) =>
-      playerHost().toast(ok ? receipt : '复制失败，请手动复制地址栏', { timeout: 4000, warn: !ok }));
+      playerHost().toast(ok ? receipt : peachT("复制失败，请手动复制地址栏"), { timeout: 4000, warn: !ok }));
   };
   const items: MenuItem[] = [
-    { icon: 'repeat', label: '循环播放', checked: !!player.loop(), run: () => player.loop(!player.loop()) },
-    mini ? { icon: 'maximize-2', label: '展开', run: () => hooks?.expand() }
-      : { icon: 'picture-in-picture-2', label: '迷你播放器', run: () => hooks?.toMiniplayer() },
+    { icon: 'repeat', label: peachT("循环播放"), checked: !!player.loop(), run: () => player.loop(!player.loop()) },
+    mini ? { icon: 'maximize-2', label: peachT("展开"), run: () => hooks?.expand() }
+      : { icon: 'picture-in-picture-2', label: peachT("迷你播放器"), run: () => hooks?.toMiniplayer() },
   ];
   if (document.pictureInPictureEnabled) {
-    items.push({ icon: 'player-pip', fill: true, label: '画中画',
+    items.push({ icon: 'player-pip', fill: true, label: peachT("画中画"),
       run: () => player.el().querySelector<HTMLElement>('.vjs-picture-in-picture-control')?.click() });
   }
-  items.push({ icon: 'link', label: '复制视频网址', run: () => copy(false, '已复制视频网址') });
-  items.push({ icon: 'link', label: '复制当前时间的视频网址', run: () => copy(true, '已复制当前时间的视频网址') });
+  items.push({ icon: 'link', label: peachT("复制视频网址"), run: () => copy(false, peachT("已复制视频网址")) });
+  items.push({ icon: 'link', label: peachT("复制当前时间的视频网址"), run: () => copy(true, peachT("已复制当前时间的视频网址")) });
   const stats = document.getElementById('playerStatsBtn');
-  if (!mini && stats && !stats.hidden) items.push({ icon: 'chart', label: '播放统计', run: () => stats.click() });
+  if (!mini && stats && !stats.hidden) items.push({ icon: 'chart', label: peachT("播放统计"), run: () => stats.click() });
   return items;
 }
 

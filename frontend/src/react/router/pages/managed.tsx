@@ -11,13 +11,14 @@
  *
  * 卸载时这一页还画在 `#stats` 里、壳也没藏起它，才收起；资料页、首页压过来时壳只藏起 `#stats`，页面照旧活着，
  * 等下一次认领表面才收。收起排进微任务：卸载发生在路由根同步提交的那一次里。 */
+import { t as peachT } from "../../../i18n/index";
 import { useContext, useEffect, useRef, useSyncExternalStore } from 'react';
 import { useLocation } from 'react-router';
 
 import { appSettingsStore } from '@peach/appearance';
 import {
   isOverlayPath, managedEntry, openManagedRoute, peachHistory, releaseManagedRoute, shellNavigate,
-  configurationSection, updateManagedRoute,
+  configurationSection, normalizeConfigurationSection, updateManagedRoute,
 } from '@peach/history';
 import { api, isAbort } from '@peach/legacy/core';
 import {
@@ -75,7 +76,7 @@ function readRuntime(run: Run): Promise<Runtime | null> {
 function writerProps(runtime: Runtime | null, path: string) {
   return {
     readOnly: !!runtime?.ledger_read_only,
-    readOnlyMessage: runtime?.ledger_read_only_message || '本机当前只能浏览',
+    readOnlyMessage: runtime?.ledger_read_only_message || peachT("本机当前只能浏览"),
     writerUrl: runtime?.ledger_writer_origin ? new URL(path, runtime.ledger_writer_origin).href : '',
   };
 }
@@ -94,8 +95,8 @@ async function openProps(path: ManagedPath, run: Run): Promise<object | null> {
     return { onboarding } satisfies ManagedOpenProps['/taste'];
   }
   if (path.startsWith('/settings/')) {
-    if (window.location.hash === '#peachProxy') writeShell({ configurationRequestedSection: '网络与访问' });
-    const section = search().get('section') || configurationRequestedSection || configurationSection(path);
+    if (window.location.hash === '#peachProxy') writeShell({ configurationRequestedSection: peachT("网络与访问") });
+    const section = normalizeConfigurationSection(search().get('section')) || configurationRequestedSection || configurationSection(path);
     return (section ? { section } : {}) satisfies ManagedOpenProps['/settings/library'];
   }
   if (path === '/review') {

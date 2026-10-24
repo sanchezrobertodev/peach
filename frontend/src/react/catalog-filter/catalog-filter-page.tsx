@@ -7,6 +7,8 @@
  * 加一条筛选不重画这几排：成员（`tiers.key` 与标签的顺序）不变，React 只改按下态，人横着续到第
  * 六十枚、停在第 600 像素上的那一排原样留着。换了口径或换了一批，壳给新的 `tiers.key`，两排从头摆。
  * 详情浮窗打开期间壳不推任何东西，关掉回来还是同一批节点（`buildBars` 那段注释讲了为什么）。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { fitSkeleton, popBadges, popCount } from '@peach/legacy/ui';
@@ -83,14 +85,14 @@ function Glass(props: CatalogFilterProps) {
   useLayoutEffect(() => { popBadges(tagRow.current, 'tagbar') }, [tags]);
 
   return (
-    <FilterGlassRows label="筛选与排序" topLabel="视图与标签"
+    <FilterGlassRows label={peachT("筛选与排序")} topLabel={peachT("视图与标签")}
       attrs={{ 'data-filter-frame': '', 'data-catalog-frame': '', ...(singleRow ? { 'data-single-row': '' } : {}) }}
       className="mx-4" topClassName="gap-1.5 overflow-visible" bottomClassName={props.trash ? 'hidden' : 'min-h-12'}
       bottomRef={bottomRow} busy={props.count === null || props.refreshing}
       panes={<span ref={pane} data-view-glide="" aria-hidden="true" />}
       top={
         <div ref={scroll} data-catalog-scroll="">
-          <div ref={viewRow} role="group" aria-label="视图" data-catalog-views="" onPointerLeave={glide.leave}>
+          <div ref={viewRow} role="group" aria-label={peachT("视图")} data-catalog-views="" onPointerLeave={glide.leave}>
             {props.views.map((view) => (
               <a key={view.k} href={view.href} data-catalog-view={view.k} data-entity-press=""
                 aria-pressed={props.state === view.k} onPointerEnter={glide.hover}
@@ -114,7 +116,7 @@ function Glass(props: CatalogFilterProps) {
 function TagPill({ tag, onPress }: { tag: CatalogTag; onPress(tag: string): void }) {
   return (
     <FilterPill data-catalog-tag={tag.k} data-entity-press="" pressed={tag.selected} onPress={() => onPress(tag.k)}>
-      {tag.label}{tag.n == null ? null : <span data-count-badge={tag.k}>{tag.n.toLocaleString()}</span>}
+      {tag.label}{tag.n == null ? null : <span data-count-badge={tag.k}>{tag.n.toLocaleString(peachLocale)}</span>}
     </FilterPill>
   );
 }
@@ -224,7 +226,7 @@ function Head({ count, refreshing, layout, sorts, actions }: CatalogFilterProps)
 function Readout({ count }: { count: CatalogFilterProps['count'] }) {
   const readout = useRef<HTMLSpanElement>(null);
   const skeleton = useRef<HTMLSpanElement>(null);
-  const text = count ? `${count.total.toLocaleString()} 个符合 · 显示 ${count.shown.toLocaleString()}` : '';
+  const text = count ? peachT("{{v0}} 个符合 · 显示 {{v1}}", { v0: count.total.toLocaleString(peachLocale), v1: count.shown.toLocaleString(peachLocale) }) : '';
   useLayoutEffect(() => {
     if (count === false) return;
     if (!count) { fitSkeleton(skeleton.current); return }

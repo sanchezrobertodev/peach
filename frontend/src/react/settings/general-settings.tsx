@@ -1,4 +1,5 @@
 /* 「应用与维护」中的开机自启、桌面快捷方式与版本更新。 */
+import { t as peachT } from "../../i18n/index";
 import { useState, type FormEvent } from 'react';
 
 import { SettingsRow } from '@/components/application/settings/settings-rows';
@@ -14,11 +15,13 @@ import { RemoteReportingSettings } from './remote-reporting-settings';
 import { LibrarySharingSettings } from './library-sharing-settings';
 import { ErrorText, Footer, Help, Rows, Section, Stack } from './section';
 import { busyProps, useAction } from './use-action';
+import { LanguageSelector } from '../components/language-selector';
 
 export function GeneralSettings({ data, receipt, panel }: ConfigurationGroupProps) {
   return (
     <div {...groupRoot(panel)}>
-      {data.remote_reporting || data.library_sharing ? <Section title="数据上传">
+      <Section title={peachT('界面语言')}><Rows><LanguageSelector /></Rows></Section>
+      {data.remote_reporting || data.library_sharing ? <Section title={peachT("数据上传")}>
         {data.remote_reporting ? <RemoteReportingSettings initial={data.remote_reporting} receipt={receipt} /> : null}
         {data.library_sharing ? <div className="border-t border-separator-border">
           <LibrarySharingSettings initial={data.library_sharing} receipt={receipt} />
@@ -44,20 +47,20 @@ export function StartupSettings({ startup, receipt }: { startup: StartupState; r
     event.preventDefault();
     if (!startup.available) return;
     void action.run('save', (signal) => apiSend('/api/configuration/startup', { enabled, silent, desktop }, 'POST', signal),
-      () => receipt('已保存配置'));
+      () => receipt(peachT("已保存配置")));
   };
 
   return (
-    <Section title="开机自启" onSubmit={submit}>
+    <Section title={peachT("开机自启")} onSubmit={submit}>
       <Rows>
-        <SettingsRow label="开机后启动 Peach">
-          <Switch aria-label="开机后启动 Peach" isSelected={enabled} isDisabled={!startup.available} onChange={setEnabled} />
+        <SettingsRow label={peachT("开机后启动 Peach")}>
+          <Switch aria-label={peachT("开机后启动 Peach")} isSelected={enabled} isDisabled={!startup.available} onChange={setEnabled} />
         </SettingsRow>
-        <SettingsRow label="只启动托盘，不打开网页">
-          <Switch aria-label="只启动托盘，不打开网页" isSelected={silent} isDisabled={!startup.available || !enabled} onChange={setSilent} />
+        <SettingsRow label={peachT("只启动托盘，不打开网页")}>
+          <Switch aria-label={peachT("只启动托盘，不打开网页")} isSelected={silent} isDisabled={!startup.available || !enabled} onChange={setSilent} />
         </SettingsRow>
-        <SettingsRow label="在桌面创建快捷方式" description={startup.desktop_message || undefined}>
-          <Switch aria-label="在桌面创建快捷方式" isSelected={desktop} isDisabled={!desktopReady} onChange={setDesktop} />
+        <SettingsRow label={peachT("在桌面创建快捷方式")} description={startup.desktop_message || undefined}>
+          <Switch aria-label={peachT("在桌面创建快捷方式")} isSelected={desktop} isDisabled={!desktopReady} onChange={setDesktop} />
         </SettingsRow>
       </Rows>
       {startup.message || action.error ? (
@@ -67,7 +70,7 @@ export function StartupSettings({ startup, receipt }: { startup: StartupState; r
         </Stack>
       ) : null}
       <Footer>
-        <Button type="submit" disabled={!startup.available} {...busyProps(action.busy === 'save')}>保存配置</Button>
+        <Button type="submit" disabled={!startup.available} {...busyProps(action.busy === 'save')}>{peachT("保存配置")}</Button>
       </Footer>
     </Section>
   );

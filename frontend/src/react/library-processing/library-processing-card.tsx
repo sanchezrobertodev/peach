@@ -6,6 +6,7 @@
  * 写操作是 `useMutation`：服务端回的就是这一趟的新快照，用 `setQueryData` 换进缓存，
  * 再让这个键立刻重读一次接上轮询的节律。首屏读到的旧终态不冒充新结果——任务关掉页面
  * 照样在跑，状态里常年躺着上一趟的回执，判据在 `use-library-processing.ts`。 */
+import { t as peachT } from "../../i18n/index";
 import { useEffect } from 'react';
 import { RiArrowRightLine } from '@remixicon/react';
 import { useMutation } from '@tanstack/react-query';
@@ -33,7 +34,7 @@ import { ProcessingProgress } from './processing-line';
 
 /* 中文正文写成常量：JSX 里换行的文字会在接缝处多出一个空格，中文句子里看得见。
    卡片正文与首屏骨架共用 `SCAN_CARD_TEXT`（`management.ts`）。 */
-const STALLED_TEXT = '这一项耗时较长，暂时没有新进展。任务结束后可以重试未完成的部分。';
+const STALLED_TEXT = peachT("这一项耗时较长，暂时没有新进展。任务结束后可以重试未完成的部分。");
 /* 补齐女优资料是落库之后的一步，一趟里常常什么都不用补，那时这句话不出现：
    四个读数全是 0 还写一句「别名 0 个」，读的人分不清是没得补还是这一步没跑。 */
 const profileText = (state: LibraryProcessingData) => {
@@ -42,17 +43,17 @@ const profileText = (state: LibraryProcessingData) => {
   const conflicts = state.performer_profile_conflicts || 0;
   const failed = state.performer_profile_failed || 0;
   if (!aliases && !avatars && !conflicts && !failed) return '';
-  const parts = [`补齐女优资料：别名 ${aliases} 个，头像 ${avatars} 张`];
-  if (conflicts) parts.push(`${conflicts} 个同名冲突交回人工`);
-  if (failed) parts.push(`${failed} 张头像未取得`);
+  const parts = [peachT("补齐女优资料：别名 {{v0}} 个，头像 {{v1}} 张", { v0: aliases, v1: avatars })];
+  if (conflicts) parts.push(peachT("{{v0}} 个同名冲突交回人工", { v0: conflicts }));
+  if (failed) parts.push(peachT("{{v0}} 张头像未取得", { v0: failed }));
   return `${parts.join('，')}。`;
 };
 
 const receiptText = (state: LibraryProcessingData) =>
-  state.requested_stage === 'previews' ? `已生成 ${state.previews || 0} 部视频预览。`
-  : `已扫描 ${state.scanned || 0} 个文件，识别 ${state.identified || 0} 个番号，`
-  + `整理 ${state.candidates || 0} 组资料结果，自动保存 ${state.auto_applied || 0} 条。`
-  + (state.previews ? `已生成 ${state.previews} 部视频预览。` : '')
+  state.requested_stage === 'previews' ? peachT("已生成 {{v0}} 部视频预览。", { v0: state.previews || 0 })
+  : peachT("已扫描 {{v0}} 个文件，识别 {{v1}} 个番号，", { v0: state.scanned || 0, v1: state.identified || 0 })
+  + peachT("整理 {{v0}} 组资料结果，自动保存 {{v1}} 条。", { v0: state.candidates || 0, v1: state.auto_applied || 0 })
+  + (state.previews ? peachT("已生成 {{v0}} 部视频预览。", { v0: state.previews }) : '')
   + profileText(state);
 
 /** 卡片外面那一块：这一趟怎么了。逐条明细要展开才读，完整清单在状态给出的日志文件里。 */
@@ -72,12 +73,12 @@ function Outcome(
     /* 空着时整块收起：`aria-live` 的容器留着一条空轨道，卡片底下就凭空多出一个间距。 */
     <div aria-live="polite" className="flex flex-col gap-4 empty:hidden">
       {state.status === 'running' && state.stalled
-        ? <Note tone="warning" title="处理较慢">{STALLED_TEXT}</Note>
+        ? <Note tone="warning" title={peachT("处理较慢")}>{STALLED_TEXT}</Note>
         : null}
       {problem || state.status === 'failed'
         ? <Note tone="error" className="gap-0 p-3"
             action={retryable
-              ? <Button variant="primary" size="small" onClick={onRetry}>重试未完成项</Button>
+              ? <Button variant="primary" size="small" onClick={onRetry}>{peachT("重试未完成项")}</Button>
               : null}
             extra={details
               /* 三层东西叠在同一块红底上：一句结论、一份清单、一条日志地址。各自之间
@@ -106,25 +107,25 @@ function Outcome(
                     {details.log
                       /* 日志地址使用次级文字色，分隔线沿用错误提示的红色。 */
                       ? <div className="mt-3 border-t border-border-error-default/20 pt-3 text-text-secondary">
-                          <PathLine path={details.log} prefix="完整记录：" className="text-caption-1-regular"
+                          <PathLine path={details.log} prefix={peachT("完整记录：")} className="text-caption-1-regular"
                             onRevealed={toast} />
                         </div>
                       : null}
                   </Disclosure>
                 </div>
               : null}>
-            {problem || state.error || '处理未完成，请重试'}
+            {problem || state.error || peachT("处理未完成，请重试")}
           </Note>
         : null}
       {settled?.status === 'complete'
-        ? <Note tone="success" title="处理完成">{receiptText(settled)}</Note>
+        ? <Note tone="success" title={peachT("处理完成")}>{receiptText(settled)}</Note>
         : null}
       {!processingActive(state) && notes
         ? <Note tone="neutral"
             extra={state.issues_log
               /* 中性提示的分隔线跟随次级文字色。 */
               ? <div className="mt-1.5 border-t border-current/20 pt-1.5 text-text-secondary">
-                  <PathLine path={state.issues_log} prefix="完整记录：" className="text-caption-1-regular"
+                  <PathLine path={state.issues_log} prefix={peachT("完整记录：")} className="text-caption-1-regular"
                     onRevealed={toast} />
                 </div>
               : null}>
@@ -169,11 +170,11 @@ export function LibraryProcessingCard(props: LibraryProcessingProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <Fieldset layout="stack" label="扫描与采集" footer={
+      <Fieldset layout="stack" label={peachT("扫描与采集")} footer={
         <>
-          <LinkButton href="/sources" size="small" trailingIcon={RiArrowRightLine}>来源和凭证</LinkButton>
+          <LinkButton href="/sources" size="small" trailingIcon={RiArrowRightLine}>{peachT("来源和凭证")}</LinkButton>
           {state.candidates
-            ? <LinkButton href="/review" size="small" trailingIcon={RiArrowRightLine}>复核资料</LinkButton>
+            ? <LinkButton href="/review" size="small" trailingIcon={RiArrowRightLine}>{peachT("复核资料")}</LinkButton>
             : null}
           {/* 两个入口并存，各自答的不是一个问题：这里是「重新跑一整批」，下面那条错误提示里
               的「重试未完成项」只补上一趟没做完的那些。采集里网络超时几乎每趟都留下几项可
@@ -182,10 +183,10 @@ export function LibraryProcessingCard(props: LibraryProcessingProps) {
         </>
       }>
         <div className="flex flex-col gap-2">
-          <FieldsetTitle>扫描与采集</FieldsetTitle>
+          <FieldsetTitle>{peachT("扫描与采集")}</FieldsetTitle>
           <p className="text-body-2-regular text-text-secondary">{SCAN_CARD_TEXT}</p>
           {state.status === 'paused' && !state.total
-            ? <p className="text-caption-1-regular text-text-secondary">已暂停</p>
+            ? <p className="text-caption-1-regular text-text-secondary">{peachT("已暂停")}</p>
             : processingActive(state)
             ? <ProcessingProgress state={state} />
             : null}

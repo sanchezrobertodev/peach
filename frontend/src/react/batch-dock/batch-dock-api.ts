@@ -5,6 +5,7 @@
  * `run`：确认弹层、写接口、回执与撤销是壳里按分组分派的那几条流程，忙态挂在传回去的那颗键上。 */
 
 /** 目录（含资料页与标签页）、回收站、垃圾文件、关注页。 */
+import { t as peachT } from "../../i18n/index";
 export type BatchContext = 'catalog' | 'trash' | 'junk' | 'follow';
 
 /** 一颗键回到壳的哪条流程：`batch` 走 `/api/batch`，`region` 是判定产地的弹层，`follow` 写关注条目，
@@ -37,39 +38,39 @@ export interface BatchDockApi {
   render(props: BatchDockProps): void;
 }
 
-const CLEAR: BatchAction = { group: 'clear', operation: 'clear', label: '取消', glyph: 'x' };
+const CLEAR: BatchAction = { group: 'clear', operation: 'clear', label: peachT("取消"), glyph: 'x' };
 
 /** 这一语境下浮条上的键，按从左到右的顺序。「取消」总在最后。 */
 export function batchActions(context: BatchContext, junkDismissed = false): BatchAction[] {
   switch (context) {
     case 'trash':
       return [
-        { group: 'batch', operation: 'restore', label: '还原', glyph: 'rotate-ccw' },
-        { group: 'batch', operation: 'delete', label: '彻底删除', glyph: 'trash', danger: true },
+        { group: 'batch', operation: 'restore', label: peachT("还原"), glyph: 'rotate-ccw' },
+        { group: 'batch', operation: 'delete', label: peachT("彻底删除"), glyph: 'trash', danger: true },
         CLEAR,
       ];
     case 'junk':
       return [
         junkDismissed
-          ? { group: 'junk', operation: 'reconsider-junk', label: '重新判断', glyph: 'rotate-ccw' }
-          : { group: 'junk', operation: 'dismiss-junk', label: '不是垃圾', glyph: 'check' },
-        { group: 'junk', operation: 'dispose', label: '移入回收站', glyph: 'trash', danger: true },
+          ? { group: 'junk', operation: 'reconsider-junk', label: peachT("重新判断"), glyph: 'rotate-ccw' }
+          : { group: 'junk', operation: 'dismiss-junk', label: peachT("不是垃圾"), glyph: 'check' },
+        { group: 'junk', operation: 'dispose', label: peachT("移入回收站"), glyph: 'trash', danger: true },
         CLEAR,
       ];
     case 'follow':
       return [
-        { group: 'follow', operation: 'save', label: '保存到数据库', glyph: 'bookmark-plus' },
-        { group: 'follow', operation: 'seen', label: '标记已看', glyph: 'eye' },
-        { group: 'follow', operation: 'ignored', label: '忽略', glyph: 'eye-off' },
+        { group: 'follow', operation: 'save', label: peachT("保存到数据库"), glyph: 'bookmark-plus' },
+        { group: 'follow', operation: 'seen', label: peachT("标记已看"), glyph: 'eye' },
+        { group: 'follow', operation: 'ignored', label: peachT("忽略"), glyph: 'eye-off' },
         CLEAR,
       ];
     default:
       return [
-        { group: 'batch', operation: 'like', label: '喜欢', glyph: 'thumbs-up' },
-        { group: 'batch', operation: 'seen', label: '看过', glyph: 'eye' },
-        { group: 'batch', operation: 'later', label: '稍后看', glyph: 'bookmark-plus' },
-        { group: 'region', operation: 'region', label: '判定产地', glyph: 'globe' },
-        { group: 'batch', operation: 'dispose', label: '移入回收站', glyph: 'trash', danger: true },
+        { group: 'batch', operation: 'like', label: peachT("喜欢"), glyph: 'thumbs-up' },
+        { group: 'batch', operation: 'seen', label: peachT("看过"), glyph: 'eye' },
+        { group: 'batch', operation: 'later', label: peachT("稍后看"), glyph: 'bookmark-plus' },
+        { group: 'region', operation: 'region', label: peachT("判定产地"), glyph: 'globe' },
+        { group: 'batch', operation: 'dispose', label: peachT("移入回收站"), glyph: 'trash', danger: true },
         CLEAR,
       ];
   }

@@ -1,3 +1,4 @@
+import { locale as peachLocale } from "../../i18n/index";
 /* 页面分区 Tabs：中性填充选中态，支持方向键与窄屏横向滚动。 */
 import { useLayoutEffect, useRef, type KeyboardEvent } from 'react';
 
@@ -17,7 +18,7 @@ export function TabCount({ value }: { value: number }) {
   return (
     <span data-tab-count=""
       className="ml-1.5 inline-block rounded-sm bg-text-primary/10 px-1 py-px text-caption-1-medium text-text-primary opacity-50">
-      {value.toLocaleString()}
+      {value.toLocaleString(peachLocale)}
     </span>
   );
 }

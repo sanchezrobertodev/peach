@@ -3,6 +3,7 @@
  * 三者都是原生 `popover="manual"`：进顶层才不被资料卡的 `overflow:hidden` 裁掉，也不被卡底
  * 同台艺人那条压住。位置按视口算：默认贴锚点下方 8px，下面放不下翻到上方，左右夹在视口内
  * 8px；开着的时候页面滚动或窗口改宽就重算，收起后那条监听自己摘掉。 */
+import { t as peachT } from "../../i18n/index";
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 
 import { Glyph } from './glyph';
@@ -153,7 +154,7 @@ export function FeedSwitch({ following, busy, onToggle, tip }: {
     <label ref={label} data-entry-feed="" onPointerEnter={showTip}
       onPointerLeave={() => { if (!input.current?.matches(':focus-visible')) restore() }}>
       <Glyph name="rss" />
-      <input ref={input} type="checkbox" role="switch" aria-label="订阅新作" aria-describedby="entityFeedTip"
+      <input ref={input} type="checkbox" role="switch" aria-label={peachT("订阅新作")} aria-describedby="entityFeedTip"
         data-entity-feed="" checked={following} aria-busy={busy || undefined} aria-disabled={busy || undefined}
         onChange={(event) => { if (!busy) onToggle(event.currentTarget.checked) }}
         onKeyDown={(event) => { if (event.key === 'Escape') { dismissed.current = true; hideTip() } }}

@@ -3,6 +3,7 @@
  * 队列一次取 200 条（`/api/ads?limit=200&status=…[&kind=…]`，`src/peach/web_batch.py` 的 `q_ads`
  * 现算评分），客户端按「每批条数」一段段露出来；换分类、换视图就是换查询键。写操作只有三种，
  * 都走 `/api/batch`，由壳执行（回执、撤销与重读都归壳），做完壳推进 `revision`，查询换键重取。 */
+import { t as peachT } from "../../i18n/index";
 import { apiGet } from '../../api';
 import type { JunkKind, JunkRoute, JunkView } from '../../junk-queue';
 
@@ -38,16 +39,16 @@ export type JunkOperation = 'dismiss-junk' | 'reconsider-junk' | 'dispose';
 
 /** 卡片上的类型名与字形。网址那一类在卡上写全称。 */
 export const JUNK_KIND_META: Record<string, readonly [string, string]> = {
-  video: ['视频', 'play'], image: ['图片', 'pics'], archive: ['压缩包', 'file-archive'],
-  audio: ['音频', 'file-audio'], url: ['网址快捷方式', 'globe'], other: ['其它文件', 'hard-drive'],
+  video: [peachT("视频"), 'play'], image: [peachT("图片"), 'pics'], archive: [peachT("压缩包"), 'file-archive'],
+  audio: [peachT("音频"), 'file-audio'], url: [peachT("网址快捷方式"), 'globe'], other: [peachT("其它文件"), 'hard-drive'],
 };
 export const junkKindMeta = (item: JunkItem) => JUNK_KIND_META[item.junk_kind || 'other'] || JUNK_KIND_META.other!;
 
 /** 中间那颗判断键：待判断视图里是「不是垃圾」，已排除视图里是「重新判断」。 */
 export function junkDecision(view: JunkView): { operation: JunkOperation; label: string; glyph: string } {
   return view === 'dismissed'
-    ? { operation: 'reconsider-junk', label: '重新判断', glyph: 'rotate-ccw' }
-    : { operation: 'dismiss-junk', label: '不是垃圾', glyph: 'check' };
+    ? { operation: 'reconsider-junk', label: peachT("重新判断"), glyph: 'rotate-ccw' }
+    : { operation: 'dismiss-junk', label: peachT("不是垃圾"), glyph: 'check' };
 }
 
 /** 分类条上一项的计数：「全部」读这一视图的合计，其余读各类。 */

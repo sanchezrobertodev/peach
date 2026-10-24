@@ -1,4 +1,5 @@
 /** 常驻媒体、面板与原生宿主适配层；内容由同一棵路由树画。 */
+import { t as peachT } from "../i18n/index";
 import { configureBatchDock, configureGlowPicker, configureImmerse, configureManageHeader,
   configureSettingsPanel, configureSidebar, configureStage } from '../react/entry';
 import { prefetchManagedRoute } from '../react/router/managed-routes';
@@ -34,7 +35,7 @@ async function openApplicationResident(name: string, container: HTMLElement,
     container, resident: true, isCurrent: () => !!publish && epoch === residentEpoch,
     place: () => place(container),
   });
-  if (!opened || epoch !== residentEpoch || !publish) throw new DOMException('应用已卸载', 'AbortError');
+  if (!opened || epoch !== residentEpoch || !publish) throw new DOMException(peachT("应用已卸载"), 'AbortError');
 }
 
 export function disposeApplicationResidents(): void {

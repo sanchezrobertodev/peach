@@ -1,3 +1,4 @@
+import { t as peachT } from "../i18n/index";
 /* search 域控制器：本域状态与动作，启动由 Application 的生命周期统一安装。 */
 import { javImageKind } from './../jav-artwork';
 import { preferencesState } from './preferences.js';
@@ -28,7 +29,7 @@ export function searchCoverImage(card){
   const kind=card?javImageKind({...card,is_jav:!!card.code},preferencesState.appSettings.javImage):'';
   return kind==='cover'?coverImage(card,'big')
     :kind?`<img class="poster still" src="/poster?id=${card.id}&c=4" width="640" height="360" alt="" loading="lazy" data-drop="self">`
-    :'<span class="nopic">无预览</span>';
+    :peachT("<span class=\"nopic\">无预览</span>");
 }
 
 export function finishSearchMorph(){

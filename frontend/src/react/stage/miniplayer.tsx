@@ -2,6 +2,7 @@
  * 播放态、时间与比例也由它随播放器事件直接写在节点上；这里只画一次骨架结构、接按键与拖动。
  * 组件不随舞台重画（`memo` 且没有 props）：`hidden`、`data-corner` 与 `transform` 都是命令式改的，
  * 重画会把它们按初值写回去。 */
+import { t as peachT } from "../../i18n/index";
 import { memo, useEffect, useLayoutEffect, useRef, type MouseEvent } from 'react';
 
 import {
@@ -40,24 +41,24 @@ export const Miniplayer = memo(function Miniplayer() {
   useEffect(() => wireDrag(root.current!, card.current!), []);
 
   return (
-    <aside ref={root} data-miniplayer="" id="miniplayer" data-corner="br" aria-label="小窗播放" hidden>
+    <aside ref={root} data-miniplayer="" id="miniplayer" data-corner="br" aria-label={peachT("小窗播放")} hidden>
       <div ref={card} data-miniplayer-card="" id="miniplayerCard">
         <div ref={frame} data-miniplayer-frame="" id="miniplayerFrame">
           <div data-miniplayer-scrim="">
-            <button type="button" data-miniplayer-button="expand" id="miniplayerExpand" aria-label="展开到详情"
+            <button type="button" data-miniplayer-button="expand" id="miniplayerExpand" aria-label={peachT("展开到详情")}
               aria-keyshortcuts="i" onClick={pressed(expandMiniplayer)}><Glyph name="maximize-2" /></button>
-            <button type="button" data-miniplayer-button="close" id="miniplayerClose" aria-label="关闭小窗"
+            <button type="button" data-miniplayer-button="close" id="miniplayerClose" aria-label={peachT("关闭小窗")}
               onClick={pressed(closeMiniplayer)}><Glyph name="x" /></button>
             <button ref={back} type="button" data-miniplayer-seek="" id="miniplayerBack"
               onClick={pressed(() => seekMiniplayer(-1))}><Glyph name="rotate-ccw" /></button>
-            <button ref={play} type="button" data-miniplayer-play="" id="miniplayerPlay" aria-label="暂停" aria-keyshortcuts="k"
+            <button ref={play} type="button" data-miniplayer-play="" id="miniplayerPlay" aria-label={peachT("暂停")} aria-keyshortcuts="k"
               onClick={pressed(playMiniplayer)} dangerouslySetInnerHTML={PLAY_GLYPH} />
             <button ref={ahead} type="button" data-miniplayer-seek="" id="miniplayerAhead"
               onClick={pressed(() => seekMiniplayer(1))}><Glyph name="rotate-cw" /></button>
             <span ref={time} className="mono" data-miniplayer-time="" id="miniplayerTime">0:00 / 0:00</span>
           </div>
         </div>
-        <button ref={info} type="button" data-miniplayer-info="" id="miniplayerInfo" aria-label="展开到详情"
+        <button ref={info} type="button" data-miniplayer-info="" id="miniplayerInfo" aria-label={peachT("展开到详情")}
           onClick={() => expandMiniplayer()}>
           <span ref={title} data-miniplayer-title="" id="miniplayerTitle" />
           <span ref={sub} data-miniplayer-sub="" id="miniplayerSub" />

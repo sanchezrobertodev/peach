@@ -4,6 +4,8 @@
  * 下面一列是要在这页上做的几件事（扫描与采集、媒体修复、整理），再往下是链接
  * 管理、只在有文件已消失的作品时才出现的孤儿记录，最后是只在有来源配了根目录时才出现的
  * 资源同步。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useQuery } from '@tanstack/react-query';
 import { fmtSize } from '@peach/legacy/core';
 
@@ -34,7 +36,7 @@ function reading<T>(
   query: { data: T | undefined; isError: boolean }, read: (data: T) => Reading,
 ): Reading {
   if (query.data !== undefined) return read(query.data);
-  return { figure: query.isError ? '读取失败' : '—' };
+  return { figure: query.isError ? peachT("读取失败") : '—' };
 }
 
 function EntryCard(
@@ -73,25 +75,25 @@ export function DataCleanupPage({ toast, failure, open }: DataCleanupProps) {
   return (
     <Page>
       <div className={PLAIN_STAT_STRIP}>
-        <EntryCard section="review" label="人工复核" icon={REVIEW} open={open}
+        <EntryCard section="review" label={peachT("人工复核")} icon={REVIEW} open={open}
           value={reading(review, reviewSummary)} />
-        <EntryCard section="quality" label="高清版" icon={QUALITY} open={open}
-          value={reading(quality, (data) => ({ figure: `${Number(data.total || 0).toLocaleString()} 个待升级` }))} />
-        <EntryCard section="duplicates" label="重复文件" icon={DUPLICATES} open={open}
+        <EntryCard section="quality" label={peachT("高清版")} icon={QUALITY} open={open}
+          value={reading(quality, (data) => ({ figure: peachT("{{v0}} 个待升级", { v0: Number(data.total || 0).toLocaleString(peachLocale) }) }))} />
+        <EntryCard section="duplicates" label={peachT("重复文件")} icon={DUPLICATES} open={open}
           value={reading(duplicates, (data) => (Number(data.total || 0)
             ? {
-                figure: `${Number(data.total).toLocaleString()} 组 · ${Number(data.files || 0).toLocaleString()} 个文件`,
-                meta: `可回收 ${fmtSize(data.reclaimable || 0)}`,
+                figure: peachT("{{v0}} 组 · {{v1}} 个文件", { v0: Number(data.total).toLocaleString(peachLocale), v1: Number(data.files || 0).toLocaleString(peachLocale) }),
+                meta: peachT("可回收 {{v0}}", { v0: fmtSize(data.reclaimable || 0) }),
               }
-            : { figure: '没有重复内容' }))} />
-        <EntryCard section="ads" label="垃圾文件" icon={JUNK} open={open}
+            : { figure: peachT("没有重复内容") }))} />
+        <EntryCard section="ads" label={peachT("垃圾文件")} icon={JUNK} open={open}
           value={reading(junk, (data) => ({
-            figure: `${Number(data.pending_total || 0).toLocaleString()} 个待判断`, meta: junkBreakdown(data),
+            figure: peachT("{{v0}} 个待判断", { v0: Number(data.pending_total || 0).toLocaleString(peachLocale) }), meta: junkBreakdown(data),
           }))} />
-        <EntryCard section="trash" label="回收站" icon={TRASH} open={open}
+        <EntryCard section="trash" label={peachT("回收站")} icon={TRASH} open={open}
           value={reading(trash, (data) => ({
-            figure: `${Number(data.total || 0).toLocaleString()} 项在回收站`,
-            meta: data.total ? `占用 ${fmtSize(data.bytes || 0)}` : '',
+            figure: peachT("{{v0}} 项在回收站", { v0: Number(data.total || 0).toLocaleString(peachLocale) }),
+            meta: data.total ? peachT("占用 {{v0}}", { v0: fmtSize(data.bytes || 0) }) : '',
           }))} />
       </div>
       <div className="flex flex-col gap-4 max-cleanup-tight:gap-3">

@@ -1,3 +1,4 @@
+import { t as peachT } from "../../i18n/index";
 import type { ReactNode } from 'react';
 import { esc, firstGrapheme, icon, leadingGraphemes, registerEntityLink } from '@peach/legacy/core';
 import { entityFaceImg, logoUrl } from '@peach/card-art';
@@ -25,7 +26,7 @@ export function IdentitySeries({ people, onOpen }: {
 }) {
   if (!people.length) return null;
   const content = (person: DetailEntityRef) => <><span className="contents" aria-hidden="true" dangerouslySetInnerHTML={{ __html: icon('tags') }} /><span>{person.name}</span></>;
-  return <section data-id-group="series"><h5 data-id-label="">系列</h5><div data-series-rows="">
+  return <section data-id-group="series"><h5 data-id-label="">{peachT("系列")}</h5><div data-series-rows="">
     {people.map(person => person.id ? <button key={person.name} type="button" data-series-link="" data-entity-kind="series"
       data-entity-name={person.name} title={person.name} onClick={() => { registerEntityLink('series', person.name, person.id); onOpen('series', person.name) }}>{content(person)}</button>
       : <span key={person.name} data-series-link="" title={person.name}>{content(person)}</span>)}

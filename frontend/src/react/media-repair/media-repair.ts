@@ -2,6 +2,8 @@
  *
  * 一轮要跑几十分钟到几小时，跑到哪一步由服务自己记，页面关掉再回来照样接得上。
  * 首屏两份一起取，卡片挂上去直接读缓存。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { apiGet } from '../../api';
 import { queryClient } from '../query';
 
@@ -49,24 +51,24 @@ export async function prefetchMediaRepair(signal: AbortSignal): Promise<void> {
   ]);
 }
 
-const count = (value: number) => Number(value).toLocaleString();
+const count = (value: number) => Number(value).toLocaleString(peachLocale);
 
 /** 一句话说清此刻在干什么：扫描报进度，修复报进度加当前这部片。 */
 export function statusLine(state: MediaRepairState): string {
   if (state.status === 'running') {
     // 服务端偶尔报出超过总数的已查数，按总数封顶。
-    const where = state.total ? `${count(Math.min(state.checked || 0, state.total))} / ${count(state.total)}` : '准备中';
+    const where = state.total ? `${count(Math.min(state.checked || 0, state.total))} / ${count(state.total)}` : peachT("准备中");
     return state.stage === '修复' && state.message
-      ? `修复 ${where} · ${state.message}`
-      : `${state.stage || '扫描'} ${where}`;
+      ? peachT("修复 {{v0}} · {{v1}}", { v0: where, v1: state.message })
+      : `${state.stage || peachT("扫描")} ${where}`;
   }
   if (state.status === 'complete' && (state.repaired || state.failed)) {
     return state.failed
-      ? `修好 ${count(state.repaired)} 部，${count(state.failed)} 部修不了`
-      : `修好 ${count(state.repaired)} 部`;
+      ? peachT("修好 {{v0}} 部，{{v1}} 部修不了", { v0: count(state.repaired), v1: count(state.failed) })
+      : peachT("修好 {{v0}} 部", { v0: count(state.repaired) });
   }
   return '';
 }
 
 export const missingToolText = (state: MediaRepairState) =>
-  `${count(state.missing_tool)} 部缺索引的片子要装上 untrunc 才修得了，下载入口在配置页的「运行信息」里。`;
+  peachT("{{v0}} 部缺索引的片子要装上 untrunc 才修得了，下载入口在配置页的「运行信息」里。", { v0: count(state.missing_tool) });

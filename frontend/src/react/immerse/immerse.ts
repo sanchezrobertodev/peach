@@ -1,5 +1,6 @@
 /* 沉浸模式的数据与判据：片单怎么抽、详情按哪个键取、署名怎么念、画面铺满还是完整显示。
  * 不碰 DOM，`immerse-island.tsx` 的控制器与组件都从这里取。 */
+import { t as peachT } from "../../i18n/index";
 import type { QueryKey } from '@tanstack/react-query';
 
 import { apiGet } from '../../api';
@@ -81,10 +82,10 @@ export interface Owner {
 export function ownerOf(item: Pick<DetailItem, 'performers' | 'creator' | 'entity_refs'>): Owner {
   const cast = item.performers || [];
   const who = cast.length
-    ? cast.slice(0, 3).join('、') + (cast.length > 3 ? ` 等 ${cast.length} 人` : '')
-    : (item.creator || '未归属');
+    ? cast.slice(0, 3).join('、') + (cast.length > 3 ? peachT(" 等 {{v0}} 人", { v0: cast.length }) : '')
+    : (item.creator || peachT("未归属"));
   const kind = cast.length ? 'performer' : (item.creator ? 'creator' : '');
-  const name = cast.length ? cast[0]! : (item.creator || '未归属');
+  const name = cast.length ? cast[0]! : (item.creator || peachT("未归属"));
   const ref = kind ? (item.entity_refs?.[kind]?.[0] || null) : null;
   return { who, kind, name, ref };
 }

@@ -14,6 +14,8 @@
  * 版式判据来自 docs/reference-sources.json 的 vercel-report-design：要避开卡片套卡片、用
  * 边框补救层级、成排通栏空条、细小灰字加随意字号。所以分组靠标题和一条发丝分隔线，行与
  * 行之间也只用分隔线，不各自套框；字号只取 BoardUI 排好的那几档 token。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components';
@@ -37,7 +39,7 @@ import {
 import { SourceList } from './source-list';
 
 const TABS = [
-  ['list', '关注列表'], ['add', '添加关注'], ['feeds', 'JAV 订阅源'],
+  ['list', peachT("关注列表")], ['add', peachT("添加关注")], ['feeds', peachT("JAV 订阅源")],
 ] as const;
 type TabKey = (typeof TABS)[number][0];
 
@@ -51,7 +53,7 @@ function Reading({ term, figure, unit }: { term: string; figure: number; unit: s
       {/* 六位数起小一号字、七位数起再小一号，六卡并排时读数和单位仍在一行；更长时单位落到下一行，不顶出卡片。 */}
       <b data-follow-reading="" className={`flex min-w-0 flex-wrap items-baseline gap-x-1 tabular-nums text-text-primary ${
         figure >= 1000000 ? 'text-headline-medium' : figure >= 100000 ? 'text-title-3-medium' : 'text-title-1-medium'}`}>
-        <span className="min-w-0 wrap-anywhere">{figure.toLocaleString()}</span>
+        <span className="min-w-0 wrap-anywhere">{figure.toLocaleString(peachLocale)}</span>
         <small className="whitespace-nowrap text-body-2-regular text-text-secondary">{` ${unit}`}</small>
       </b>
     </div>
@@ -116,12 +118,10 @@ export function FollowManagePage(props: FollowManageProps) {
   return (
     <Page>
       {readOnly ? (
-        <Note tone="warning" title="本机只能浏览"
+        <Note tone="warning" title={peachT("本机只能浏览")}
           extra={writerUrl
             ? <p className="text-body-2-regular">
-                <a href={writerUrl} className="text-text-primary underline underline-offset-2">
-                  前往写入端管理关注
-                </a>
+                <a href={writerUrl} className="text-text-primary underline underline-offset-2">{peachT("前往写入端管理关注")}</a>
               </p>
             : undefined}>
           {readOnlyMessage}
@@ -129,13 +129,13 @@ export function FollowManagePage(props: FollowManageProps) {
       ) : null}
 
       {/* 前四张是关注，后两张是 JAV 订阅源：订了几位、拉回来的新作还有几条没看。 */}
-      <div className={STAT_STRIP_SIX} aria-label="关注概览">
-        <Reading term="关注创作者" figure={groups.length} unit="位" />
-        <Reading term="启用来源" figure={enabled} unit={`/ ${sources.length}`} />
-        <Reading term="检查失败" figure={broken} unit="个来源" />
-        <Reading term="未看更新" figure={data.counts?.new || 0} unit="条" />
-        <Reading term="JAV 订阅" figure={subscribed} unit="位" />
-        <Reading term="未看新作" figure={feeds.data?.unread || 0} unit="条" />
+      <div className={STAT_STRIP_SIX} aria-label={peachT("关注概览")}>
+        <Reading term={peachT("关注创作者")} figure={groups.length} unit={peachT("位")} />
+        <Reading term={peachT("启用来源")} figure={enabled} unit={`/ ${sources.length}`} />
+        <Reading term={peachT("检查失败")} figure={broken} unit={peachT("个来源")} />
+        <Reading term={peachT("未看更新")} figure={data.counts?.new || 0} unit={peachT("条")} />
+        <Reading term={peachT("JAV 订阅")} figure={subscribed} unit={peachT("位")} />
+        <Reading term={peachT("未看新作")} figure={feeds.data?.unread || 0} unit={peachT("条")} />
       </div>
 
       <Tabs selectedKey={tab} onSelectionChange={(key) => {
@@ -144,7 +144,7 @@ export function FollowManagePage(props: FollowManageProps) {
         setTab(next);
         go({ tab: next });
       }} className="flex flex-col gap-6">
-        <TabList ref={sectionScroll} aria-label="关注管理区域" data-section-nav data-section-items
+        <TabList ref={sectionScroll} aria-label={peachT("关注管理区域")} data-section-nav data-section-items
           className="flex max-w-full flex-nowrap overflow-x-auto">
           {TABS.map(([key, name]) => (
             <Tab key={key} id={key} className="cursor-pointer whitespace-nowrap">{name}</Tab>
@@ -189,7 +189,7 @@ export function FollowManagePage(props: FollowManageProps) {
         </TabPanel>
 
       </Tabs>
-      <div><Button variant="secondary" onClick={openServiceConfiguration}>来源与订阅设置{pending ? `（${pending}）` : ''}</Button></div>
+      <div><Button variant="secondary" onClick={openServiceConfiguration}>{peachT("来源与订阅设置")}{pending ? `（${pending}）` : ''}</Button></div>
     </Page>
   );
 }

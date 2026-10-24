@@ -1,3 +1,4 @@
+import { t as peachT } from "../i18n/index";
 import { entityPath, esc } from '@peach/legacy/core';
 
 import { avatarInner, type FaceRef } from './markup';
@@ -14,7 +15,7 @@ export function feedIdentity(item: { code?: string; performers?: string; perform
     const attrs = source ? ` data-feed-source-avatar data-code="${esc(item.code!)}" data-actor="${esc(ref.source_actor_id!)}" data-name="${esc(ref.name)}"` : '';
     const html = source ? '' : avatarInner(ref.name, ref, null);
     return 'id' in ref && ref.id
-      ? `<a class="mav"${attrs} href="${esc(entityPath('performer', ref.name, ref.id))}" aria-label="打开女优页：${esc(ref.name)}">${html}</a>`
+      ? peachT("<a class=\"mav\"{{v0}} href=\"{{v1}}\" aria-label=\"打开女优页：{{v2}}\">{{v3}}</a>", { v0: attrs, v1: esc(entityPath('performer', ref.name, ref.id)), v2: esc(ref.name), v3: html })
       : `<span class="mav"${attrs} title="${esc(ref.name)}">${html}</span>`;
   }).join('');
   return people.length > 1 ? `<div class="mavstack">${faces}</div>` : faces;

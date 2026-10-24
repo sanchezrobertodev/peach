@@ -10,6 +10,8 @@
  *
  * 分类仍是 `<a href>`：要落到地址上，可深链、可刷新恢复，中键与修饰键照浏览器默认开新标签。
  * 普通左键交给壳，由它收起多选、改地址并重读。计数为 0 的那一类整枚徽标不画。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useRef, type MouseEvent } from 'react';
 
 import { JUNK_KIND_OPTIONS, junkPath, junkSummaryLabel, junkViewLink } from '../../junk-queue';
@@ -24,7 +26,7 @@ function Icon({ name }: { name: string }) {
 
 function Badge({ scope, count }: { scope: string; count: number }) {
   if (!count) return null;
-  return <>{' '}<span data-count-badge={`junk:${scope}`}>{count.toLocaleString()}</span></>;
+  return <>{' '}<span data-count-badge={`junk:${scope}`}>{count.toLocaleString(peachLocale)}</span></>;
 }
 
 export function JunkCount({ route, page, failed, onNavigate }: {
@@ -44,7 +46,7 @@ export function JunkCount({ route, page, failed, onNavigate }: {
     onNavigate(link.getAttribute('href') || junkPath());
   };
   /* 读不到就不再转圈：失败的原因写在网格那一格里，这里只说「没有数」。 */
-  const figure = page ? `${Number(page.total || 0).toLocaleString()} 个` : failed ? '—' : '';
+  const figure = page ? peachT("{{v0}} 个", { v0: Number(page.total || 0).toLocaleString(peachLocale) }) : failed ? '—' : '';
   return (
     <div data-junk-count="">
       <div data-junk-summary="" aria-live="polite">
@@ -52,7 +54,7 @@ export function JunkCount({ route, page, failed, onNavigate }: {
       </div>
       <div data-junk-filters-frame="" data-filter-glass="" data-glass-pane="">
         <span ref={pane} data-view-glide="" aria-hidden="true" />
-        <nav ref={nav} data-junk-filters="" aria-label="垃圾文件分类" onClick={click} onPointerLeave={glide.leave}>
+        <nav ref={nav} data-junk-filters="" aria-label={peachT("垃圾文件分类")} onClick={click} onPointerLeave={glide.leave}>
           {JUNK_KIND_OPTIONS.map(([key, label, glyph]) => (
             <a key={key || 'all'} href={junkPath(key, view)} data-junk-kind-link={key}
               aria-current={key === kind ? 'page' : undefined} onPointerEnter={glide.hover}>

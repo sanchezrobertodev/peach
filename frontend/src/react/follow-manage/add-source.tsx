@@ -5,6 +5,8 @@
  *
  * 查找那一趟在后台跑，页面关掉也还在跑。首屏读到的旧终态不冒充新结果：只有本次点过
  * 查找、或者本次亲眼见过它在跑，结果才摆出来（ADR-0031）。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import type { KeyboardEvent, RefObject } from 'react';
 import { RiFilter3Line, RiSearchLine } from '@remixicon/react';
@@ -35,11 +37,11 @@ import {
 import { SourceIcon } from './source-view';
 
 const MENU_ROW = cx(MENU_ITEM, MENU_ITEM_INTERACTIVE, 'text-body-2-medium');
-const PLACEHOLDER = '粘贴来源链接，或输入创作者名、id…';
+const PLACEHOLDER = peachT("粘贴来源链接，或输入创作者名、id…");
 // 索引下载的提醒只在真按名字查时出现；常驻成一句说明就是噪音。
-const BY_NAME_HINT = '查找中…（首次按名字查要下载创作者索引，可能几十秒）';
-const BY_LINK_HINT = '识别中…';
-const NO_CANDIDATE = '站内没有查到来源';
+const BY_NAME_HINT = peachT("查找中…（首次按名字查要下载创作者索引，可能几十秒）");
+const BY_LINK_HINT = peachT("识别中…");
+const NO_CANDIDATE = peachT("站内没有查到来源");
 
 export interface AddSourceProps {
   data: FollowData;
@@ -81,10 +83,10 @@ function SuggestMenu(
   return (
     <Popover ref={menu} triggerRef={field} isOpen isNonModal shouldFlip={false}
       onOpenChange={(open) => { if (!open) onClose() }}
-      placement="bottom start" offset={4} aria-label="来源建议"
+      placement="bottom start" offset={4} aria-label={peachT("来源建议")}
       className={cx(MENU_POPOVER_SURFACE, 'flex w-(--trigger-width) flex-col gap-1 overscroll-contain')}>
       {busy && !options.length
-        ? <div className="px-2 py-1.5"><LoadingDots label="正在查找建议" /></div>
+        ? <div className="px-2 py-1.5"><LoadingDots label={peachT("正在查找建议")} /></div>
         : null}
       {options.map((option, at) => (
         <Fragment key={`${option.group}-${option.value}`}>
@@ -103,7 +105,7 @@ function SuggestMenu(
             ) : null}
             {option.n ? (
               <span className="shrink-0 text-caption-1-regular tabular-nums text-text-tertiary">
-                {option.n.toLocaleString()}
+                {option.n.toLocaleString(peachLocale)}
               </span>
             ) : null}
           </button>
@@ -126,7 +128,7 @@ function SourceFilter(
   const [open, setOpen] = useState(false);
   const rows = (credentials.providers || []).filter((row) => row.followable);
   const shown = rows.filter((row) => !hidden.has(row.provider_label)).length;
-  const label = shown === rows.length ? '全部来源' : `${shown}/${rows.length} 个来源`;
+  const label = shown === rows.length ? peachT("全部来源") : peachT("{{v0}}/{{v1}} 个来源", { v0: shown, v1: rows.length });
   const toggle = (provider: string, on: boolean) => {
     const next = new Set(hidden);
     if (on) next.delete(provider); else next.add(provider);
@@ -139,15 +141,15 @@ function SourceFilter(
         onClick={() => setOpen(true)}>{label}</Button>
       <Popover triggerRef={trigger} isOpen={open} onOpenChange={setOpen}
         placement="bottom end" offset={4} className={MENU_POPOVER_SURFACE}>
-        <Dialog aria-label="来源筛选" className="flex w-64 flex-col gap-1 outline-none">
+        <Dialog aria-label={peachT("来源筛选")} className="flex w-64 flex-col gap-1 outline-none">
           {rows.length ? (
             <div className="flex items-center gap-2 pb-1">
               <Button variant="ghost" size="small"
-                onClick={() => onHidden(new Set())}>全选</Button>
+                onClick={() => onHidden(new Set())}>{peachT("全选")}</Button>
               <Button variant="ghost" size="small"
-                onClick={() => onHidden(new Set(rows.map((row) => row.provider_label)))}>全不选</Button>
+                onClick={() => onHidden(new Set(rows.map((row) => row.provider_label)))}>{peachT("全不选")}</Button>
             </div>
-          ) : <Help>暂无可用来源</Help>}
+          ) : <Help>{peachT("暂无可用来源")}</Help>}
           {rows.map((row) => {
             const needsCredential = row.requirement === 'required'
               && (!row.present || (row.missing || []).length > 0);
@@ -161,7 +163,7 @@ function SourceFilter(
                 </Checkbox>
                 {needsCredential ? (
                   <Button variant="ghost" size="xs" className="ml-auto"
-                    onClick={() => { setOpen(false); openCredentials() }}>需要配置凭据</Button>
+                    onClick={() => { setOpen(false); openCredentials() }}>{peachT("需要配置凭据")}</Button>
                 ) : null}
               </div>
             );
@@ -181,7 +183,7 @@ function PickRow(
   },
 ) {
   if (row.kind === 'error') {
-    return <Note tone="error" title={row.line}>{row.error || '查找失败'}</Note>;
+    return <Note tone="error" title={row.line}>{row.error || peachT("查找失败")}</Note>;
   }
   const candidates = (row.candidates || []).filter(
     (candidate) => !hidden.has(candidate.provider_label || ''));
@@ -199,7 +201,7 @@ function PickRow(
               <b className="text-body-medium">{candidate.provider_label}</b>
               <span className="min-w-0 break-words">{candidate.label}</span>
               <small className="text-caption-1-regular text-text-secondary">
-                {candidate.known ? '已经关注' : candidate.evidence}
+                {candidate.known ? peachT("已经关注") : candidate.evidence}
               </small>
             </span>
           </Checkbox>
@@ -264,7 +266,7 @@ export function AddSource({ data, credentials, readOnly, toast, openCredentials 
     onStarted: () => setUnpicked(new Set()),
     onError: (cause) => setProblem(errorMessage(cause)),
     onFinish: (state) => {
-      if (state.status === 'failed') setProblem(state.error || '查找失败');
+      if (state.status === 'failed') setProblem(state.error || peachT("查找失败"));
     },
   });
 
@@ -339,7 +341,7 @@ export function AddSource({ data, credentials, readOnly, toast, openCredentials 
       if (result.failures.length) { setProblem(result.failures.join('；')); return }
       setProblem('');
       dismiss();
-      toast(`已添加 ${result.sources.length} 个关注来源`);
+      toast(peachT("已添加 {{v0}} 个关注来源", { v0: result.sources.length }));
     },
     onError: (cause) => setProblem(errorMessage(cause)),
   });
@@ -350,7 +352,7 @@ export function AddSource({ data, credentials, readOnly, toast, openCredentials 
   return (
     /* 旧 `.followmanage .fmain>.fsec`：一块分区就是一张填充卡，标题在卡里。 */
     <div className={cardClass({ padding: 'none', className: 'flex flex-col gap-4 px-6 py-5 max-sm:px-4' })}>
-      <h3 className="text-title-2-medium text-text-primary">添加关注</h3>
+      <h3 className="text-title-2-medium text-text-primary">{peachT("添加关注")}</h3>
 
       <div className="flex flex-wrap items-end gap-2">
         {/* 焦点离开的是字段和下拉两处才收，不是离开输入框就收：下拉里的每一条都是真的按钮，
@@ -361,7 +363,7 @@ export function AddSource({ data, credentials, readOnly, toast, openCredentials 
             const next = event.relatedTarget;
             if (!event.currentTarget.contains(next) && !menu.current?.contains(next)) setFocused(false);
           }}>
-          <Input aria-label="来源链接、名字或 id" placeholder={PLACEHOLDER} value={line}
+          <Input aria-label={peachT("来源链接、名字或 id")} placeholder={PLACEHOLDER} value={line}
             leadingIcon={RiSearchLine} enterKeyHint="search" isDisabled={readOnly} onChange={setLine}
             onCompositionStart={() => { setComposing(true); setActive(-1) }}
             onCompositionEnd={(event) => { setComposing(false); setLine(event.currentTarget.value) }}
@@ -374,19 +376,19 @@ export function AddSource({ data, credentials, readOnly, toast, openCredentials 
         <SourceFilter credentials={credentials} hidden={hidden} onHidden={setHidden}
           openCredentials={openCredentials} />
         <Button variant="primary" disabled={readOnly || !line.trim()}
-          {...busyProps(running || resolve.isPending)} onClick={() => search(line)}>查找</Button>
+          {...busyProps(running || resolve.isPending)} onClick={() => search(line)}>{peachT("查找")}</Button>
       </div>
 
       <div aria-live="polite" className="flex flex-col gap-3 empty:hidden">
         {running || resolve.isPending ? <TaskProgress embedded
-          label={job?.message || (job?.total ? `查找中：${job.checked || 0}/${job.total}` : byName ? BY_NAME_HINT : BY_LINK_HINT)}
+          label={job?.message || (job?.total ? peachT("查找中：{{v0}}/{{v1}}", { v0: job.checked || 0, v1: job.total }) : byName ? BY_NAME_HINT : BY_LINK_HINT)}
           value={job?.checked} total={job?.total} /> : null}
-        {problem ? <Note tone="error" title="这一次没有完成">{problem}</Note> : null}
+        {problem ? <Note tone="error" title={peachT("这一次没有完成")}>{problem}</Note> : null}
       </div>
 
       {rows.length ? (
         <div className="flex flex-col gap-3">
-          <FieldLabel>查找结果</FieldLabel>
+          <FieldLabel>{peachT("查找结果")}</FieldLabel>
           {rows.map((row, at) => (
             <PickRow key={`${row.line}-${at}`} row={row} at={at} hidden={hidden} unpicked={unpicked}
               onPick={(key, on) => {
@@ -398,12 +400,12 @@ export function AddSource({ data, credentials, readOnly, toast, openCredentials 
           <div className="flex flex-wrap items-center gap-2">
             <Button variant="primary" size="small" disabled={readOnly || !picked.length}
               {...busyProps(register.isPending)}
-              onClick={() => register.mutate(picked)}>{`添加选中（${picked.length}）`}</Button>
+              onClick={() => register.mutate(picked)}>{peachT("添加选中（{{v0}}）", { v0: picked.length })}</Button>
             <Button variant="secondary" size="small"
-              onClick={() => dismiss()}>关闭</Button>
+              onClick={() => dismiss()}>{peachT("关闭")}</Button>
             {register.isPending ? (
               <span role="status" className="text-body-2-regular text-text-secondary">
-                {`添加中… ${added}/${picked.length}`}
+                {peachT("添加中… {{v0}}/{{v1}}", { v0: added, v1: picked.length })}
               </span>
             ) : null}
           </div>
@@ -412,10 +414,10 @@ export function AddSource({ data, credentials, readOnly, toast, openCredentials 
 
       {guesses.length ? (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-body-2-regular text-text-secondary">猜你喜欢</span>
+          <span className="text-body-2-regular text-text-secondary">{peachT("猜你喜欢")}</span>
           {guesses.map((guess) => (
             <Button key={guess.name} variant="secondary" size="small" disabled={readOnly}
-              title={`浏览历史里出现 ${guess.visits} 次${guess.origin ? ` · ${guess.origin}` : ''}`}
+              title={peachT("浏览历史里出现 {{v0}} 次{{v1}}", { v0: guess.visits, v1: guess.origin ? ` · ${guess.origin}` : '' })}
               onClick={() => search(guess.name)}>{guess.name}</Button>
           ))}
         </div>

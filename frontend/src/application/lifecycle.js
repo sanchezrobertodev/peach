@@ -1,3 +1,4 @@
+import { t as peachT } from "../i18n/index";
 /* lifecycle 域控制器：本域状态与动作，启动由 Application 的生命周期统一安装。 */
 import { initBoardControls } from './../board-controls';
 import { attachOverlayScrollbar, wireBusyActions, wireOverlayScrollbars } from '../ui-kit';
@@ -40,7 +41,7 @@ followState.followProviders = new Set();
 followState.followTags = new Set();
 followState.followWorks = new Set();
 followState.followMediaView = 'videos';
-followState.FOLLOW_FEED_SORTS = [['new','更新时间'],['hot','热度'],['dur','时长']];
+followState.FOLLOW_FEED_SORTS = [['new',peachT("更新时间")],['hot',peachT("热度")],['dur',peachT("时长")]];
 followState.FOLLOW_RANDOM_SORT = 'rand';
 followState.followSort = 'new';
 followState.followDir = 'desc';

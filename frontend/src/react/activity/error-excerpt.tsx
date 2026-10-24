@@ -2,6 +2,7 @@
  *
  * 后端回的常是整段 traceback 或整页 HTML，铺开会把一张卡撑成几屏高；只露一行又看不到全文，
  * 所以全文收在键后面，展开后保留原有换行、长 URL 就地折断，太长时在自己的框里滚。 */
+import { t as peachT } from "../../i18n/index";
 import { useId, useState } from 'react';
 
 import { Button } from '@/components/base/buttons/button';
@@ -23,7 +24,7 @@ export function ErrorExcerpt({ text, className = '' }: { text: string; className
       {more
         ? <Button variant="ghost" size="xs" className="-ml-2" aria-expanded={open} aria-controls={open ? id : undefined}
             onClick={() => setOpen(!open)}>
-            {open ? '收起详情' : '查看详情'}
+            {open ? peachT("收起详情") : peachT("查看详情")}
           </Button>
         : null}
     </div>

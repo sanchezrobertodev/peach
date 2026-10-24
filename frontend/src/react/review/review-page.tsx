@@ -9,6 +9,8 @@
  * - 分组、筛选、页码是组件状态。复核队列是消耗性的：判一条它就少一条，第 3 页指的是
  *   哪二十行随每一次判定而变，写进地址栏分享出去只会指向另一批东西。换分类、换分组、
  *   换筛选都回第 1 页，也正说明页码依附于此刻这一屏的看法，不是这一页的身份。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { RiCheckboxCircleLine } from '@remixicon/react';
@@ -42,22 +44,22 @@ function Pagination(
 ) {
   if (pages <= 1) return null;
   return (
-    <nav aria-label="复核分页" className="flex w-full flex-wrap items-center justify-between gap-2">
+    <nav aria-label={peachT("复核分页")} className="flex w-full flex-wrap items-center justify-between gap-2">
       <Button variant="secondary" size="small" disabled={page <= 1}
-        onClick={() => onPage(page - 1)}>上一页</Button>
+        onClick={() => onPage(page - 1)}>{peachT("上一页")}</Button>
       <ul className="flex flex-wrap items-center gap-1">
         {paginationRange(page, pages).map((item, at) => (
           <li key={item === DOTS ? `dots-${at}` : item}>
             {item === DOTS
               ? <span aria-hidden className="px-1 text-body-2-regular text-text-tertiary">{DOTS}</span>
               : <Button variant={item === page ? 'secondary' : 'ghost'} size="small"
-                  aria-label={`第 ${item} 页`} aria-current={item === page ? 'page' : undefined}
+                  aria-label={peachT("第 {{v0}} 页", { v0: item })} aria-current={item === page ? 'page' : undefined}
                   onClick={() => onPage(Number(item))}>{item}</Button>}
           </li>
         ))}
       </ul>
       <Button variant="secondary" size="small" disabled={page >= pages}
-        onClick={() => onPage(page + 1)}>下一页</Button>
+        onClick={() => onPage(page + 1)}>{peachT("下一页")}</Button>
     </nav>
   );
 }
@@ -144,7 +146,7 @@ export function ReviewPage(props: ReviewProps) {
     mutationFn: ({ row, status }: { row: ReviewRow; status: DecisionStatus }) =>
       submitDecision(decisionPayload(category, currentReviewRow(category, row), status, choiceOf(row))),
     onSuccess: (result, { row, status }) => {
-      if (!result.ok) { fail(row.item_key, result.error || '服务端拒绝了这次判定'); return }
+      if (!result.ok) { fail(row.item_key, result.error || peachT("服务端拒绝了这次判定")); return }
       // 判过的直接移出本批并同步计数，下一条立刻顶上来；留在队列里就像没生效。
       dropReviewRows(category, [row.item_key]);
       forget([row.item_key]);
@@ -162,10 +164,10 @@ export function ReviewPage(props: ReviewProps) {
       const failures: [string, string][] = [];
       for (const [at, row] of rows.entries()) {
         if (!alive.current) break;
-        setFeedback(`正在处理 ${at} / ${rows.length}`);
+        setFeedback(peachT("正在处理 {{v0}} / {{v1}}", { v0: at, v1: rows.length }));
         try {
           const result = await submitDecision(decisionPayload(category, currentReviewRow(category, row), status, choiceOf(row)));
-          if (!result.ok) throw new Error(result.error || '服务端未采用该项');
+          if (!result.ok) throw new Error(result.error || peachT("服务端未采用该项"));
           done.push(row.item_key);
         } catch (cause) {
           failures.push([row.item_key, errorMessage(cause)]);
@@ -178,8 +180,8 @@ export function ReviewPage(props: ReviewProps) {
       forget(done);
       failures.forEach(([key, message]) => fail(key, message));
       setFeedback('');
-      toast(`已${status === 'approved' ? '通过' : '拒绝'} ${done.length} 项`
-        + (failures.length ? `，${failures.length} 项未完成` : ''));
+      toast(peachT("已{{v0}} {{v1}} 项", { v0: status === 'approved' ? peachT("通过") : peachT("拒绝"), v1: done.length })
+        + (failures.length ? peachT("，{{v0}} 项未完成", { v0: failures.length }) : ''));
     },
     onError: (cause) => { setFeedback(errorMessage(cause)) },
   });
@@ -188,7 +190,7 @@ export function ReviewPage(props: ReviewProps) {
     if (bulk.isPending || !selectedRows.length) return;
     if (status === 'approved' && metadata
       && selectedRows.some((row) => !choiceOf(row).candidateKey)) {
-      setFeedback('请先为所选资料选择要采用的来源。');
+      setFeedback(peachT("请先为所选资料选择要采用的来源。"));
       return;
     }
     setFeedback('');
@@ -205,7 +207,7 @@ export function ReviewPage(props: ReviewProps) {
       }
       return next;
     });
-    setFeedback(`已选择 ${source}，点击通过所选采用。`);
+    setFeedback(peachT("已选择 {{v0}}，点击通过所选采用。", { v0: source }));
   };
 
   const reveal = async (id: number) => {
@@ -228,12 +230,10 @@ export function ReviewPage(props: ReviewProps) {
     <Page>
       <div className="flex flex-col gap-5 pb-10">
       {locked ? (
-        <Note tone="warning" title="本机只能浏览"
+        <Note tone="warning" title={peachT("本机只能浏览")}
           extra={writerUrl
             ? <p className="text-body-2-regular">
-                <a href={writerUrl} className="text-text-primary underline underline-offset-2">
-                  前往写入端复核
-                </a>
+                <a href={writerUrl} className="text-text-primary underline underline-offset-2">{peachT("前往写入端复核")}</a>
               </p>
             : undefined}>
           {mirror}
@@ -247,7 +247,7 @@ export function ReviewPage(props: ReviewProps) {
         if (isReviewCategory(next)) goCategory(next);
       }} className="flex flex-col gap-5 review-split:flex-row review-split:items-start review-split:gap-6">
         <div data-section-nav className="w-full min-w-0 review-split:sticky review-split:top-topbar review-split:w-review-tabs review-split:shrink-0">
-          <h2 id="reviewcategories">复核分类</h2>
+          <h2 id="reviewcategories">{peachT("复核分类")}</h2>
           <TabList ref={categoryScroll} aria-labelledby="reviewcategories" data-section-items
             className="flex review-split:flex-col review-split:items-stretch">
             {REVIEW_CATEGORIES.map((key) => {
@@ -258,7 +258,7 @@ export function ReviewPage(props: ReviewProps) {
                   {/* 计数走独立徽标，为 0 时整枚去掉，不留一个「0」占位。 */}
                   {count
                     ? <span className="tabular-nums text-caption-1-medium text-text-secondary">
-                        {count.toLocaleString()}
+                        {count.toLocaleString(peachLocale)}
                       </span>
                     : null}
                 </Tab>
@@ -295,7 +295,7 @@ export function ReviewPage(props: ReviewProps) {
                       for (const key of keys) { if (all) next.delete(key); else next.add(key) }
                       setSelected(next);
                     }}>
-                      {group.rows.every((row) => selected.has(row.item_key)) ? '清空本组' : '全选本组'}
+                      {group.rows.every((row) => selected.has(row.item_key)) ? peachT("清空本组") : peachT("全选本组")}
                     </Button>
                   )}
                 </div>
@@ -327,15 +327,13 @@ export function ReviewPage(props: ReviewProps) {
             </section>
           )) : review.isError && !review.data ? (
             /* 读不到队列和队列是空的不是一回事：说清楚是读取失败，给一颗重试键。 */
-            <Note tone="error" title="复核队列读取失败" action={
-              <Button variant="secondary" size="small" disabled={review.isFetching} onClick={() => void review.refetch()}>重试</Button>
+            <Note tone="error" title={peachT("复核队列读取失败")} action={
+              <Button variant="secondary" size="small" disabled={review.isFetching} onClick={() => void review.refetch()}>{peachT("重试")}</Button>
             }>
               {errorMessage(review.error)}
             </Note>
           ) : (
-            <EmptyState icon={RiCheckboxCircleLine} title="此分类没有待复核项目">
-              可切换分类查看其他待确认资料。
-            </EmptyState>
+            <EmptyState icon={RiCheckboxCircleLine} title={peachT("此分类没有待复核项目")}>{peachT("可切换分类查看其他待确认资料。")}</EmptyState>
           )}
 
           <Pagination page={win.page} pages={win.pages} onPage={setPage} />

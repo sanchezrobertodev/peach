@@ -10,6 +10,8 @@
  * 浮条上的键是透明 `<button>`：尺寸、描边、字号与 17px 字形照 ADR-0031 的迁移前基线，全部写在
  * `batch-dock.css`；BoardUI `Button` 的 medium 档是 20px 字形、8px 内边距，对不上。危险键挂
  * `data-danger`，红色读 `../styles.css` 里全站那一份危险键规则。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useSyncExternalStore } from 'react';
 import { flushSync } from 'react-dom';
 
@@ -50,7 +52,7 @@ export function BatchDockSurface() {
 function BatchDock({ host: at, props: view }: { host: BatchDockHost; props: BatchDockProps }) {
   return (
     <div className="peach-react" data-batch-scope="" data-context={view.context}>
-      <SelectionDock label="所选项目操作" visible={view.count > 0} count={`已选 ${view.count.toLocaleString()} 项`}>
+      <SelectionDock label={peachT("所选项目操作")} visible={view.count > 0} count={peachT("已选 {{v0}} 项", { v0: view.count.toLocaleString(peachLocale) })}>
         {batchActions(view.context, view.junkDismissed).map((action) => (
           <button key={`${action.group}:${action.operation}`} type="button" data-batch-group={action.group}
             data-batch-action={action.operation} data-danger={action.danger ? '' : undefined}

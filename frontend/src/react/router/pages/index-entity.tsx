@@ -16,6 +16,7 @@
  *
  * 打开排进微任务：路由根在历史变化的同一次调用里同步提交，打开时收起上一页与画首帧都要同步提交，在提交阶段里
  * 做会出 flushSync 告警。壳订阅历史早于路由根，它写标题与侧栏的那一轮排在前面。 */
+import { t as peachT } from "../../../i18n/index";
 import { useContext, useEffect, useLayoutEffect, useRef, useSyncExternalStore } from 'react';
 import { useLocation } from 'react-router';
 
@@ -184,10 +185,7 @@ async function openEntity(
      （`place`）：换掉与画出整页落在同一个任务里。资料卡、浮层与正文各带一层 `.peach-react`（React 子树的样式
      范围）；新作那一行是遗留层的卡片，宿主不进这个范围。 */
   const frame = document.createElement('template');
-  frame.innerHTML = `<div data-entity-hero><div class="peach-react"></div></div>
-    <div data-entity-filter><div class="peach-react"></div></div>
-    <section class="feednew" data-feed-new aria-label="未入库的新作" hidden></section>
-    <div data-entity-body><div class="peach-react"></div></div>`;
+  frame.innerHTML = peachT("<div data-entity-hero><div class=\"peach-react\"></div></div>\n    <div data-entity-filter><div class=\"peach-react\"></div></div>\n    <section class=\"feednew\" data-feed-new aria-label=\"未入库的新作\" hidden></section>\n    <div data-entity-body><div class=\"peach-react\"></div></div>");
   const parts = [...frame.content.childNodes];
   const hero = frame.content.querySelector('[data-entity-hero]')!;
   const hosts = {

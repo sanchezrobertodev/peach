@@ -8,7 +8,8 @@ const dir = resolve(process.cwd(), 'src/react/settings');
 const buttons = readdirSync(dir)
   .filter((name) => name.endsWith('.tsx'))
   .flatMap((name) => [...readFileSync(resolve(dir, name), 'utf8').matchAll(/<Button\b([\s\S]*?)<\/Button>/g)]
-    .map(([, tag = '']) => ({ name, tag, label: tag.slice(tag.lastIndexOf('>') + 1).trim() })));
+    .map(([, tag = '']) => ({ name, tag, label: tag.slice(tag.lastIndexOf('>') + 1).trim()
+      .replace(/^\{peachT\(("(?:[^"\\]|\\.)*")\)\}$/, (_, value: string) => JSON.parse(value) as string) })));
 
 it('保存键一律叫「保存配置」', () => {
   const saves = buttons.filter((button) => button.label.startsWith('保存'));

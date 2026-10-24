@@ -8,6 +8,8 @@
  * React Aria 的 ComboBox 要自己画输入框、选项是 listbox 里的 option：选项里嵌的删记录键、近作
  * 小封面键和最上面那排页签都放不进去。所以这里按遗留层那一套逐条照做：上下环绕着选、回车提交、
  * Escape 先关下拉再清字、空输入回车用占位里那个推荐词。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useLayoutEffect, useReducer, useRef, type MouseEvent, type ReactNode } from 'react';
 import { avatarInner } from '@peach/card-art';
 
@@ -118,7 +120,7 @@ export function SearchPage(props: SearchProps) {
         <a href={group.href} onMouseDown={keep} onClick={event => {
           if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
           event.preventDefault(); op.openPath(group.href!);
-        }}>{group.action || '查看全部'}</a>
+        }}>{group.action || peachT("查看全部")}</a>
       ) : null}</h3>
       {group.kind ? <div data-search-items="">{group.options.map(option)}</div> : group.options.map(option)}
       {group.more ? option(group.more) : null}
@@ -136,7 +138,7 @@ export function SearchPage(props: SearchProps) {
       {s.query && model.recent ? section(model.recent) : null}
       {columns(model.left, model.right)}
       {!s.query && model.recent ? section(model.recent) : null}
-      {model.empty ? <p data-search-empty="" role="status">没有找到</p> : null}
+      {model.empty ? <p data-search-empty="" role="status">{peachT("没有找到")}</p> : null}
     </div>
   );
 }
@@ -168,14 +170,14 @@ function createOps(props: () => SearchProps, s: Store, menu: () => HTMLElement |
     s.pool = [];
     const field = input();
     field.dataset.suggestion = '';
-    field.placeholder = '搜索馆藏';
+    field.placeholder = peachT("搜索馆藏");
     try {
       const names = await props().helpers.pool();
       if (request !== s.poolRequest) return;
       s.pool = names;
       const pick = names[Math.floor(Math.random() * names.length)] || '';
       field.dataset.suggestion = pick;
-      field.placeholder = pick || '搜索馆藏';
+      field.placeholder = pick || peachT("搜索馆藏");
     } catch {
       // 推荐不可用时仍可直接输入搜索。
     }
@@ -368,8 +370,8 @@ function Tabs({ tabs, kind, onPick, wire }: {
     </button>
   );
   return (
-    <div ref={row} data-search-tabs="" role="tablist" aria-label="按种类看补全">
-      {tab('', '全部')}
+    <div ref={row} data-search-tabs="" role="tablist" aria-label={peachT("按种类看补全")}>
+      {tab('', peachT("全部"))}
       {tabs.map((t) => tab(t.kind, t.label, t.total))}
     </div>
   );
@@ -390,9 +392,7 @@ function Row({ entry, active, helpers, onPick, onPeek, onRemove }: {
   };
   if (entry.type === 'more') {
     return (
-      <button type="button" data-search-option="more" {...shared} onMouseDown={keep}>
-        查看全部 {entry.total.toLocaleString()} 个视频
-        <Sprite name="chevron-right" />
+      <button type="button" data-search-option="more" {...shared} onMouseDown={keep}>{peachT("查看全部") + " "}{entry.total.toLocaleString(peachLocale)}{" " + peachT("个视频")}<Sprite name="chevron-right" />
       </button>
     );
   }
@@ -404,7 +404,7 @@ function Row({ entry, active, helpers, onPick, onPeek, onRemove }: {
         {entry.type === 'history' ? (
           /* 按下就 preventDefault，不让删除键把焦点从输入框抢走：抢走会触发 `#q` 的失焦，那个处理器
              140ms 后收起整个下拉栏，于是「删一条记录」实际等于「关掉整个下拉栏」。 */
-          <button type="button" data-remove-history={entry.value} aria-label={`删除历史 ${entry.value}`}
+          <button type="button" data-remove-history={entry.value} aria-label={peachT("删除历史 {{v0}}", { v0: entry.value })}
             onMouseDown={keep} onClick={(event) => { event.stopPropagation(); void onRemove(entry.value) }}>
             <Sprite name="x" />
           </button>
@@ -429,18 +429,18 @@ function Row({ entry, active, helpers, onPick, onPeek, onRemove }: {
   if (kind === 'performer' || kind === 'creator' || kind === 'author') {
     // 一行里摆得下几部近作就摆几部；窄下拉整排收起，数据照给。
     const works = item.works ?? [];
-    const sub = item.subtitle || [`${(item.n ?? 0).toLocaleString()} 个视频`, item.agency].filter(Boolean).join(' · ');
+    const sub = item.subtitle || [peachT("{{v0}} 个视频", { v0: (item.n ?? 0).toLocaleString(peachLocale) }), item.agency].filter(Boolean).join(' · ');
     return (
       <div data-search-option="person" data-open-entity={opens} {...shared} onMouseDown={keep}>
         <Face item={item} kind={kind} />
-        <button type="button" data-search-person="" data-search-meta="" aria-label={`查看 ${item.value}`}>
+        <button type="button" data-search-person="" data-search-meta="" aria-label={peachT("查看 {{v0}}", { v0: item.value })}>
           <span data-search-name=""><span>{item.value}</span>{matched}</span>
           <span data-search-sub="">{sub}</span>
         </button>
         {works.length ? (
           <span data-search-peeks="">
             {works.map((card) => (
-              <button key={card.id} type="button" data-open-work={card.id} aria-label={`打开 ${card.code || item.value}`}
+              <button key={card.id} type="button" data-open-work={card.id} aria-label={peachT("打开 {{v0}}", { v0: card.code || item.value })}
                 onMouseDown={keep} onClick={(event) => { event.stopPropagation(); onPeek(card) }}>
                 <Cover card={card} helpers={helpers} />
               </button>
@@ -455,7 +455,7 @@ function Row({ entry, active, helpers, onPick, onPeek, onRemove }: {
       {kind === 'studio' || kind === 'agency' ? <Face item={item} kind={kind} /> : null}
       <span>{item.value}</span>
       {matched}
-      {item.n ? <span data-search-n="">{item.n.toLocaleString()}</span> : null}
+      {item.n ? <span data-search-n="">{item.n.toLocaleString(peachLocale)}</span> : null}
     </div>
   );
 }

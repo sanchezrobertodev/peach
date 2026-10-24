@@ -1,3 +1,4 @@
+import { t as peachT } from "../../i18n/index";
 import { apiGet } from '../../api';
 
 export interface MediaFolder {
@@ -17,7 +18,7 @@ export interface FolderPage {
 }
 export interface FolderScope { loc?: string; library?: string }
 export const PURPOSES: Record<FolderPurpose, string> = {
-  category: '个人分类', creator: '创作者／账号', performer: '人物', seller: '卖家', studio: '厂牌',
+  category: peachT("个人分类"), creator: peachT("创作者／账号"), performer: peachT("人物"), seller: peachT("卖家"), studio: peachT("厂牌"),
 };
 export function folderQuery(scope: FolderScope, folder = '', search = '') {
   const query = new URLSearchParams({ ...scope, folder, ...(search ? { q: search } : {}) });

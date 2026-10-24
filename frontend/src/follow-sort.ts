@@ -2,9 +2,10 @@
    骨架跑在 React 包加载之前，排序框里该写哪一档、方向键该朝哪头，得跟接管后是同一个答案。 */
 
 /** 工具栏那个下拉里的排序维度。前四个按创作者比，后三个按单条来源比。 */
+import { t as peachT } from "./i18n/index";
 export const SORT_OPTIONS = [
-  ['checked', '检查时间'], ['added', '添加时间'], ['name', '创作者名称'], ['sources', '来源数量'],
-  ['source', '来源名称'], ['provider', '站点'], ['status', '状态'],
+  ['checked', peachT("检查时间")], ['added', peachT("添加时间")], ['name', peachT("创作者名称")], ['sources', peachT("来源数量")],
+  ['source', peachT("来源名称")], ['provider', peachT("站点")], ['status', peachT("状态")],
 ] as const;
 export type SortKey = (typeof SORT_OPTIONS)[number][0];
 export const DEFAULT_SORT: SortKey = 'checked';

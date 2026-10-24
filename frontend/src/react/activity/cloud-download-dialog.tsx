@@ -1,5 +1,6 @@
 /* 资源查找弹层：JAV、想要与高清版目标共用搜索、作品资料和下载提交。
  * 下载配置在弹层打开时读取；已提交的任务在活动页查看。 */
+import { t as peachT } from "../../i18n/index";
 import { useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Heading } from 'react-aria-components';
@@ -25,9 +26,9 @@ export interface DownloadPrefill { code?: string; title?: string; origin?: strin
   cover?: string; performers?: string; release_date?: string; duration?: number | null; studio?: string }
 
 const RECEIPTS: Partial<Record<DownloadSubmitResult['outcome'], string>> = {
-  submitted: '已提交离线下载，进度在任务中心',
-  adopted: '这个磁力已有任务，没有重复提交',
-  adopted_remote: '远端已有同一任务，已接管',
+  submitted: peachT("已提交离线下载，进度在任务中心"),
+  adopted: peachT("这个磁力已有任务，没有重复提交"),
+  adopted_remote: peachT("远端已有同一任务，已接管"),
 };
 
 export function CloudDownloadDialog({ prefill, close, receipt, provider }: {
@@ -56,8 +57,8 @@ function Body({ prefill, close, receipt, provider }: {
   const data = query.data;
   const header = (
     <div className="flex items-center justify-between gap-4 px-5 pt-5">
-      <Heading slot="title" className="text-title-2-semibold text-text-primary">查找资源</Heading>
-      <Button variant="ghost" iconOnly leadingIcon={RiCloseLine} aria-label="关闭资源面板" onClick={close} />
+      <Heading slot="title" className="text-title-2-semibold text-text-primary">{peachT("查找资源")}</Heading>
+      <Button variant="ghost" iconOnly leadingIcon={RiCloseLine} aria-label={peachT("关闭资源面板")} onClick={close} />
     </div>
   );
   if (data) {
@@ -70,7 +71,7 @@ function Body({ prefill, close, receipt, provider }: {
         {query.error ? <Note tone="error">{errorMessage(query.error)}</Note> : null}
       </div>
       <div className="flex justify-end p-3">
-        <Button variant="secondary" onClick={close}>关闭</Button>
+        <Button variant="secondary" onClick={close}>{peachT("关闭")}</Button>
       </div>
     </div>
   );
@@ -109,21 +110,21 @@ function SubmitForm({ header, snapshot, prefill, close, receipt, provider: prefe
         const text = RECEIPTS[next.outcome];
         if (next.ok && text) { receipt(text); close(); return }
         const reason = failureText(next.task);
-        setFailure(next.outcome === 'refused' ? '这个资源被判为违规，不再提交。'
-          : reason ? `提交没有成功：${reason}` : '提交没有成功。');
+        setFailure(next.outcome === 'refused' ? peachT("这个资源被判为违规，不再提交。")
+          : reason ? peachT("提交没有成功：{{v0}}", { v0: reason }) : peachT("提交没有成功。"));
       });
   };
 
   return (
-    <form aria-label="提交下载" noValidate onSubmit={submit} className="flex min-h-0 flex-col">
+    <form aria-label={peachT("提交下载")} noValidate onSubmit={submit} className="flex min-h-0 flex-col">
       {header}
       <div className="flex min-h-0 flex-col gap-4 overflow-y-auto p-5">
         {work?.code || code.trim() ? <div className="flex min-w-0 items-start gap-4" data-resource-work="">
           {work?.cover ? <img src={work.cover} alt="" referrerPolicy="no-referrer" onError={event => event.currentTarget.remove()}
             className="w-card-cover shrink-0 rounded-2lg" /> : null}
           <div className="flex min-w-0 flex-col gap-2">
-            <p className="break-words text-body-medium text-text-primary">{work ? [work.code, work.title].filter(Boolean).join(' · ') : '作品资料未取得'}</p>
-            {work ? <Help>{[work.performers, work.studio, work.release_date, work.duration ? `${Math.round(work.duration / 60)} 分钟` : ''].filter(Boolean).join(' · ')}</Help> : null}
+            <p className="break-words text-body-medium text-text-primary">{work ? [work.code, work.title].filter(Boolean).join(' · ') : peachT("作品资料未取得")}</p>
+            {work ? <Help>{[work.performers, work.studio, work.release_date, work.duration ? peachT("{{v0}} 分钟", { v0: Math.round(work.duration / 60) }) : ''].filter(Boolean).join(' · ')}</Help> : null}
           </div>
         </div> : null}
         <ResourceSearch initialCode={prefill.code ?? ''} reason={prefill.searchReason} onSearch={requested => {
@@ -134,30 +135,30 @@ function SubmitForm({ header, snapshot, prefill, close, receipt, provider: prefe
           : sameWorkCode(current?.code, prefill.code) ? current : null)} choose={(uri, selectedCode) => {
           setMagnet(uri); setCode(selectedCode); input.current?.focus();
         }} />
-        <Input ref={input} label="磁力链接" placeholder="magnet:?xt=urn:btih:…" autoComplete="off" maxLength={4000}
+        <Input ref={input} label={peachT("磁力链接")} placeholder="magnet:?xt=urn:btih:…" autoComplete="off" maxLength={4000}
           value={magnet} onChange={setMagnet} />
         <div className="flex flex-col gap-1">
-          <FieldLabel>下载到</FieldLabel>
-          <Select aria-label="下载到" selectedKey={provider} isDisabled={!configured.length}
+          <FieldLabel>{peachT("下载到")}</FieldLabel>
+          <Select aria-label={peachT("下载到")} selectedKey={provider} isDisabled={!configured.length}
             onSelectionChange={(key) => { if (key !== null) choose(String(key) as DownloadProviderKey) }}>
             {configured.map((row) => <SelectItem key={row.key} id={row.key} textValue={row.label}><SourceLabel source={row.key} label={row.label} /></SelectItem>)}
           </Select>
-          {provider === '115' ? <Help>每提交一次扣一条离线配额，重新提交也算。</Help> : null}
+          {provider === '115' ? <Help>{peachT("每提交一次扣一条离线配额，重新提交也算。")}</Help> : null}
         </div>
-        {!snapshot.available ? <Note tone="neutral">云下载只在允许修改数据库的设备上可用。</Note> : null}
-        {!configured.length ? <Note tone="neutral">尚未配置下载渠道。<a href={'/settings/library?section=' + encodeURIComponent('下载渠道')}>下载渠道设置</a></Note> : null}
-        <Input label="目标目录" placeholder="/云下载" autoComplete="off" maxLength={300}
+        {!snapshot.available ? <Note tone="neutral">{peachT("云下载只在允许修改数据库的设备上可用。")}</Note> : null}
+        {!configured.length ? <Note tone="neutral">{peachT("尚未配置下载渠道。")}<a href={'/settings/library?section=' + encodeURIComponent(peachT("下载渠道"))}>{peachT("下载渠道设置")}</a></Note> : null}
+        <Input label={peachT("目标目录")} placeholder={peachT("/云下载")} autoComplete="off" maxLength={300}
           value={target} onChange={setTarget} />
         {/* 带着番号进来时它和搜索框是同一个值，选中候选也会跟着换，不再单列一格。 */}
         {prefill.code ? null
-          : <Input label="番号" placeholder="可不填" autoComplete="off" maxLength={60} value={code} onChange={value => {
+          : <Input label={peachT("番号")} placeholder={peachT("可不填")} autoComplete="off" maxLength={60} value={code} onChange={value => {
             setCode(value); if (!sameWorkCode(value, work?.code)) setWork(null);
           }} />}
         {failure || action.error ? <ErrorText>{failure || action.error}</ErrorText> : null}
       </div>
       <div className="flex justify-between gap-4 p-3">
-        <Button variant="secondary" onClick={close}>取消</Button>
-        <Button type="submit" disabled={!magnet.trim() || !usable} {...busyProps(action.busy === 'submit')}>提交下载</Button>
+        <Button variant="secondary" onClick={close}>{peachT("取消")}</Button>
+        <Button type="submit" disabled={!magnet.trim() || !usable} {...busyProps(action.busy === 'submit')}>{peachT("提交下载")}</Button>
       </div>
     </form>
   );

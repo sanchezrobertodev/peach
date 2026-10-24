@@ -1,3 +1,4 @@
+import { t as peachT } from "../i18n/index";
 /* preferences 域控制器：本域状态与动作，启动由 Application 的生命周期统一安装。 */
 import { loadMediaSources } from './../query/media-sources';
 import { buildBars, dropOfflineFromDefaultLoc, homePath, loadCatalog, paintCatalogFilter, repaintCatalogGrid } from './catalog.js';
@@ -135,11 +136,11 @@ export function installPreferences5() {
 preferencesState.sourceOnline = {};
 preferencesState.sourceProblems = {};
 preferencesState.sourceOffline = key=>preferencesState.sourceOnline[key]===false;
-preferencesState.OFFLINE_HINT = '媒体目录无法访问，请检查目录、读取权限和网盘挂载状态';
-preferencesState.OFFLINE_REASON = {local:'无法读取媒体目录，请检查目录是否存在及读取权限。',
-  '115':'无法读取 115 媒体目录，请检查目录权限及网盘挂载工具是否正常运行。',
-  pikpak:'无法读取 PikPak 媒体目录，请检查目录权限及网盘挂载工具是否正常运行。'};
-preferencesState.offlineReason = key=>preferencesState.sourceProblems[key]||preferencesState.OFFLINE_REASON[key]||'无法读取这个来源的媒体目录，请检查目录权限及挂载状态。';
+preferencesState.OFFLINE_HINT = peachT("媒体目录无法访问，请检查目录、读取权限和网盘挂载状态");
+preferencesState.OFFLINE_REASON = {local:peachT("无法读取媒体目录，请检查目录是否存在及读取权限。"),
+  '115':peachT("无法读取 115 媒体目录，请检查目录权限及网盘挂载工具是否正常运行。"),
+  pikpak:peachT("无法读取 PikPak 媒体目录，请检查目录权限及网盘挂载工具是否正常运行。")};
+preferencesState.offlineReason = key=>preferencesState.sourceProblems[key]||preferencesState.OFFLINE_REASON[key]||peachT("无法读取这个来源的媒体目录，请检查目录权限及挂载状态。");
 preferencesState.settingsStore = appSettingsStore();
 preferencesState.appSettings = preferencesState.settingsStore.value;
 preferencesState.saveSettings = ()=>preferencesState.settingsStore.save();
@@ -199,7 +200,7 @@ preferencesState.SRCICON = {
     [location,mark.startsWith('data:')?`<img class="source-icon" src="${mark}" alt="">`:icon(mark)])),
   online:icon('rss'),
 };
-preferencesState.srcBadge = (loc,cost,cls)=>{const label=`${LOC[loc]||loc}${cost==='metered'?' · 计费':''}`;
+preferencesState.srcBadge = (loc,cost,cls)=>{const label=`${LOC[loc]||loc}${cost==='metered'?peachT(" · 计费"):''}`;
   return `<span class="${cls||'src'} ${cost==='metered'?'metered':'free'}" title="${esc(label)}" aria-label="${esc(label)}">`
     +(preferencesState.SRCICON[loc]||'')+'</span>'};
 preferencesState.emptyState = emptyStateHtml;

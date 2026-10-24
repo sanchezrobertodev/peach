@@ -3,6 +3,7 @@
  * 两个键：清单整页一把（关注管理的「想要」页签），关注详情问「这一条想要过没有」按条目各一把。
  * 写完把两族都作废：在详情里点了想要，回到页签时清单要已经有它；在页签里移除了，详情那颗键也要
  * 跟着弹起。 */
+import { t as peachT } from "../../i18n/index";
 import { apiGet, apiSend } from '../../api';
 import { queryClient } from '../query';
 
@@ -13,7 +14,7 @@ export const wantFollowKey = (itemId: number) => ['wants', 'follow', itemId] as 
 
 /** 清单上的四段，次序就是页签里排的次序。 */
 export const PHASES = [
-  ['searching', '待找'], ['unreleased', '未发售'], ['given_up', '暂时放弃'], ['acquired', '已入库'],
+  ['searching', peachT("待找")], ['unreleased', peachT("未发售")], ['given_up', peachT("暂时放弃")], ['acquired', peachT("已入库")],
 ] as const;
 export type Phase = (typeof PHASES)[number][0];
 
@@ -80,13 +81,13 @@ export const resetWants = (ids: number[], signal?: AbortSignal) =>
 export const invalidateWants = () => queryClient.invalidateQueries({ queryKey: WANTS_KEY });
 
 /** 一条想要叫什么：番号打头，没有番号的关注条目用标题。 */
-export const wantName = (want: Want) => want.code || want.title || `关注条目 ${want.follow_item_id ?? want.id}`;
+export const wantName = (want: Want) => want.code || want.title || peachT("关注条目 {{v0}}", { v0: want.follow_item_id ?? want.id });
 
 /** 「待找」那一段的说明：新片查不到不计数，老片查满三次就暂时放弃。 */
 export function searchNote(want: Want): string {
-  if (want.phase === 'acquired') return want.acquired_at ? `入库于 ${want.acquired_at.slice(0, 10)}` : '已入库';
-  if (want.phase === 'unreleased') return want.release_date ? `${want.release_date} 发售` : '还没发售';
-  if (want.phase === 'given_up') return `查过 ${want.search_count} 次都没找到`;
-  if (want.fresh) return '新片：查不到也一直留在待找';
-  return want.search_count ? `查过 ${want.search_count} 次` : '还没查过';
+  if (want.phase === 'acquired') return want.acquired_at ? peachT("入库于 {{v0}}", { v0: want.acquired_at.slice(0, 10) }) : peachT("已入库");
+  if (want.phase === 'unreleased') return want.release_date ? peachT("{{v0}} 发售", { v0: want.release_date }) : peachT("还没发售");
+  if (want.phase === 'given_up') return peachT("查过 {{v0}} 次都没找到", { v0: want.search_count });
+  if (want.fresh) return peachT("新片：查不到也一直留在待找");
+  return want.search_count ? peachT("查过 {{v0}} 次", { v0: want.search_count }) : peachT("还没查过");
 }
