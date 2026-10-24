@@ -84,6 +84,8 @@ Test 工作流的 `web-bundle` 在 Ubuntu 上统一执行 tsc、lint、Vitest、
 
 浏览器用例由 `web-e2e` 的六个 Windows runner 分担，每片有自己的服务、演示库与日志。`ci_plan.py` 按 `ci-browser-timings.json` 的实测秒数分配文件，新文件使用默认权重；每个文件恰好执行一次。每片经项目入口的 `-Focus` 运行分配的浏览器文件，首启文件始终归首次设置服务。它装 Node 24、前端依赖、ffmpeg，并经 `PEACH_E2E_CHROME` 指定 Chrome。本机浏览器入口与并发语义保持完整。
 
+Windows 测试浏览器关闭 Chromium 的 `TcpPortRandomizationWin`，依据[上游回环连接错误报告](https://github.com/microsoft/playwright/issues/43545)。此设置只作用于测试进程。启动参数从固定版本 Playwright 的 `coreBundle.server` 内部接口读取完整默认禁用列表，再追加该项；升级 Playwright 时须复核接口和上游修复状态。应用与操作系统网络配置保持原样，网络错误断言照常执行。
+
 PR 计划按改动选择前端、vendor、wheel 与浏览器任务，文档 PR 只执行适用检查；主线、依赖、未知影响与手动验证包含全部任务。`frontend-ready` 汇总所选前端检查，失败时不启动后续完整回归；未选择前端任务的计划可正常执行。产物差异以文件统计显示。`verified` 根据计划核对必需任务，缺失、失败、取消及必需任务跳过均判失败。Actions 工作流本身由固定版 actionlint 检查语法、表达式、依赖与脚本。PR 更新取消同 PR 的过期运行，主线 Test 按提交各自保留结果。
 
 Python 分片上传完整测试输出；浏览器分片上传 TAP、服务日志及已脱敏网络日志，保留 14 天。npm 审计遇到 high 或 critical 漏洞直接失败；只有临时网络错误最多请求三次，在前两次失败后分别等待 15 与 30 秒，未知响应不当成通过。

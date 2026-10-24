@@ -9,6 +9,7 @@
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { mkdirSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { join } from 'node:path';
 
 import { chromium, type Browser, type BrowserContext, type Locator, type Page } from 'playwright-core';
@@ -48,6 +49,20 @@ export function requiredEnv(name: string): string {
 export async function launch(): Promise<Browser> {
   // 原有用例以中文夹具断言；多语言用例用 lang 参数覆盖。
   const args: string[] = ['--accept-lang=zh-CN'];
+  if (process.platform === 'win32') {
+    // Windows 回环连接取证：https://github.com/microsoft/playwright/issues/43545。
+    // 从固定版本的运行时取得完整默认项，升级 Playwright 时须复核内部接口。
+    const { server } = createRequire(import.meta.url)('playwright-core/lib/coreBundle') as {
+      server: { createPlaywright(options: { sdkLanguage: string; isInternalPlaywright: boolean }): {
+        chromium: { defaultArgs(options: { headless: boolean }, persistent: boolean, directory: string): Promise<string[]> };
+      } };
+    };
+    const defaults = await server.createPlaywright({ sdkLanguage: 'javascript', isInternalPlaywright: true })
+      .chromium.defaultArgs({ headless: true }, false, '');
+    const disabled = defaults.find(arg => arg.startsWith('--disable-features='));
+    assert.ok(disabled, 'Playwright 默认浏览器功能列表必须可读取');
+    args.push(`${disabled},TcpPortRandomizationWin`);
+  }
   const networkLogs = process.env.PEACH_E2E_NET_LOG_DIR;
   if (networkLogs) {
     mkdirSync(networkLogs, { recursive: true });
