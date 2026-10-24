@@ -215,7 +215,8 @@ control = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(60)']
 env = {**os.environ, 'PEACH_DETACHED_TEST': '测试 env'}
 code = 'import json, os, sys, time; from pathlib import Path; from peach.tray_detached import in_job; Path("child.json").write_text(json.dumps([os.getcwd(), os.environ["PEACH_DETACHED_TEST"], sys.argv[1], sys.executable, sys.prefix, in_job()]), encoding="utf-8"); time.sleep(60)'
 child = launch_detached([sys.argv[3], '-c', code, sys.argv[2]], cwd=root, env=env)
-(root / 'pids.json').write_text(json.dumps([control.pid, child.pid]))
+(root / 'pids.json.tmp').write_text(json.dumps([control.pid, child.pid]))
+(root / 'pids.json.tmp').replace(root / 'pids.json')
 time.sleep(60)
 """
         with tempfile.TemporaryDirectory() as directory:
@@ -385,8 +386,9 @@ from peach.tray_detached import handoff_tray, in_job
 root = Path(sys.argv[1])
 with patch('peach.tray_detached.launch_detached', side_effect=RuntimeError('repeated handoff')):
     handed_off = handoff_tray([], root)
-(root / 'child.json').write_text(json.dumps(dict(in_job=in_job(), handed_off=handed_off,
+(root / 'child.json.tmp').write_text(json.dumps(dict(in_job=in_job(), handed_off=handed_off,
     marker_consumed='PEACH_TRAY_DESKTOP_HANDOFF' not in os.environ)))
+(root / 'child.json.tmp').replace(root / 'child.json')
 time.sleep(60)
 """
 
