@@ -9,7 +9,7 @@
 <p align="center">
   <a href="https://github.com/sanchezrobertodev/peach">Fork repository</a> ·
   <a href="https://peach.video">Upstream website</a> ·
-  <a href="https://github.com/peach-mitao/peach/releases">Upstream installers</a> ·
+  <a href="https://github.com/sanchezrobertodev/peach/releases">Localized downloads</a> ·
   <a href="https://demo.peach.video">Upstream demo</a> ·
   <a href="https://github.com/peach-mitao/peach/releases/tag/intro-video">Intro video</a> ·
   <a href="https://github.com/sanchezrobertodev/peach/issues">Report a fork problem</a> ·
@@ -34,7 +34,7 @@ https://github.com/user-attachments/assets/a5610874-e611-41bb-be22-7d99f0d64b62
 
 > **18+** For adults managing their own adult-content collections. The repository contains no media or site data. Access to outside sites requires the appropriate accounts and permissions.
 
-This is the [English and Spanish localization fork](https://github.com/sanchezrobertodev/peach) of [peach-mitao/peach](https://github.com/peach-mitao/peach), created by longmeidao and the upstream contributors. The website, demo, screenshots, release badges, installers and roadmap linked here belong to the upstream project. Upstream installers do not include this fork's localization changes; run this fork from source to use them.
+This is the [English and Spanish localization fork](https://github.com/sanchezrobertodev/peach) of [peach-mitao/peach](https://github.com/peach-mitao/peach), created by longmeidao and the upstream contributors. Download this fork's Windows and macOS builds from [localized releases](https://github.com/sanchezrobertodev/peach/releases), or run it from source. The website, demo, screenshots, status badges and roadmap linked here belong to the upstream project. Upstream installers do not include this fork's localization changes.
 
 ## Interface language
 

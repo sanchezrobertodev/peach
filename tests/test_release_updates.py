@@ -26,6 +26,18 @@ class ReleaseUpdateTests(unittest.TestCase):
         self.assertEqual((result["state"], result["latest_version"]), ("available", "0.10.0"))
         self.assertEqual(result["release_url"], release_updates.RELEASES_URL + "/tag/v0.10.0")
 
+    def test_localized_distribution_queries_and_downloads_from_its_fork(self):
+        transport = Mock(return_value=HttpResponse(200, {}, json.dumps([release("9.0.0")]).encode()))
+        result = release_updates.check(transport=transport)
+        self.assertEqual(transport.call_args.args[0].url,
+                         "https://api.github.com/repos/sanchezrobertodev/peach/releases?per_page=100")
+        self.assertEqual(result["asset_url"],
+                         "https://github.com/sanchezrobertodev/peach/releases/download/v9.0.0/Peach-9.0.0-windows-x64.zip")
+        from scripts.package_windows_release import download_notes
+        notes = download_notes("9.0.0", lite_installer=True)
+        self.assertIn("https://github.com/sanchezrobertodev/peach/releases/download/v9.0.0/", notes)
+        self.assertNotIn("peach-mitao/peach/releases", notes)
+
     def test_unpublished_or_incomplete_packages_are_not_offered(self):
         draft = release("8.0.0"); draft["draft"] = True
         incomplete = release("9.0.0"); incomplete["assets"] = []

@@ -1,5 +1,13 @@
 # 复用清单
 
+## 本地化发行验证
+
+macOS 安装镜像继续复用 dmgbuild `1.6.7`（MIT），选择其正式支持的 APFS 文件系统，以保留应用签名中日文资源名称的 Unicode 形态。下载后的镜像在独立 runner 上挂载，并验证完整签名与独立运行；HFS+ 会分解这些资源文件名，导致签名清单中的名称与磁盘不一致。
+
+镜像布局保留应用名称与扩展名，不向已签名的应用写入 FinderInfo 扩展属性；Apple 的严格签名校验拒绝这种附加元数据。外层镜像的背景、图标位置和 Applications 链接由 dmgbuild 管理。
+
+前端单元测试复用 Happy DOM `21.0.4`（MIT，开发依赖），该补丁修复 [GHSA-834v-8h66-3h79](https://github.com/advisories/GHSA-834v-8h66-3h79) 中的模块导入别名注入。它沿用现有 Vitest 消费者，不进入浏览器包，也不增加运行时依赖。发行查询继续复用现有 HTTPX 与 GitHub Releases API；本地化分支的更新检查、轻量安装器工具下载和下载说明均指向 `sanchezrobertodev/peach`。
+
 ## 界面语言
 
 英文与西班牙文界面复用 [i18next](https://www.i18next.com/overview/getting-started)，固定版本 `26.5.10`，[MIT 许可全文](../web/vendor/i18next-LICENSE.txt)。此版本支持本项目 TypeScript 7；`26.0.0` 的可选 peer 范围不含 TypeScript 7，npm 实际拒绝安装，因此采用兼容版本。npm 包展开约 544 KB，浏览器构建只包含运行时及本地词表；没有网络翻译请求或 Python 依赖。

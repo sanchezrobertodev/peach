@@ -2,7 +2,7 @@
 kind: howto
 ---
 
-# Language and source-install guide
+# Language and installation guide
 
 This guide applies to [sanchezrobertodev/peach](https://github.com/sanchezrobertodev/peach), the English and Spanish localization fork of [peach-mitao/peach](https://github.com/peach-mitao/peach).
 
@@ -21,6 +21,10 @@ The browser translations cover navigation, setup and login, settings, playback c
 Media titles, performer names, tags, source metadata and user-entered text keep their original values. Language selection does not rewrite the library. Desktop tray text, installers, terminal output and most detailed documentation can also remain in Chinese. Subtitle search retains the sources and subtitle languages described in the README; interface language does not translate subtitles.
 
 The upstream website, demo and screenshots show the upstream application. Upstream installers and container images do not contain this fork's localization changes. Release availability must be checked in the repository that publishes each artifact.
+
+## Download a desktop build
+
+Windows and macOS builds of this fork are published on the [localized releases page](https://github.com/sanchezrobertodev/peach/releases). Windows users can choose the full installer or portable ZIP. macOS users should select the Apple Silicon (`arm64`) or Intel (`x86_64`) DMG. The macOS builds use ad-hoc signing and are not Apple-notarized; media tools must be installed separately. The browser language selector is available in both desktop distributions. The Windows update checker and lightweight installer's tool downloads use this fork's releases.
 
 ## Run this fork from source
 
