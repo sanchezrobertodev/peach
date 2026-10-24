@@ -21,6 +21,20 @@ Removed / Fixed / Security。
 
 ## [未发布]
 
+## [0.47.0] - 2026-10-24
+
+### 新增
+
+- **界面**：提供英语、西班牙语和简体中文语言选择，覆盖浏览器中的首次设置、登录、馆藏、播放与配置页面，并保存浏览器语言偏好。
+- **桌面**：将双架构 macOS 安装镜像接入统一发版
+- **桌面**：构建双架构 macOS 独立应用并精简托盘状态
+
+### 修复
+
+- **配置**：简化媒体目录配置并统一说明文案
+- **界面**：保持同级宽字形的视觉比例；提示说明与右侧操作垂直居中，宽容器中的补全提示与操作并排显示。
+- **播放**：自动探测硬件后端并支持 Linux VAAPI 转码
+
 ## [0.46.1] - 2026-10-19
 
 ### 新增
@@ -617,7 +631,8 @@ Removed / Fixed / Security。
 - **桌面**：独立包使用 UTF-8 启动日志。
 - **配置**：首次设置后的跳转目标取新鲜读到的 mDNS 名。
 
-[未发布]: https://github.com/peach-mitao/peach/compare/v0.46.1...HEAD
+[未发布]: https://github.com/sanchezrobertodev/peach/compare/v0.47.0...HEAD
+[0.47.0]: https://github.com/sanchezrobertodev/peach/compare/v0.46.1...v0.47.0
 [0.46.1]: https://github.com/peach-mitao/peach/compare/v0.45.0...v0.46.1
 [0.45.0]: https://github.com/peach-mitao/peach/compare/v0.43.0...v0.45.0
 [0.43.0]: https://github.com/peach-mitao/peach/compare/v0.42.0...v0.43.0
