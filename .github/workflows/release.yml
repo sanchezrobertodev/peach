@@ -36,5 +36,5 @@ jobs:
           xattr -p com.apple.FinderInfo "$mount/Peach.app"
           xattr -d com.apple.FinderInfo "$mount/Peach.app"
           codesign --verify --deep --strict --verbose=4 "$mount/Peach.app"
-          lipo -verify_arch '${{ matrix.arch }}' "$mount/Peach.app/Contents/MacOS/Peach"
+          lipo "$mount/Peach.app/Contents/MacOS/Peach" -verify_arch '${{ matrix.arch }}'
           python scripts/smoke_macos.py "$mount/Peach.app"
