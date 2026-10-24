@@ -48,21 +48,29 @@ describe('Video.js 10 播放链', () => {
         route.fulfill({ body: files.get(basename(new URL(route.request().url()).pathname))!, contentType: 'video/mp4' }));
       await page.reload();
       await page.locator('#stage dash-video > video.vjs-tech').waitFor();
-      await page.locator('#stage video.vjs-tech').evaluate((node: HTMLVideoElement) => { node.muted = true });
-      const activity = page.waitForResponse(reply => new URL(reply.url()).pathname === '/api/follow/activity');
-      await page.locator('#stage media-play-button').click();
       await page.waitForFunction(() => {
-        const video = document.querySelector<HTMLVideoElement>('#stage video.vjs-tech')!;
-        return video.currentTime > .8 && video.videoWidth === 160;
-      }, undefined, { timeout: 15_000 }).catch(async error => {
-        const state = await page.locator('#stage video.vjs-tech').evaluate((node: HTMLVideoElement) => ({
-          paused: node.paused, time: node.currentTime, width: node.videoWidth, ready: node.readyState, src: node.currentSrc,
-          error: node.error && { code: node.error.code, message: node.error.message },
-        }));
-        throw new Error(`${String(error)} ${JSON.stringify({ state, problems })}`);
+        const video = document.querySelector<HTMLVideoElement>('#stage dash-video > video.vjs-tech');
+        return !!video && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && video.videoWidth === 160;
       });
-      await page.locator('#stage video.vjs-tech').evaluate((node: HTMLVideoElement) => node.pause());
-      assert.equal((await activity).status(), 200);
+      await page.locator('#stage video.vjs-tech').evaluate((node: HTMLVideoElement) => { node.muted = true });
+      const [activity] = await Promise.all([
+        page.waitForResponse(reply => new URL(reply.url()).pathname === '/api/follow/activity'),
+        (async () => {
+          await page.locator('#stage media-play-button').click();
+          await page.waitForFunction(() => {
+            const video = document.querySelector<HTMLVideoElement>('#stage video.vjs-tech')!;
+            return video.currentTime > .8 && video.videoWidth === 160;
+          }, undefined, { timeout: 15_000 }).catch(async error => {
+            const state = await page.locator('#stage video.vjs-tech').evaluate((node: HTMLVideoElement) => ({
+              paused: node.paused, time: node.currentTime, width: node.videoWidth, ready: node.readyState, src: node.currentSrc,
+              error: node.error && { code: node.error.code, message: node.error.message },
+            }));
+            throw new Error(`${String(error)} ${JSON.stringify({ state, problems })}`);
+          });
+          await page.locator('#stage video.vjs-tech').evaluate((node: HTMLVideoElement) => node.pause());
+        })(),
+      ]);
+      assert.equal(activity.status(), 200);
       await page.locator('#closeStage').click();
       await page.locator('.video-js').waitFor({ state: 'detached' });
       assert.deepEqual(problems, []);
