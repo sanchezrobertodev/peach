@@ -5,21 +5,87 @@ permissions:
   contents: read
   actions: read
 jobs:
-  inspect:
-    runs-on: macos-15
-    timeout-minutes: 10
+  macos:
+    name: macOS ${{ matrix.arch }} 独立测试包
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-15
+          - arch: x86_64
+            runner: macos-15-intel
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    env:
+      MACOSX_DEPLOYMENT_TARGET: '11.0'
+      ARCHFLAGS: '-arch ${{ matrix.arch }}'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - uses: astral-sh/setup-uv@v10.3.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: 创建原生架构构建环境
+        run: |
+          uv sync --locked --all-extras --python python
+          uv pip check --python .venv/bin/python
+          npm ci --prefix frontend
+      - name: 构建独立应用与拖放安装镜像
+        run: .venv/bin/python scripts/build_macos_standalone.py --target-arch '${{ matrix.arch }}' --destination release
+      - uses: actions/upload-artifact@v7
+        with:
+          name: macos-candidate-${{ matrix.arch }}
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            release/*.dmg
+            scripts/smoke_macos.py
+            scripts/smoke_desktop.py
+            scripts/MACOS_DOWNLOADS.md
+
+  macos-smoke:
+    name: macOS ${{ matrix.arch }} 仅下载制品验收
+    needs: macos
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-15
+          - arch: x86_64
+            runner: macos-15-intel
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 15
     steps:
       - uses: actions/download-artifact@v8
         with:
-          github-token: ${{ github.token }}
-          run-id: 40138413229
-          name: macos-candidate-arm64
-      - name: Inspect downloaded bundle seal
+          name: macos-candidate-${{ matrix.arch }}
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - name: 挂载镜像并在源码树外验证应用
         shell: bash
         run: |
           set -euo pipefail
-          mount="$RUNNER_TEMP/Peach-diagnostic"
+          image=(release/*-macos-${{ matrix.arch }}.dmg)
+          test "${#image[@]}" -eq 1
+          mount="$RUNNER_TEMP/Peach-install"
           mkdir -p "$mount"
-          hdiutil attach release/Peach-0.47.0-macos-arm64.dmg -readonly -nobrowse -mountpoint "$mount"
+          hdiutil verify "${image[0]}"
+          hdiutil attach "${image[0]}" -readonly -nobrowse -mountpoint "$mount"
           trap 'hdiutil detach "$mount"' EXIT
-          codesign --verify --deep --strict --verbose=4 "$mount/Peach.app"
+          test "$(readlink "$mount/Applications")" = /Applications
+          test -s "$mount/Peach.app/Contents/Resources/LICENSE"
+          codesign --verify --deep --strict "$mount/Peach.app"
+          lipo -verify_arch '${{ matrix.arch }}' "$mount/Peach.app/Contents/MacOS/Peach"
+          python scripts/smoke_macos.py "$mount/Peach.app"
+
