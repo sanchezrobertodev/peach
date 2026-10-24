@@ -2,7 +2,7 @@
 
 ## 界面语言
 
-英文与西班牙文界面复用 [i18next](https://www.i18next.com/overview/getting-started)，固定版本 `26.5.10`，MIT 许可。此版本支持本项目 TypeScript 7；`26.0.0` 的可选 peer 范围不含 TypeScript 7，npm 实际拒绝安装，因此采用兼容版本。npm 包展开约 544 KB，浏览器构建只包含运行时及本地词表；没有网络翻译请求或 Python 依赖。
+英文与西班牙文界面复用 [i18next](https://www.i18next.com/overview/getting-started)，固定版本 `26.5.10`，[MIT 许可全文](i18next-LICENSE.txt)。此版本支持本项目 TypeScript 7；`26.0.0` 的可选 peer 范围不含 TypeScript 7，npm 实际拒绝安装，因此采用兼容版本。npm 包展开约 544 KB，浏览器构建只包含运行时及本地词表；没有网络翻译请求或 Python 依赖。
 
 Peach 保留浏览器语言选择、中文原文键、明确的首启服务端提示模板和重新加载策略。`Intl` 负责数字、日期与排序；React Aria 使用同一语言，播放器复用现有 Video.js 10.1.0 的官方西班牙语包。`check:i18n` 验证词表键、占位符和静态消费者；多语言行为用例验证数据键与筛选参数保持稳定。本次实现不改变真实 ledger 或生产入口。
 
