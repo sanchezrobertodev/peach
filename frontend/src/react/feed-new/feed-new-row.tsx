@@ -2,6 +2,7 @@
  * 那一份模板（`feedNewCardHtml`）。忽略的那条当场消失，已看过的留在原位只是变淡，想要那颗键
  * 按下去换成填实的星；三样都直接改这一行的节点，不重画整行——重画会把横滚的位置和自动滚动
  * 一起打回起点。一条都没有就整块不出。 */
+import { t as peachT } from "../../i18n/index";
 import { useContext, useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { ShellActionsContext } from '../router/router';
@@ -47,7 +48,7 @@ export function FeedNewRow({ feedNew, host, wire, act, settled }: {
       const wanted = action === 'want';
       button.dataset.feedAction = wanted ? 'unwant' : 'want';
       button.setAttribute('aria-pressed', String(wanted));
-      button.title = wanted ? '取消想要' : '想要';
+      button.title = wanted ? peachT("取消想要") : peachT("想要");
       return;
     }
     if (action === 'ignore') card.remove();

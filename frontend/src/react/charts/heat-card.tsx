@@ -4,6 +4,8 @@
  * `rect`，浓度是 `fill-opacity`，几何全写成属性。外观对齐同页的 EvilCharts 图：颜色只取
  * `chart-*`，指到一格时其余格子淡下去，浮层与柱状、径向图共用 `./chart-tip.tsx` 那一块面；
  * 页头读数也跟着换，键盘聚焦一格时读的是它。取舍见 ADR-0076。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 
@@ -69,7 +71,7 @@ export function HeatCard(
   const edge = pin ? { start: pin.x, center: pin.x + SIZE / 2, end: pin.x + SIZE }[anchor] : 0;
   return (
     <section className={CHART_CARD}>
-      <ChartHead title={title} figure={(cell ? cell.count : total).toLocaleString()}
+      <ChartHead title={title} figure={(cell ? cell.count : total).toLocaleString(peachLocale)}
         note={cell ? cell.label : words.unit} />
       {/* 带坐标轴的星期 × 小时有 24 列，压到 320 以下格子和字都读不清，宁可在卡里横滚；
           每日那张只有 13 列，跟着卡片缩，最近几天不会藏到右边看不见的地方。 */}
@@ -138,7 +140,7 @@ export function ActivityHeat(
     <div className="inline-grid w-full items-start gap-5 lg:grid-cols-2">
       <HeatCard title={title} words={words} tone={tone}
         cells={hours.cells} total={hours.total} columns={24} rows={7} axis={HOUR_AXIS}
-        footer={<><span>星期 × 小时</span><span>{activity?.timezone || 'UTC+08:00'}</span></>} />
+        footer={<><span>{peachT("星期 × 小时")}</span><span>{activity?.timezone || 'UTC+08:00'}</span></>} />
       <HeatCard title={dailyTitle} words={words} tone={tone}
         cells={days.cells} total={days.total} columns={13} rows={7}
         footer={<><span>{days.start}</span><span>{days.end}</span></>} />

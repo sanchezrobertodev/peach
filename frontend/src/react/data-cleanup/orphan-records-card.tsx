@@ -3,6 +3,7 @@
  * 每行一条已消失的作品：快照图供认片，后面是它带的记录、在库里可能是它新版本的文件。
  * 选一个文件接过去，记录搬到那个文件上、旧行删掉，整批可按批次号撤回；彻底删除连记录一起
  * 删，过危险档确认弹层。没有已消失的作品时整块不出现。 */
+import { t as peachT } from "../../i18n/index";
 import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { confirmModal } from '@peach/legacy/ui';
@@ -31,23 +32,23 @@ function OrphanActions({ item, toast }: { item: OrphanRecord; toast(message: str
   const [target, setTarget] = useState<number | null>(item.candidates[0]?.id ?? null);
   const attach = useMutation({
     mutationFn: () => attachOrphan(item.id, Number(target)),
-    onSuccess: (data) => { toast(`记录已接到新文件，批次 ${data.batch}`); void refresh(); },
+    onSuccess: (data) => { toast(peachT("记录已接到新文件，批次 {{v0}}", { v0: data.batch })); void refresh(); },
     onError: (error) => toast(errorMessage(error)),
   });
   const purge = useMutation({
     mutationFn: () => purgeOrphan(item.id),
     onSuccess: (data) => {
       toast(data.blocked.length
-        ? `${item.name} 的文件又回到盘上，没有删除；下一次扫描会把它接回在库`
-        : `已彻底删除 ${item.name}`);
+        ? peachT("{{v0}} 的文件又回到盘上，没有删除；下一次扫描会把它接回在库", { v0: item.name })
+        : peachT("已彻底删除 {{v0}}", { v0: item.name }));
       void refresh();
     },
   });
   const remove = () => {
     void confirmModal({
-      title: '彻底删除',
-      body: `将删除「${item.name}」这一条和它带的记录（${recordsText(item.records)}）。此操作不可撤销。`,
-      confirmLabel: '彻底删除',
+      title: peachT("彻底删除"),
+      body: peachT("将删除「{{v0}}」这一条和它带的记录（{{v1}}）。此操作不可撤销。", { v0: item.name, v1: recordsText(item.records) }),
+      confirmLabel: peachT("彻底删除"),
       danger: true,
       onConfirm: () => purge.mutateAsync(),
     });
@@ -56,7 +57,7 @@ function OrphanActions({ item, toast }: { item: OrphanRecord; toast(message: str
   return (
     <span className="flex min-w-48 flex-wrap items-center gap-2">
         {item.candidates.length
-          ? <Select aria-label={`把 ${item.name} 的记录接到哪个文件`} className="w-52" selectedKey={target}
+          ? <Select aria-label={peachT("把 {{v0}} 的记录接到哪个文件", { v0: item.name })} className="w-52" selectedKey={target}
               onSelectionChange={(key) => { if (key !== null) setTarget(Number(key)) }}>
               {item.candidates.map((candidate) => (
                 <SelectItem key={candidate.id} id={candidate.id} textValue={candidateText(candidate)}>
@@ -64,12 +65,12 @@ function OrphanActions({ item, toast }: { item: OrphanRecord; toast(message: str
                 </SelectItem>
               ))}
             </Select>
-          : <span className="text-text-secondary">没有番号或文件名对得上的文件</span>}
+          : <span className="text-text-secondary">{peachT("没有番号或文件名对得上的文件")}</span>}
         {item.candidates.length
           ? <Button size="small" disabled={target === null} {...busyProps(busy)}
-              onClick={() => attach.mutate()}>接到这个文件</Button>
+              onClick={() => attach.mutate()}>{peachT("接到这个文件")}</Button>
           : null}
-        <Button variant="danger" size="small" {...busyProps(busy)} onClick={remove}>彻底删除</Button>
+        <Button variant="danger" size="small" {...busyProps(busy)} onClick={remove}>{peachT("彻底删除")}</Button>
     </span>
   );
 }
@@ -104,22 +105,22 @@ export function OrphanRecordsCard({ toast }: { toast(message: string): void }) {
   const purge = useMutation({
     mutationFn: (ids: number[]) => purgeOrphan(ids),
     onSuccess: (data) => {
-      toast(`已彻底删除 ${data.purged} 条记录${data.blocked.length ? `，${data.blocked.length} 条文件已恢复，未删除` : ''}`);
+      toast(peachT("已彻底删除 {{v0}} 条记录{{v1}}", { v0: data.purged, v1: data.blocked.length ? peachT("，{{v0}} 条文件已恢复，未删除", { v0: data.blocked.length }) : '' }));
       setSelected([]); void refresh();
     },
   });
   const removeSelected = (chosen: OrphanRecord[]) => void confirmModal({
-    title: '彻底删除所选记录',
-    body: `将删除以下 ${chosen.length} 条作品和它们带的全部记录。此操作不可撤销。`,
+    title: peachT("彻底删除所选记录"),
+    body: peachT("将删除以下 {{v0}} 条作品和它们带的全部记录。此操作不可撤销。", { v0: chosen.length }),
     items: chosen.map((item) => item.name),
-    confirmLabel: '彻底删除所选记录', danger: true,
+    confirmLabel: peachT("彻底删除所选记录"), danger: true,
     onConfirm: () => purge.mutateAsync(chosen.map((item) => item.id)),
   });
   const columns: DataColumn<OrphanRecord>[] = [
-    { id: 'item', label: '作品', value: (item) => item.name, render: (item) => <OrphanIdentity item={item} /> },
-    { id: 'records', label: '带的记录', value: (item) => recordsText(item.records),
-      render: (item) => <span className="block min-w-28">{recordsText(item.records) || '无个人记录'}</span> },
-    { id: 'target', label: '接到与操作', value: (item) => item.candidates.length,
+    { id: 'item', label: peachT("作品"), value: (item) => item.name, render: (item) => <OrphanIdentity item={item} /> },
+    { id: 'records', label: peachT("带的记录"), value: (item) => recordsText(item.records),
+      render: (item) => <span className="block min-w-28">{recordsText(item.records) || peachT("无个人记录")}</span> },
+    { id: 'target', label: peachT("接到与操作"), value: (item) => item.candidates.length,
       render: (item) => <OrphanActions item={item} toast={toast} /> },
   ];
   if (!query.isError && !items.length) return null;
@@ -127,17 +128,17 @@ export function OrphanRecordsCard({ toast }: { toast(message: string): void }) {
     <section id="orphan-records" aria-labelledby="orphan-records-title" className="flex scroll-mt-20 flex-col gap-4">
         {query.isError
           ? <Fieldset layout="stack" labelledBy="orphan-records-title">
-              <FieldsetTitle id="orphan-records-title">孤儿记录</FieldsetTitle>
-              <Note tone="error" title="孤儿记录读取失败">{errorMessage(query.error)}</Note>
+              <FieldsetTitle id="orphan-records-title">{peachT("孤儿记录")}</FieldsetTitle>
+              <Note tone="error" title={peachT("孤儿记录读取失败")}>{errorMessage(query.error)}</Note>
             </Fieldset>
-          : <DataTable label="文件已消失的作品" items={items} columns={columns}
-              title="孤儿记录" titleId="orphan-records-title" unit="条作品"
-              description="这些作品的文件已不在盘上，喜欢、稍后看、播放列表与观看历史都还留着。接到新文件后记录跟过去，旧的这一条删掉。"
+          : <DataTable label={peachT("文件已消失的作品")} items={items} columns={columns}
+              title={peachT("孤儿记录")} titleId="orphan-records-title" unit={peachT("条作品")}
+              description={peachT("这些作品的文件已不在盘上，喜欢、稍后看、播放列表与观看历史都还留着。接到新文件后记录跟过去，旧的这一条删掉。")}
               rowId={(item) => String(item.id)} rowLabel={(item) => item.name}
               selected={selected} onSelected={setSelected}
               actions={(chosen) => <Button variant="danger" size="small" disabled={!chosen.length}
                 {...busyProps(purge.isPending)} onClick={() => removeSelected(chosen)}>
-                {`彻底删除所选（${chosen.length}）`}
+                {peachT("彻底删除所选（{{v0}}）", { v0: chosen.length })}
               </Button>} />}
     </section>
   );

@@ -5,6 +5,8 @@
  * 小图按原尺寸摆再糊一圈底），页面不重画一遍；原尺寸取图与补底规则在
  * `web/css/01-base.css` 的 `[data-person-ring]`，量图的是 `installCardArt` 挂在文档上的 `load` 监听。
  * 格底、头像框、首字与读数的配色在同目录的 `index-people.css`。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useLayoutEffect, useRef, type ReactNode } from 'react';
 import { Chip } from '@/components/base/badges/chip';
 
@@ -46,7 +48,7 @@ function Cell(
         className: `${CELL} ${big ? 'items-stretch text-left' : 'items-center text-center'}`,
       })}>
       {children}
-      {following ? <span data-index-feed="" role="img" aria-label="已订阅新作" className="absolute top-4 right-4 z-2 inline-flex">
+      {following ? <span data-index-feed="" role="img" aria-label={peachT("已订阅新作")} className="absolute top-4 right-4 z-2 inline-flex">
         <Chip variant="caption" color="blue"><Rss /></Chip>
       </span> : null}
       <span data-index-name="" className="text-body-medium wrap-anywhere text-text-primary">{name}</span>
@@ -93,7 +95,7 @@ export function OnlineAuthors(
     <div data-index-grid="" data-layout={layout} data-cells="people" className="index-grid-person gap-3">
       {items.map((author) => (
         <Cell key={author.key} data-follow-author={author.key} data-kind="performer" name={author.k}
-          readout={`${author.n.toLocaleString()} 项更新${author.held_by ? ' · 待确认' : ''}`} big={big}
+          readout={peachT("{{v0}} 项更新{{v1}}", { v0: author.n.toLocaleString(peachLocale), v1: author.held_by ? peachT(" · 待确认") : '' })} big={big}
           onPress={() => {
             if (author.entity_id) props.openEntity('creator', author.k);
             else if (author.held_by) props.openEntity('creator', author.held_by);

@@ -3,6 +3,8 @@
  * 数据全由壳取好推进来，这里只挑出当前视图画。作品网格按 `revision` 换键：壳每发起一次新的
  * 作品请求，这一格先铺骨架（`items` 为 `null`），列表回来后骨架淡出、卡片从模糊里清晰起来，
  * 同目录那一格。骨架还没到显示门槛就回来的，直接落内容。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { Fragment, useCallback, useMemo, useState } from 'react';
 
 import { CatalogGridPage, LoadMore } from '../catalog-grid/catalog-grid-page';
@@ -68,8 +70,8 @@ function VideoSection(props: EntityBodyProps) {
 
 /** 一部作品的样张铺成几格。张数、站名和标题已随 `/api/photos` 下来，不再请求一次。 */
 const sampleItems = (set: EntityCodeSet): EntitySamplePhoto[] => Array.from({ length: set.n }, (_, i) => ({
-  sample: true, code: set.code, position: i + 1, total: set.n, name: `${set.code} 样张 ${i + 1}`,
-  source: set.site_label || '官方样张',
+  sample: true, code: set.code, position: i + 1, total: set.n, name: peachT("{{v0}} 样张 {{v1}}", { v0: set.code, v1: i + 1 }),
+  source: set.site_label || peachT("官方样张"),
 }));
 
 const isSample = (item: EntityWallPhoto): item is EntitySamplePhoto => (item as EntitySamplePhoto).sample === true;
@@ -126,11 +128,11 @@ function PhotoSection({ photos, props }: { photos: EntityPhotos; props: EntityBo
       {groups.map(({ set, from }) => (
         <Fragment key={set.code}>
           <GroupHead label={set.code} title={set.name}
-            meta={[`${set.site_label || '官方'} 样张`, set.release_date, `${set.n.toLocaleString()} 张`].filter(Boolean).join(' · ')} />
+            meta={[peachT("{{v0}} 样张", { v0: set.site_label || peachT("官方") }), set.release_date, peachT("{{v0}} 张", { v0: set.n.toLocaleString(peachLocale) })].filter(Boolean).join(' · ')} />
           <div {...wallAttrs}>{wall.slice(from, from + set.n).map((item, i) => cell(item, from + i))}</div>
         </Fragment>
       ))}
-      {groups.length && photos.total ? <GroupHead label="本地图片" meta={`${photos.total.toLocaleString()} 张`} /> : null}
+      {groups.length && photos.total ? <GroupHead label={peachT("本地图片")} meta={peachT("{{v0}} 张", { v0: photos.total.toLocaleString(peachLocale) })} /> : null}
       <div {...wallAttrs} data-local-wall="">
         {photos.items.map((item, i) => (lost.has(localStart + i) ? null : cell(item, localStart + i)))}
       </div>

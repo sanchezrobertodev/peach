@@ -4,6 +4,8 @@
  * 点开回目录按它筛选，选择模式下拼成多标签筛选；在线是关注来源上的 booru 标签，按上游
  * tag_type 着色，点开去「关注 · 这个标签」，并且不进多选——多选拼的是目录筛选，拿在线标签
  * 去筛目录必然一条不中。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { Radio, RadioGroup } from 'react-aria-components';
 
 import { Button } from '@/components/base/buttons/button';
@@ -43,7 +45,7 @@ function AlphaTag({ tag, actions }: { tag: TagEntry; actions: TagActions }) {
       className="flex h-9 min-w-0 flex-1 cursor-pointer items-center gap-2.25 rounded-lg px-2.5 text-left text-body-regular text-text-secondary outline-none hover:text-text-primary focus-visible:ring-2 focus-visible:ring-border-focus-ring">
       <Dot />
       <span className="min-w-0 flex-1 truncate">{tag.label}</span>
-      <span className="flex-none text-caption-1-regular text-text-secondary">{tag.n.toLocaleString()}</span>
+      <span className="flex-none text-caption-1-regular text-text-secondary">{tag.n.toLocaleString(peachLocale)}</span>
     </button>
     {!actions.online ? <FavoriteButton item={{ kind: 'tag', name: tag.k, entity_id: tag.entity_id, favorite: tag.favorite }} /> : null}
     </div>
@@ -85,7 +87,7 @@ export function TagCloud({ tags, actions }: { tags: TagEntry[]; actions: TagActi
           onClick={() => actions.press(tag.k)}
           className="inline-flex cursor-pointer items-center rounded-lg border px-3 py-1.25 text-body-2-regular text-text-secondary outline-none focus-visible:ring-2 focus-visible:ring-border-focus-ring">
           {tag.label + NBSP}
-          <span data-tag-n="" className="text-caption-1-regular opacity-60">{tag.n.toLocaleString()}</span>
+          <span data-tag-n="" className="text-caption-1-regular opacity-60">{tag.n.toLocaleString(peachLocale)}</span>
         </button>
         {!actions.online ? <FavoriteButton item={{ kind: 'tag', name: tag.k, entity_id: tag.entity_id, favorite: tag.favorite }} /> : null}
         </span>
@@ -95,7 +97,7 @@ export function TagCloud({ tags, actions }: { tags: TagEntry[]; actions: TagActi
 }
 
 const VIEWS: readonly (readonly [TagView, string, string])[] = [
-  ['cloud', '标签云', 'tags'], ['alphabet', '字母表', 'text-aa'],
+  ['cloud', peachT("标签云"), 'tags'], ['alphabet', peachT("字母表"), 'text-aa'],
 ];
 
 /** 筛选浮层：上排类型药丸，下排读数、按首字跳转与视图切换。只摆数得到的那几类。 */
@@ -114,7 +116,7 @@ export function TagFilters(
 ) {
   const alphaScroll = useHorizontalScroller<HTMLElement>();
   return (
-    <FilterGlassRows label="标签筛选" topLabel="标签类型"
+    <FilterGlassRows label={peachT("标签筛选")} topLabel={peachT("标签类型")}
       top={categories.map(([key, label]) => (
         <FilterPill key={key} data-tag-pill="" data-tag-cat={key === 'all' ? 'all' : tagColorKey(online, key)}
           pressed={category === key} onPress={() => onCategory(key)}>
@@ -126,7 +128,7 @@ export function TagFilters(
           {readout}
         </span>
         {letters.length > 1 ? (
-          <nav ref={alphaScroll} aria-label="按首字跳转" data-alpha-jump=""
+          <nav ref={alphaScroll} aria-label={peachT("按首字跳转")} data-alpha-jump=""
             className="flex min-w-0 gap-0.5 overflow-x-auto overscroll-x-contain">
             {letters.map((letter, at) => (
               <button key={letter} type="button" onClick={() => onJump(at)}
@@ -136,7 +138,7 @@ export function TagFilters(
             ))}
           </nav>
         ) : null}
-        <RadioGroup aria-label="标签视图" orientation="horizontal" value={view}
+        <RadioGroup aria-label={peachT("标签视图")} orientation="horizontal" value={view}
           onChange={(next) => onView(next as TagView)} className={`ml-auto ${SEGMENTED_GLASS_TRACK}`}>
           {VIEWS.map(([value, label, symbol]) => {
             const Glyph = spriteGlyph(symbol);
@@ -159,15 +161,15 @@ export function TagDock(
   { count: number; match: 'any' | 'all'; onMatch(match: 'any' | 'all'): void; onClear(): void; onApply(): void },
 ) {
   return (
-    <SelectionDock visible={count > 0} label="所选标签操作" count={`已选 ${count.toLocaleString()} 个标签`}>
+    <SelectionDock visible={count > 0} label={peachT("所选标签操作")} count={peachT("已选 {{v0}} 个标签", { v0: count.toLocaleString(peachLocale) })}>
       <Checkbox isSelected={match === 'any'} onChange={(on) => onMatch(on ? 'any' : 'all')}>
         <span className="flex flex-col">
-          <span className="text-body-medium">广泛匹配</span>
-          <span className="text-caption-1-regular text-text-secondary">开启后匹配任一所选标签；关闭后必须同时包含全部标签。</span>
+          <span className="text-body-medium">{peachT("广泛匹配")}</span>
+          <span className="text-caption-1-regular text-text-secondary">{peachT("开启后匹配任一所选标签；关闭后必须同时包含全部标签。")}</span>
         </span>
       </Checkbox>
-      <Button variant="secondary" size="small" onClick={onClear}>清空</Button>
-      <Button variant="primary" size="small" disabled={!count} onClick={onApply}>显示结果</Button>
+      <Button variant="secondary" size="small" onClick={onClear}>{peachT("清空")}</Button>
+      <Button variant="primary" size="small" disabled={!count} onClick={onApply}>{peachT("显示结果")}</Button>
     </SelectionDock>
   );
 }

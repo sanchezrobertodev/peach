@@ -6,6 +6,8 @@
  * 扫描与清理是两趟后台任务，都走 `useBackgroundJob`。扫描的结论就是那趟任务的终态，所以
  * 结果区画的是当前快照：上一趟扫出来的东西还等着清。那一趟清过之后（`applied`）读数就不是
  * 现状了，结果区改画服务器留着的最近一次清理回执。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { confirmModal, MEDIA_SOURCE_ICONS } from '@peach/legacy/ui';
 import { fmtSize } from '@peach/legacy/core';
 
@@ -30,14 +32,14 @@ import {
 
 const COMPARE = spriteGlyph('git-compare');
 const AGAIN = spriteGlyph('rotate-cw');
-const DISCONNECTED = '暂时无法读取进度，正在重新连接…';
-const APPLY_LABEL = '清理失效条目';
+const DISCONNECTED = peachT("暂时无法读取进度，正在重新连接…");
+const APPLY_LABEL = peachT("清理失效条目");
 
 /* 结果读数两行各自按卡数等分：来源几个都不折出半行。窄了照顶上那排读数折两列、一列。 */
 const RESULT_ROW = 'inline-grid w-full grid-flow-col auto-cols-fr gap-4 max-plain-stat-pair:grid-flow-row'
   + ' max-plain-stat-pair:grid-cols-2 max-plain-stat-single:grid-cols-1';
 
-const count = (value: number | undefined) => Number(value || 0).toLocaleString();
+const count = (value: number | undefined) => Number(value || 0).toLocaleString(peachLocale);
 
 /** 一趟扫描的结论：来源一行，每个来源一张读数卡；要清的三样一行。 */
 function ScanResult({ scan, partial = false }: { scan: ResourceScanState; partial?: boolean }) {
@@ -47,28 +49,28 @@ function ScanResult({ scan, partial = false }: { scan: ResourceScanState; partia
       <div className={RESULT_ROW}>
         {(scan.sources ?? []).map((source) => (
           <article key={source.location} className={plainStatClass()}>
-            <PlainStat label={SOURCE_LABELS[source.location] || '媒体来源'}
+            <PlainStat label={SOURCE_LABELS[source.location] || peachT("媒体来源")}
               mark={<SourceMark mark={MEDIA_SOURCE_ICONS[source.location] ?? 'database'} />}
               aside={<span className={source.online ? 'text-notification-success-foreground' : 'text-text-error-primary'}>
-                {source.online ? '可访问' : '离线，已跳过'}
+                {source.online ? peachT("可访问") : peachT("离线，已跳过")}
               </span>}
-              figure={source.online ? `${count(source.missing)} 项` : '—'}
+              figure={source.online ? peachT("{{v0}} 项", { v0: count(source.missing) }) : '—'}
               meta={sourceMeta(source)} wrapMeta />
           </article>
         ))}
       </div>
       {!partial && <div className={RESULT_ROW}>
         <article className={plainStatClass()}>
-          <PlainStat label="待永久删除" figure={`${count(purgeCount(scan))} 项`} meta="文件已不在盘上，含回收站" />
+          <PlainStat label={peachT("待永久删除")} figure={peachT("{{v0}} 项", { v0: count(purgeCount(scan)) })} meta={peachT("文件已不在盘上，含回收站")} />
         </article>
         <article className={plainStatClass()}>
-          <PlainStat label="将标为已消失" figure={`${count(scan.vanish)} 项`} meta="带个人记录，记录留着" />
+          <PlainStat label={peachT("将标为已消失")} figure={peachT("{{v0}} 项", { v0: count(scan.vanish) })} meta={peachT("带个人记录，记录留着")} />
         </article>
         <article className={plainStatClass()}>
-          <PlainStat label="空文件夹" figure={`${count(scan.empty)} 个`} meta="保留来源根目录" />
+          <PlainStat label={peachT("空文件夹")} figure={peachT("{{v0}} 个", { v0: count(scan.empty) })} meta={peachT("保留来源根目录")} />
         </article>
         <article className={plainStatClass()}>
-          <PlainStat label="可清理的缓存" figure={`${count(cache.files)} 个`}
+          <PlainStat label={peachT("可清理的缓存")} figure={peachT("{{v0}} 个", { v0: count(cache.files) })}
             meta={cache.files ? fmtSize(cache.bytes) : ''} />
         </article>
       </div>}
@@ -90,8 +92,8 @@ export function ResourceSyncCard(
       if (out.status !== 'complete') return;
       /* 没删的几样是这一轮留下的，能删的已经删了：报警告档、写完成与没处理的数目，不说失败。 */
       const { done, left } = applyLeftovers(out);
-      if (left) toast(`已完成 ${count(done)} 项，${count(left)} 项没有处理`, { warning: true });
-      else toast('已清理失效条目');
+      if (left) toast(peachT("已完成 {{v0}} 项，{{v1}} 项没有处理", { v0: count(done), v1: count(left) }), { warning: true });
+      else toast(peachT("已清理失效条目"));
     },
   });
   const scan = useBackgroundJob<ResourceScanState>({
@@ -106,7 +108,7 @@ export function ResourceSyncCard(
   const scanning = scan.running || scan.start.isPending;
   const cleaning = apply.running || apply.start.isPending;
   const scanned = state?.status === 'complete' || state?.status === 'failed';
-  const label = scanning ? '扫描中' : scanned ? '重新扫描' : '检查文件';
+  const label = scanning ? peachT("扫描中") : scanned ? peachT("重新扫描") : peachT("检查文件");
 
   /* 执行那一步只认这次检查的候选，逐条复核后再删；删了就没有撤销。 */
   const runApply = (payload: ResourceScanState) => void confirmModal({
@@ -121,7 +123,7 @@ export function ResourceSyncCard(
   const receipt = (out: ResourceApplyState) => {
     const partial = applyLeftovers(out).left > 0;
     return (
-      <Note tone={partial ? 'warning' : 'success'} title={partial ? '部分完成' : '清理结果'}>
+      <Note tone={partial ? 'warning' : 'success'} title={partial ? peachT("部分完成") : peachT("清理结果")}>
         {applyText(out, fmtSize)}
       </Note>
     );
@@ -129,15 +131,15 @@ export function ResourceSyncCard(
   let progress = null;
   let result = null;
   if (done?.status === 'failed') {
-    result = <Note tone="error" title="资源清理未完成">{done.error || '请查看任务记录，核对已处理的文件。'}</Note>;
+    result = <Note tone="error" title={peachT("资源清理未完成")}>{done.error || peachT("请查看任务记录，核对已处理的文件。")}</Note>;
   } else if (done) {
     result = receipt(done);
   } else if (apply.running) {
-    progress = <TaskProgress embedded label={apply.job?.message || '正在复核并清理失效条目…'} />;
+    progress = <TaskProgress embedded label={apply.job?.message || peachT("正在复核并清理失效条目…")} />;
   } else if (scan.start.isError) {
-    result = <Note tone="error" title="扫描失败">{errorMessage(scan.start.error)}</Note>;
+    result = <Note tone="error" title={peachT("扫描失败")}>{errorMessage(scan.start.error)}</Note>;
   } else if (scan.query.isError && state) {
-    result = <Note tone="neutral" title="任务状态">{DISCONNECTED}</Note>;
+    result = <Note tone="neutral" title={peachT("任务状态")}>{DISCONNECTED}</Note>;
   } else if (state?.status === 'running') {
     const line = scanLine(state);
     progress = (
@@ -147,32 +149,30 @@ export function ResourceSyncCard(
   } else if (state?.status === 'failed') {
     result = <>
       {state.sources?.length ? <ScanResult scan={state} partial /> : null}
-      <Note tone="error" title="扫描失败">{state.error || '后台扫描失败'}</Note>
+      <Note tone="error" title={peachT("扫描失败")}>{state.error || peachT("后台扫描失败")}</Note>
     </>;
   } else if (state?.status === 'complete' && state.applied) {
     result = apply.job?.status === 'complete'
       ? receipt(apply.job)
-      : <Note tone="neutral" title="清理结果">这次检查的结果已经清理，重新扫描可再核对。</Note>;
+      : <Note tone="neutral" title={peachT("清理结果")}>{peachT("这次检查的结果已经清理，重新扫描可再核对。")}</Note>;
   } else if (state?.status === 'complete') {
     const changes = hasChanges(state);
     result = (
       <>
         <ScanResult scan={state} />
-        {changes ? <Note tone="neutral" title="清理内容">{applyPlanText(state)}</Note> : null}
+        {changes ? <Note tone="neutral" title={peachT("清理内容")}>{applyPlanText(state)}</Note> : null}
         <div className="flex flex-wrap items-center justify-end gap-2">
           {changes
             ? <Button variant="danger" {...busyProps(cleaning)} onClick={() => runApply(state)}>
-                {cleaning ? '正在复核并清理…' : APPLY_LABEL}
+                {cleaning ? peachT("正在复核并清理…") : APPLY_LABEL}
               </Button>
-            : <p className="mr-auto text-body-regular text-notification-success-foreground">
-                已检查可访问的来源，没有待清理的记录、空文件夹或缓存。
-              </p>}
+            : <p className="mr-auto text-body-regular text-notification-success-foreground">{peachT("已检查可访问的来源，没有待清理的记录、空文件夹或缓存。")}</p>}
         </div>
       </>
     );
   }
   if (apply.start.isError && !done) {
-    result = <>{result}<Note tone="error" title="清理失败">{errorMessage(apply.start.error)}</Note></>;
+    result = <>{result}<Note tone="error" title={peachT("清理失败")}>{errorMessage(apply.start.error)}</Note></>;
   }
 
   return (
@@ -181,10 +181,8 @@ export function ResourceSyncCard(
         <Button data-resource-scan leadingIcon={scanned && !scanning ? AGAIN : COMPARE} {...busyProps(scanning)}
           onClick={() => { if (!scanning) scan.start.mutate() }}>{label}</Button>
       }>
-        <FieldsetTitle id="resource-sync-title" gap="small">资源同步</FieldsetTitle>
-        <p className="max-w-190 text-body-2-regular leading-5 text-text-secondary">
-          按馆藏记录逐条查找本地磁盘与网盘上的文件，列出文件已不存在的记录、空文件夹，以及不再被引用的缓存。
-        </p>
+        <FieldsetTitle id="resource-sync-title" gap="small">{peachT("资源同步")}</FieldsetTitle>
+        <p className="max-w-190 text-body-2-regular leading-5 text-text-secondary">{peachT("按馆藏记录逐条查找本地磁盘与网盘上的文件，列出文件已不存在的记录、空文件夹，以及不再被引用的缓存。")}</p>
         <div aria-live="polite" className="mt-4 empty:hidden">{progress}</div>
       </Fieldset>
       <div aria-live="polite" className="flex flex-col gap-4 empty:hidden">{result}</div>

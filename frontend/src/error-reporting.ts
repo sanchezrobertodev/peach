@@ -1,4 +1,5 @@
 /* 浏览器异常只记录到当前 Peach 主机。失败不再生成新的错误请求。 */
+import { t as peachT } from "./i18n/index";
 let installed = false;
 
 export function installErrorReporting(): void {
@@ -28,5 +29,5 @@ export function installErrorReporting(): void {
     }).catch(() => {});
   };
   window.addEventListener('error', event => send('error', event.error, event.message, event));
-  window.addEventListener('unhandledrejection', event => send('unhandledrejection', event.reason, 'Promise 未处理的异常'));
+  window.addEventListener('unhandledrejection', event => send('unhandledrejection', event.reason, peachT("Promise 未处理的异常")));
 }

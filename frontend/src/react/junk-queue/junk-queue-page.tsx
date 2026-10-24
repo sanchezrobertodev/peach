@@ -11,6 +11,8 @@
  * 换分类、换视图是换查询键，网格按新键重挂、重铺骨架。壳处置完推进 `revision` 时查询也换键，
  * 但旧的一份留在屏上直到新的一份到货（`placeholderData`），被处置的那张卡原地消失，
  * 已经往下露出来的那几段也不收回去。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -104,8 +106,8 @@ function JunkBody({ props, data, pending, error, retry }: {
     if (!items.length) {
       const dismissed = props.view === 'dismissed';
       return (
-        <EmptyState icon={CheckGlyph} title={dismissed ? '没有已排除的文件' : '没有待判断的垃圾文件'}>
-          {dismissed ? '点“不是垃圾”的资源会保留在这里，可随时重新判断。' : '当前分类没有待检查文件。'}
+        <EmptyState icon={CheckGlyph} title={dismissed ? peachT("没有已排除的文件") : peachT("没有待判断的垃圾文件")}>
+          {dismissed ? peachT("点“不是垃圾”的资源会保留在这里，可随时重新判断。") : peachT("当前分类没有待检查文件。")}
         </EmptyState>
       );
     }
@@ -121,7 +123,7 @@ function JunkBody({ props, data, pending, error, retry }: {
         {/* 队列一次只取前 200 条：露到底了还有没取的，说清楚是截断而不是全部。 */}
         {shown.length >= items.length && Number(data.total || 0) > items.length
           ? <p data-junk-truncated="" className="py-6 text-center text-caption-1-regular text-text-secondary">
-              {`显示前 ${items.length.toLocaleString()} 条，共 ${Number(data.total).toLocaleString()} 条；处理掉这些后，其余的会补上来。`}
+              {peachT("显示前 {{v0}} 条，共 {{v1}} 条；处理掉这些后，其余的会补上来。", { v0: items.length.toLocaleString(peachLocale), v1: Number(data.total).toLocaleString(peachLocale) })}
             </p>
           : null}
       </>
@@ -148,5 +150,5 @@ function RevealMore({ onMore }: { onMore(): void }) {
     observer.observe(el);
     return () => observer.disconnect();
   }, [onMore]);
-  return <div ref={node} data-load-more="" onClick={onMore} dangerouslySetInnerHTML={{ __html: loadingDotsHtml('继续载入中…') }} />;
+  return <div ref={node} data-load-more="" onClick={onMore} dangerouslySetInnerHTML={{ __html: loadingDotsHtml(peachT("继续载入中…")) }} />;
 }

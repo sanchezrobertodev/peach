@@ -4,6 +4,8 @@
  * 提交走 `POST /api/setup`。400 的 `errors` 按题目 key 写回原位：媒体目录按行对齐，整表不成立
  * 的那一句放在目录区上方；高级设置里任一项出错就展开它；访问密码出错时开关保持打开。已填的
  * 内容都留在原地，焦点落到第一个标错的框。 */
+import { t as peachT } from "../../../i18n/index";
+import { translateServerMessage } from '../../../i18n/server-message';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Radio } from 'react-aria-components';
 import { RiAddLine } from '@remixicon/react';
@@ -38,17 +40,17 @@ function folderErrors(value: SetupErrors[string], count: number): { rows: string
 }
 
 function scanLabel(paths: string[]): string {
-  if (!paths.length) return '完成设置后扫描并补全资料';
-  if (paths.length === 1) return `完成设置后扫描并补全资料：${paths[0]}`;
-  return `完成设置后扫描这 ${paths.length} 个文件夹并补全资料`;
+  if (!paths.length) return peachT("完成设置后扫描并补全资料");
+  if (paths.length === 1) return peachT("完成设置后扫描并补全资料：{{v0}}", { v0: paths[0] });
+  return peachT("完成设置后扫描这 {{v0}} 个文件夹并补全资料", { v0: paths.length });
 }
 
-const text = (value: SetupErrors[string]) => (Array.isArray(value) ? value.filter(Boolean).join(' ') : value ?? '');
+const text = (value: SetupErrors[string]) => (Array.isArray(value) ? value.filter(Boolean).map((line) => peachT(line)).join(' ') : peachT(value ?? ''));
 
 export function SetupForm({ setup, onDone }: { setup: SetupQuestions; onDone: (done: SetupDone) => void }) {
   const media = setup.questions.find((question) => question.input === 'folders');
   const others = setup.questions.filter((question) => question.input !== 'folders');
-  const sources = setup.media_sources.map(({ value, label }) => [value, label] as const);
+  const sources = setup.media_sources.map(({ value, label }) => [value, peachT(label)] as const);
   const blank = (path = ''): SetupFolder => ({ path, location: setup.media_source_default, root: '', cost: setup.media_source_default === 'local' ? 'free' : '' });
   const folders = useFolderRows<SetupFolder>({
     initial: () => [blank(media?.default ?? '')], blank: () => blank(), pickFolder, describe: describeFailure,
@@ -81,7 +83,7 @@ export function SetupForm({ setup, onDone }: { setup: SetupQuestions; onDone: (d
   // `aria-describedby` 挂在框上，文字在页面上只有这一份。`key` 跟着提交轮次换，同一句错误
   // 再提交一次也会重新播报。
   const announce = (message: string | undefined) =>
-    message ? <span key={errorRound} role="alert">{message}</span> : undefined;
+    message ? <span key={errorRound} role="alert">{translateServerMessage(message)}</span> : undefined;
 
   const visible = (question: SetupQuestion) =>
     !question.visible_when || Object.entries(question.visible_when).every(([key, value]) => values[key] === value);
@@ -126,17 +128,17 @@ export function SetupForm({ setup, onDone }: { setup: SetupQuestions; onDone: (d
   };
 
   const field = (question: SetupQuestion) => {
-    const error = text(errors[question.key]);
-    const help = question.help.join('');
+    const error = translateServerMessage(text(errors[question.key]));
+    const help = question.help.map((line) => peachT(line)).join(' ');
     if (question.input === 'choice') {
       const labelId = `setup-${question.key}-label`;
       return (
         <div key={question.key} className="flex flex-col gap-1.5">
-          <Label id={labelId} elementType="span">{question.label}</Label>
+          <Label id={labelId} elementType="span">{peachT(question.label)}</Label>
           <SegmentedRadioGroup aria-labelledby={labelId} orientation="horizontal" className={SEGMENTED_TRACK}
             value={values[question.key] ?? question.default} onChange={(value) => setValue(question.key, value)}>
             {(question.options ?? []).map((option) => (
-              <Radio key={option.value} value={option.value} className={SEGMENT}>{option.label}</Radio>
+              <Radio key={option.value} value={option.value} className={SEGMENT}>{peachT(option.label)}</Radio>
             ))}
           </SegmentedRadioGroup>
           {help ? <Help>{help}</Help> : null}
@@ -146,7 +148,7 @@ export function SetupForm({ setup, onDone }: { setup: SetupQuestions; onDone: (d
     }
     const Suffix = () => <span className="shrink-0 pr-1 text-body-regular text-text-secondary">{question.suffix}</span>;
     return (
-      <Input key={question.key} id={`f-${question.key}`} label={question.label} isRequired={question.required}
+      <Input key={question.key} id={`f-${question.key}`} label={peachT(question.label)} isRequired={question.required}
         inputMode={question.input === 'number' ? 'numeric' : undefined} autoComplete="off" spellCheck="false"
         value={values[question.key] ?? ''} onChange={(value) => setValue(question.key, value)}
         leadingAddon={question.prefix
@@ -165,12 +167,12 @@ export function SetupForm({ setup, onDone }: { setup: SetupQuestions; onDone: (d
       {media ? (
         <CardGroup first labelledBy="setup-media-title">
           <GroupTitle id="setup-media-title">
-            {media.label}<span aria-hidden className="ml-0.5 text-text-error-primary">*</span>
+            {peachT(media.label)}<span aria-hidden className="ml-0.5 text-text-error-primary">*</span>
           </GroupTitle>
-          {tableError ? <ErrorText key={errorRound}>{tableError}</ErrorText> : null}
+          {tableError ? <ErrorText key={errorRound}>{translateServerMessage(tableError)}</ErrorText> : null}
           <div role="group" aria-labelledby="setup-media-title" className="flex flex-col gap-3">
             {folders.rows.map((row, index) => (
-              <FolderRow key={index} label={`${media.label} ${index + 1}`} path={row.path}
+              <FolderRow key={index} label={`${peachT(media.label)} ${index + 1}`} path={row.path}
                 onPath={(path) => folders.edit(index, { path })} error={announce(folders.errors[index])}
                 inputRef={folders.inputRef(index)} picking={folders.picking === index}
                 onPick={() => void folders.pick(index)}
@@ -178,75 +180,72 @@ export function SetupForm({ setup, onDone }: { setup: SetupQuestions; onDone: (d
                 <SourceSelect index={index} value={row.location} options={sources}
                   onChange={(location) => folders.edit(index, { location, cost: location === 'local' ? 'free' : '' })} />
                 <MediaReadPolicy index={index} cost={row.cost ?? ''}
-                  error={requireReadPolicy && !row.cost ? '请选择媒体读取策略' : undefined}
+                  error={requireReadPolicy && !row.cost ? peachT("请选择媒体读取策略") : undefined}
                   onChange={(cost) => folders.edit(index, { cost })} />
               </FolderRow>
             ))}
           </div>
-          <Button ref={addButton} variant="secondary" leadingIcon={RiAddLine} className="self-start" onClick={folders.add}>
-            添加媒体库
-          </Button>
+          <Button ref={addButton} variant="secondary" leadingIcon={RiAddLine} className="self-start" onClick={folders.add}>{peachT("添加媒体库")}</Button>
           {cloud ? (
             <>
               <MediaReadPolicyHelp />
-              <Help>{setup.cloud.help}<ExternalLink href={setup.cloud.link.url}>{setup.cloud.link.label}</ExternalLink></Help>
+              <Help>{peachT(setup.cloud.help)}<ExternalLink href={setup.cloud.link.url}>{peachT(setup.cloud.link.label)}</ExternalLink></Help>
               {setup.cloud.dependencies.map((dependency) => (
                 <Help key={dependency.name}>
-                  {dependency.message}<ExternalLink href={dependency.download_url}>{dependency.download_label}</ExternalLink>
+                  {peachT('未检测到 {{v0}}。', { v0: dependency.name })}<ExternalLink href={dependency.download_url}>{peachT('下载 {{v0}}', { v0: dependency.name })}</ExternalLink>
                 </Help>
               ))}
             </>
           ) : null}
-          {media.help.map((line) => <Help key={line}>{line}</Help>)}
+          {media.help.map((line) => <Help key={line}>{peachT(line)}</Help>)}
         </CardGroup>
       ) : null}
 
       <CardGroup labelledBy="setup-access-title">
         <div className="flex items-start justify-between gap-4">
           <div className="flex min-w-0 flex-col gap-0.5">
-            <GroupTitle id="setup-access-title">访问密码</GroupTitle>
-            <p id="setup-access-description" className="text-body-2-regular text-text-secondary">开启后，访问 Peach 需要先登录。</p>
+            <GroupTitle id="setup-access-title">{peachT("访问密码")}</GroupTitle>
+            <p id="setup-access-description" className="text-body-2-regular text-text-secondary">{peachT("开启后，访问 Peach 需要先登录。")}</p>
           </div>
           <Switch aria-labelledby="setup-access-title" aria-describedby="setup-access-description"
             isSelected={accessOn} onChange={setAccessOn} />
         </div>
-        <Help>未设置密码时，能连接到 Peach 的设备可直接进入。</Help>
+        <Help>{peachT("未设置密码时，能连接到 Peach 的设备可直接进入。")}</Help>
         {accessOn
-          ? <PasswordPair label="访问密码" password={password} confirmation={confirmation}
+          ? <PasswordPair label={peachT("访问密码")} password={password} confirmation={confirmation}
               onPassword={setPassword} onConfirmation={setConfirmation}
-              passwordError={announce(text(errors.access_password))} passwordHint="请输入 8–256 个字符。"
+              passwordError={announce(text(errors.access_password))} passwordHint={peachT("请输入 8–256 个字符。")}
               confirmationInvalid={Boolean(errors.access_password)} />
           : null}
       </CardGroup>
 
       <CardGroup>
-        <Disclosure key={advancedOpenings} summary="高级设置" defaultOpen={advancedOpenings > 0}>
+        <Disclosure key={advancedOpenings} summary={peachT("高级设置")} defaultOpen={advancedOpenings > 0}>
           <div className="flex flex-col gap-4">{others.filter(visible).map(field)}</div>
         </Disclosure>
       </CardGroup>
 
       <CardGroup labelledBy="setup-options-title">
-        <GroupTitle id="setup-options-title">完成设置后</GroupTitle>
+        <GroupTitle id="setup-options-title">{peachT("完成设置后")}</GroupTitle>
         <div className="flex flex-col gap-1.5">
           <Checkbox isSelected={scanNow} onChange={setScanNow}>{scanLabel(filled)}</Checkbox>
-          <Help>读取已有 NFO 和封面，采集缺失资料。符合自动规则的资料会在处理完成后保存到数据库，其余资料留待确认。</Help>
+          <Help>{peachT("读取已有 NFO 和封面，采集缺失资料。符合自动规则的资料会在处理完成后保存到数据库，其余资料留待确认。")}</Help>
         </div>
         <section aria-labelledby="setup-history-title" className="flex flex-col gap-1.5 border-t border-separator-border pt-4">
-          <h3 id="setup-history-title" className="flex items-center gap-2 text-body-medium text-text-primary">
-            浏览器历史记录<span className="text-body-2-regular text-text-tertiary">可选</span>
+          <h3 id="setup-history-title" className="flex items-center gap-2 text-body-medium text-text-primary">{peachT("浏览器历史记录")}<span className="text-body-2-regular text-text-tertiary">{peachT("可选")}</span>
           </h3>
-          <Checkbox isSelected={historyGuide} onChange={setHistoryGuide}>接下来导入浏览器历史记录</Checkbox>
-          <Help>用于生成口味分析。完成设置后选择读取这台电脑，或导入其他设备的记录；也可稍后从「口味」进入。</Help>
+          <Checkbox isSelected={historyGuide} onChange={setHistoryGuide}>{peachT("接下来导入浏览器历史记录")}</Checkbox>
+          <Help>{peachT("用于生成口味分析。完成设置后选择读取这台电脑，或导入其他设备的记录；也可稍后从「口味」进入。")}</Help>
         </section>
       </CardGroup>
 
       {failure ? <ErrorText>{failure}</ErrorText> : null}
       {reporting ? <CardGroup>
-        <GroupTitle>版本统计与错误诊断</GroupTitle>
+        <GroupTitle>{peachT("版本统计与错误诊断")}</GroupTitle>
         <ReportingChoices value={reporting} onChange={setReporting} />
-        <Help>馆藏与口味明细上传默认关闭，可在「应用与维护」查看并选择。</Help>
+        <Help>{peachT("馆藏与口味明细上传默认关闭，可在「应用与维护」查看并选择。")}</Help>
       </CardGroup> : null}
-      <Button type="submit" className="self-start" {...busyProps(busy)}>完成设置</Button>
+      <Button type="submit" className="self-start" {...busyProps(busy)}>{peachT("完成设置")}</Button>
     </form>
   );
 }

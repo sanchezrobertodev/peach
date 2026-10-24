@@ -4,6 +4,8 @@
  * `/api/organize` 一次回整块卡片要的东西：任务快照摊在顶层，旁边是可选来源、存着的模板、
  * 预设与占位符说明。所以后台任务那一格要 `jobOf`／`withJob`：新快照只换任务那几个字段，
  * 来源与模板原样留着。执行与回滚是真实 ledger 写入，调用方必须先过确认弹层。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { apiGet, apiSend } from '../../api';
 import { queryClient } from '../query';
 /* 模板跟着数据库走（`SYNCED_SETTING_KEYS` 里的 `organizeTemplates`），写的是设置面板同一个端点。 */
@@ -93,15 +95,15 @@ export function baseName(path: string): string {
   return text.slice(Math.max(text.lastIndexOf('\\'), text.lastIndexOf('/')) + 1);
 }
 
-const count = (value: number | undefined) => Number(value || 0).toLocaleString();
+const count = (value: number | undefined) => Number(value || 0).toLocaleString(peachLocale);
 
 /** 预览结果那一句。只列会变的行：库里几万行里改不到的那部分是背景，不是结果。 */
 export function planSummary(plan: OrganizePlan): string {
   const skipped = Object.entries(plan.reasons || {}).sort((a, b) => b[1] - a[1])
     .map(([reason, value]) => `${reason} ${count(value)}`).join(' · ');
-  if (!Number(plan.counts?.change || 0)) return `没有要改的文件。${skipped ? `跳过：${skipped}。` : ''}`;
-  return `${count(plan.counts.change)} 个文件会改名或移动，${count(plan.counts.unchanged)} 个已经就是目标名字`
-    + `${skipped ? `；跳过 ${skipped}` : ''}。`;
+  if (!Number(plan.counts?.change || 0)) return peachT("没有要改的文件。{{v0}}", { v0: skipped ? peachT("跳过：{{v0}}。", { v0: skipped }) : '' });
+  return peachT("{{v0}} 个文件会改名或移动，{{v1}} 个已经就是目标名字", { v0: count(plan.counts.change), v1: count(plan.counts.unchanged) })
+    + `${skipped ? peachT("；跳过 {{v0}}", { v0: skipped }) : ''}。`;
 }
 
 /** 跑完的那一趟怎么说。回滚那一趟有 `restored`。 */
@@ -110,7 +112,7 @@ export function organizeOutcome(job: OrganizeJob): { text: string; failed: numbe
   const failed = Number(job.failed || 0);
   const done = Number(rollback ? job.restored : job.moved || 0);
   const text = rollback
-    ? `已退回 ${count(done)} 个文件${failed ? `，${count(failed)} 行未能退回` : ''}。`
-    : `已整理 ${count(done)} 个文件${failed ? `，${count(failed)} 行未能处理` : ''}。`;
+    ? peachT("已退回 {{v0}} 个文件{{v1}}。", { v0: count(done), v1: failed ? peachT("，{{v0}} 行未能退回", { v0: count(failed) }) : '' })
+    : peachT("已整理 {{v0}} 个文件{{v1}}。", { v0: count(done), v1: failed ? peachT("，{{v0}} 行未能处理", { v0: count(failed) }) : '' });
   return { text, failed, rollback };
 }

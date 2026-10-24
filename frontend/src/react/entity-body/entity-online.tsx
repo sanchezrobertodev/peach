@@ -3,6 +3,7 @@
  * 取数与筛选（状态、来源、标签、排序、视频／图片）归资料页（`entity-page-view.tsx`），筛选浮层与这一格
  * 读的是同一份；这里只画当前媒体那一档的组。查询键同关注页一族：详情里换状态、检查更新跑完时按
  * `['follow-feed']` 前缀失效与改写缓存，这一屏跟着变。换筛选时资料页按查询键给这一格换键，骨架从头铺。 */
+import { t as peachT } from "../../i18n/index";
 import type { UseInfiniteQueryResult, InfiniteData } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { requestErrorMessage } from '@peach/legacy/core';
@@ -84,7 +85,7 @@ function Cards({ view, media, data, visible, context, photoSize, photoLayout, im
 
 function Empty({ searched }: { searched: boolean }) {
   const html = searched
-    ? emptyStateHtml('search-x', '当前筛选下没有更新', '切换媒体类型、状态、来源或标签后再试。')
-    : emptyStateHtml('rss', '还没有抓到更新', '关注页检查更新之后，这位创作者的新内容会出现在这里。');
+    ? emptyStateHtml('search-x', peachT("当前筛选下没有更新"), peachT("切换媒体类型、状态、来源或标签后再试。"))
+    : emptyStateHtml('rss', peachT("还没有抓到更新"), peachT("关注页检查更新之后，这位创作者的新内容会出现在这里。"));
   return <div data-follow-empty="" className="contents" dangerouslySetInnerHTML={{ __html: html }} />;
 }

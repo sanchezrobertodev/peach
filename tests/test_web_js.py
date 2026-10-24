@@ -52,6 +52,7 @@ registerHooks({
 });
 
 const [, , payload] = process.argv;
+Object.defineProperty(globalThis, 'navigator', { value: { languages: ['zh-CN'] }, configurable: true });
 const cases = JSON.parse(payload);
 const cache = new Map();
 const results = [];

@@ -8,6 +8,8 @@
  * - `['links','check']` 是那趟联网检查的状态，`running` 时两秒问一次。
  * - `['links','prune']` 是删除那趟的状态，同样按 `running` 开关。
  * 合成一个键的话，每两秒的一轮轮询都会把上面那块只读统计重画一遍。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { apiGet, apiSend } from '../../api';
 
 export const LINKS_URL = '/api/links';
@@ -23,8 +25,8 @@ export const LINK_PRUNE_KEY = ['links', 'prune'] as const;
  *  `官网 · 事务所` 里的间隔点会和「按类型」那行的分隔点撞在一起，读出来是
  *  「社媒 373 · 官网 · 事务所 224」——分不清哪个数字属于哪一类，所以用斜杠。 */
 export const LINK_KINDS: Record<string, string> = {
-  official: '官网/事务所', social: '社交账号',
-  catalog: '作品资料站', source_reference: '资料出处',
+  official: peachT("官网/事务所"), social: peachT("社交账号"),
+  catalog: peachT("作品资料站"), source_reference: peachT("资料出处"),
 };
 
 export interface LinkStats {
@@ -72,7 +74,7 @@ export interface LinkPruneState {
 /** 这几条写端点拒绝时回的是 200 加 `ok:false`（清单过期、没有可重试的行），不是错误码。 */
 async function accepted<T>(request: Promise<T & { ok?: boolean; error?: string }>): Promise<T> {
   const result = await request;
-  if (result.ok === false) throw new Error(result.error || '操作未完成，请重试');
+  if (result.ok === false) throw new Error(result.error || peachT("操作未完成，请重试"));
   return result;
 }
 
@@ -95,16 +97,16 @@ export const fetchLinkPrune = (signal?: AbortSignal) => apiGet<LinkPruneState>(L
 export const startLinkPrune = ({ checkId, ids }: { checkId: string; ids?: number[] }) =>
   accepted(apiSend<LinkPruneState>(LINK_PRUNE_URL, { confirm: true, check_id: checkId, background: true, ...(ids ? { ids } : {}) }));
 
-const count = (value: number | undefined) => Number(value || 0).toLocaleString();
+const count = (value: number | undefined) => Number(value || 0).toLocaleString(peachLocale);
 
 /** 删完那一句。 */
 export const pruneText = (state: LinkPruneState) =>
-  `已删除 ${count(state.removed)} 条；${state.marked ? `已隐退女优的 ${count(state.marked)} 条留作不可点的记录；` : ''}`
-  + `保留 ${count(state.recovered)} 条未确认失效的链接。`;
+  peachT("已删除 {{v0}} 条；{{v1}}", { v0: count(state.removed), v1: state.marked ? peachT("已隐退女优的 {{v0}} 条留作不可点的记录；", { v0: count(state.marked) }) : '' })
+  + peachT("保留 {{v0}} 条未确认失效的链接。", { v0: count(state.recovered) });
 
 /** 检查推进到哪儿了。总量还没算出来时只说在做什么。 */
 export function checkLine(state: LinkCheckState): string {
   const retrying = state.scope === 'retry';
-  if (!state.total) return retrying ? '正在重验链接' : '正在检查链接';
-  return `${retrying ? '已重验' : '已检查'} ${count(state.checked)} / ${count(state.total)} 条链接`;
+  if (!state.total) return retrying ? peachT("正在重验链接") : peachT("正在检查链接");
+  return peachT("{{v0}} {{v1}} / {{v2}} 条链接", { v0: retrying ? peachT("已重验") : peachT("已检查"), v1: count(state.checked), v2: count(state.total) });
 }

@@ -10,6 +10,7 @@
  * 分散在整棵树上，没有共同的宿主，它们那两团反光的色相只能写在根上。写一次根就是整棵树重算样式，所以
  * 那一条只接换档、点颜色和开关那几下。强调色同理：一次点选写一个属性，换来的是整页的按钮、焦点环和
  * 链接跟着走。 */
+import { t as peachT } from "../i18n/index";
 import {
   ACCENTS, DEFAULT_ACCENT, DEFAULT_HOME_GLOW, HOME_GLOW_PRESETS, HOME_GLOW_SPOTS, glowAccent, glowChipFill, glowPalette,
   isNativeGlass, normalizeAccent, paintGlassFaces, paintHomeGlow, type HomeGlow,
@@ -53,7 +54,7 @@ const chip = (key: string, label: string, colors: readonly string[]): GlowChip =
    什么也不会变，读起来却像还有一档没试过。 */
 export function glowChips(glow: HomeGlow): GlowChip[] {
   const chips = HOME_GLOW_PRESETS.map(([key, label, palette]) => chip(key, label, HOME_GLOW_SPOTS.map((spot) => palette[spot].color)));
-  if (glow.preset === 'custom') chips.push(chip('custom', '自定义', HOME_GLOW_SPOTS.map((spot) => glow[spot].color)));
+  if (glow.preset === 'custom') chips.push(chip('custom', peachT("自定义"), HOME_GLOW_SPOTS.map((spot) => glow[spot].color)));
   return chips;
 }
 

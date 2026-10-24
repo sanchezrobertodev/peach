@@ -3,6 +3,8 @@
  * `/api/entity` 由壳取，连同这一页的新作一起当 props 递进来；写操作都由壳做成 `actions`
  * 递进来，岛不自己拼请求。这里只把服务端下发的那份资料排成页面要画的几段：名字下面那一行、
  * 右边的资料表、外链、外部入口和同台艺人。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { brandIcon, foldName, linkMarkUrl, officialLinkText } from '@peach/legacy/core';
 
 import type { FeedNew } from '../feed-new/feed-new';
@@ -157,8 +159,8 @@ export const isCompany = (kind: string) => kind === 'studio' || kind === 'agency
 export const isPeople = (kind: string) => kind === 'performer' || kind === 'creator';
 
 export const entityFeedTip = (on: boolean) => on
-  ? '已订阅新作，点击取消订阅'
-  : '订阅新作';
+  ? peachT("已订阅新作，点击取消订阅")
+  : peachT("订阅新作");
 
 /** 这条实体名下已有的写法，统称排第一。 */
 export function nameChoices(entity: EntityHeroData): string[] {
@@ -178,7 +180,7 @@ export function agencyOf(entity: EntityHeroData): { name: string; linked: boolea
 export function performerLinkName(link: HeroLink, agency: string): string {
   const text = officialLinkText(link, 'performer'), home = foldName(agency);
   const own = home && [link.label, text].map(foldName).some((said) => said && (home.includes(said) || said.includes(home)));
-  return own ? `${agency} 官方资料` : (text || link.label || '');
+  return own ? peachT("{{v0}} 官方资料", { v0: agency }) : (text || link.label || '');
 }
 
 /** 链接前那枚圆标：常见社媒走雪碧图里的品牌字形，其余取服务端合成的站点圆标，取不到露出地球。 */
@@ -203,11 +205,11 @@ export function heroLinks(entity: EntityHeroData, kind: string): LinkView[] {
   const names = [entity.canonical_name, ...(entity.aliases || [])];
   const links = (entity.links || []).map((x): LinkView => {
     if (x.gone) {
-      const why = x.retired_year ? `已于 ${x.retired_year} 年隐退` : '链接已失效';
+      const why = x.retired_year ? peachT("已于 {{v0}} 年隐退", { v0: x.retired_year }) : peachT("链接已失效");
       return { type: 'gone', title: `${performerLinkName(x, agency)} · ${why}` };
     }
     const url = x.url || '';
-    if (!(x.clickable && /^https?:\/\//i.test(url))) return { type: 'private', label: x.label || x.hostname || '已记录' };
+    if (!(x.clickable && /^https?:\/\//i.test(url))) return { type: 'private', label: x.label || x.hostname || peachT("已记录") };
     if (isPeople(kind) && x.link_kind !== 'social') {
       return { type: 'icon', url, title: performerLinkName(x, agency), mark: siteMark(x) };
     }
@@ -227,7 +229,7 @@ function foldPrivate(links: LinkView[]): LinkView[] {
   if (hidden.length < 2) return links;
   return [
     ...links.filter((link) => link.type !== 'private'),
-    { type: 'private', label: `${hidden.length.toLocaleString()} 个不公开来源`, sources: hidden.map((link) => link.label) },
+    { type: 'private', label: peachT("{{v0}} 个不公开来源", { v0: hidden.length.toLocaleString(peachLocale) }), sources: hidden.map((link) => link.label) },
   ];
 }
 
@@ -247,10 +249,10 @@ export interface FactRow {
 /** 公司资料每格表达独立事实；没有数据的格子不显示。 */
 export function companyFactRows(profile: EntityHeroData['company_profile']): FactRow[] {
   const fields = [
-    ['legal_name', '公司名称', 'briefcase'], ['founded', '公司成立', 'calendar'],
-    ['launched', '品牌启动', 'flag'], ['country', '国家／地区', 'globe'],
-    ['location', '所在地', 'globe'], ['operator', '运营公司', 'briefcase'], ['parent', '母公司', 'briefcase'],
-    ['group', '所属集团', 'briefcase'], ['distributor', '发行商', 'film'],
+    ['legal_name', peachT("公司名称"), 'briefcase'], ['founded', peachT("公司成立"), 'calendar'],
+    ['launched', peachT("品牌启动"), 'flag'], ['country', peachT("国家／地区"), 'globe'],
+    ['location', peachT("所在地"), 'globe'], ['operator', peachT("运营公司"), 'briefcase'], ['parent', peachT("母公司"), 'briefcase'],
+    ['group', peachT("所属集团"), 'briefcase'], ['distributor', peachT("发行商"), 'film'],
   ] as const;
   return fields.flatMap(([key, label, glyph]) => profile?.[key]?.value?.trim()
     ? [{ label, glyph, parts: [{ text: profile[key]!.value, tone: 'plain' as const }] }]
@@ -262,21 +264,21 @@ export function factRows(p: HeroProfile | null | undefined): FactRow[] {
   if (!p) return [];
   const rows: FactRow[] = [];
   // 年龄由服务端按生日算、与生日成对下发；只拿到生日时那一行只写生日。
-  if (p.birth_date) rows.push({ glyph: 'cake', label: '生日', parts: [
+  if (p.birth_date) rows.push({ glyph: 'cake', label: peachT("生日"), parts: [
     { text: p.birth_date, tone: 'num' },
-    ...(Number.isFinite(p.age) ? [{ text: `· ${p.age} 岁`, tone: 'sub' as const }] : [])] });
+    ...(Number.isFinite(p.age) ? [{ text: peachT("· {{v0}} 岁", { v0: p.age }), tone: 'sub' as const }] : [])] });
   const size = ([['T', p.height], ['B', p.bust], ['W', p.waist], ['H', p.hip]] as const)
     .filter(([, value]) => value).map(([letter, value]) => `${letter}${value}`).join(' · ');
-  const cup = p.cup ? `${size ? '· ' : ''}${p.cup} 罩杯` : '';
-  if (size || cup) rows.push({ glyph: 'ruler', label: '身材', parts: [
+  const cup = p.cup ? peachT("{{v0}}{{v1}} 罩杯", { v0: size ? '· ' : '', v1: p.cup }) : '';
+  if (size || cup) rows.push({ glyph: 'ruler', label: peachT("身材"), parts: [
     ...(size ? [{ text: size, tone: 'num' as const }] : []), ...(cup ? [{ text: cup, tone: 'sub' as const }] : [])] });
-  if (p.debut_date || p.debut_title) rows.push({ glyph: 'flag', label: '出道', clip: p.debut_title || undefined, parts: [
+  if (p.debut_date || p.debut_title) rows.push({ glyph: 'flag', label: peachT("出道"), clip: p.debut_title || undefined, parts: [
     ...(p.debut_date ? [{ text: p.debut_date, tone: 'num' as const }] : []),
     ...(p.debut_title ? [{ text: p.debut_title, tone: 'sub' as const }] : [])] });
   const active = p.active || {};
-  if (active.from) rows.push({ glyph: 'calendar-range', label: '生涯', parts: [{
-    text: `${active.from}${active.ongoing ? ' – 至今' : active.to ? ` – ${active.to}` : ''}`, tone: 'num' }] });
-  if ((p.tags || []).length) rows.push({ glyph: 'tags', label: '标签', parts: [], tags: p.tags });
+  if (active.from) rows.push({ glyph: 'calendar-range', label: peachT("生涯"), parts: [{
+    text: `${active.from}${active.ongoing ? peachT(" – 至今") : active.to ? ` – ${active.to}` : ''}`, tone: 'num' }] });
+  if ((p.tags || []).length) rows.push({ glyph: 'tags', label: peachT("标签"), parts: [], tags: p.tags });
   return rows;
 }
 

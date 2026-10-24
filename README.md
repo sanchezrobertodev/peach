@@ -4,139 +4,156 @@
 
 <h1 align="center">Peach</h1>
 
-<p align="center">给自己用的私人影片馆藏：本地硬盘、网盘和关注的创作者，放在一个地方看。</p>
+<p align="center">A private video library: local drives, cloud drives and the creators you follow, all in one place.</p>
 
 <p align="center">
-  <a href="https://peach.video">官网</a> ·
-  <a href="https://github.com/peach-mitao/peach/releases">下载安装包</a> ·
-  <a href="https://demo.peach.video">在线演示</a> ·
-  <a href="https://github.com/peach-mitao/peach/releases/tag/intro-video">介绍视频</a> ·
-  <a href="https://github.com/peach-mitao/peach/issues">问题反馈</a> ·
-  <a href="https://github.com/orgs/peach-mitao/projects/7/views/1">需求看板</a> ·
-  <a href="https://github.com/orgs/peach-mitao/projects/7/views/3">路线图</a> ·
-  <a href="#文档">文档</a> ·
-  <a href="README.en.md">English</a>
+  <a href="https://github.com/sanchezrobertodev/peach">Fork repository</a> ·
+  <a href="https://peach.video">Upstream website</a> ·
+  <a href="https://github.com/peach-mitao/peach/releases">Upstream installers</a> ·
+  <a href="https://demo.peach.video">Upstream demo</a> ·
+  <a href="https://github.com/peach-mitao/peach/releases/tag/intro-video">Intro video</a> ·
+  <a href="https://github.com/sanchezrobertodev/peach/issues">Report a fork problem</a> ·
+  <a href="https://github.com/orgs/peach-mitao/projects/7/views/1">Requests board</a> ·
+  <a href="https://github.com/orgs/peach-mitao/projects/7/views/3">Roadmap</a> ·
+  <a href="#documentation">Documentation</a> ·
+  <a href="README.en.md">English</a> ·
+  <a href="README.es.md">Español</a> ·
+  <a href="README.zh-CN.md">简体中文</a>
 </p>
 
 <p align="center">
   <a href="https://github.com/peach-mitao/peach/releases"><img src="https://img.shields.io/github/v/release/peach-mitao/peach?include_prereleases&amp;filter=v*&amp;sort=semver&amp;display_name=tag" alt="release"></a>
-  <a href="https://github.com/peach-mitao/peach/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/peach-mitao/peach/test.yml?branch=master&amp;label=tests&amp;logo=githubactions&amp;logoColor=white" alt="CI 状态"></a>
+  <a href="https://github.com/peach-mitao/peach/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/peach-mitao/peach/test.yml?branch=master&amp;label=tests&amp;logo=githubactions&amp;logoColor=white" alt="CI status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0--or--later-blue?logo=gnu&amp;logoColor=white" alt="license"></a>
   <a href="docs/TESTING_DESKTOP.md"><img src="https://img.shields.io/badge/Windows-x64-0078D4" alt="Windows x64"></a>
-  <a href="docs/OPERATIONS.md#macos-独立测试包"><img src="https://img.shields.io/badge/macOS-DMG-555555?logo=apple&amp;logoColor=white" alt="macOS 独立应用构建与安装"></a>
-  <img src="https://img.shields.io/badge/18%2B-adult%20content-critical" alt="18+ 成人内容">
+  <a href="docs/OPERATIONS.md#macos-独立测试包"><img src="https://img.shields.io/badge/macOS-DMG-555555?logo=apple&amp;logoColor=white" alt="Build and install the standalone macOS app"></a>
+  <img src="https://img.shields.io/badge/18%2B-adult%20content-critical" alt="18+ adult content">
 </p>
 
 https://github.com/user-attachments/assets/a5610874-e611-41bb-be22-7d99f0d64b62
 
-> **18+** 仅供成年人管理自己的成人内容馆藏。仓库不含媒体或站点数据；连接外部站点需有相应账号和访问权。
+> **18+** For adults managing their own adult-content collections. The repository contains no media or site data. Access to outside sites requires the appropriate accounts and permissions.
 
-## 能做什么
+This is the [English and Spanish localization fork](https://github.com/sanchezrobertodev/peach) of [peach-mitao/peach](https://github.com/peach-mitao/peach), created by longmeidao and the upstream contributors. The website, demo, screenshots, release badges, installers and roadmap linked here belong to the upstream project. Upstream installers do not include this fork's localization changes; run this fork from source to use them.
 
-- **本地、网盘一起看**：硬盘与已挂载的 115、PikPak、OneDrive 等网盘汇成一个馆藏。
-- **播放墙挑片**：拖动全屏封面墙，点开原位播放；同一番号的不同版本与分卷集中切换。
-- **播放器字幕**：加载本地字幕，按番号搜索 SubtitleCat 简繁中文字幕并选择加载，调整字体、字号、颜色与背景。在线搜索无需 API Key，来源可能包含机翻。
-- **接手已有收藏**：直接读取 NFO 和海报，缺少的标题、女优、厂牌与封面可从多个来源补齐，保留手动修改。
-- **跨站关注**：同一创作者在 FANBOX、Patreon、Kemono 等站点的更新汇到一起，同一作品合成一张卡。
-- **追新作、找想看的**：按女优订阅新作，按口味发现作品，用「想要」清单留住待找的片子。
-- **云下载**：按番号查找资源或粘贴磁力，提交到 115 或 PikPak，落地后自动整理入库。
-- **浏览器添加 JAV**：在 JavDB、MissAV、Jable 等站点识别或选中番号，一键交给 Peach 云下载入库。[用户脚本](https://github.com/peach-mitao/peach-userscript)独立维护，见[安装与配对](docs/JAV_BROWSER.md)。
-- **口味**：结合观看、反馈、馆藏、浏览历史、书签与关注关系分析偏好。一次读取本机浏览器的历史和书签，也可导入 HTML 书签或 Chromium Bookmarks JSON；来源可停止读取或删除。见[口味数据来源](docs/TASTE_SOURCES.md)。
+## Interface language
 
-观看记录、收藏和设置保存在本机。扫描不动原文件；手动整理先预览，可撤回上一批。
+Choose **English**, **Español** or **简体中文** on the setup or login page, or in settings. Peach uses your browser's language when no choice is saved, with English as the fallback. The choice is saved in the current browser; changing it reloads the page.
 
-扫描、关注更新和新作资料采集会保存进度，应用重启后继续处理未完成的项目。恢复范围见[断点续跑](docs/OPERATIONS.md#长时任务断点续跑)。
+Localization covers interface text progressively. Media titles, tags, source metadata, some server messages, the desktop tray and most detailed documentation may still appear in their original language. See the [language and source-install guide](docs/LOCALIZATION.md) for the scope and contributor guidance.
 
-「发送版本统计与错误诊断（推荐）」默认勾选，可在安装、首次设置或设置页取消。两类技术事件由同一开关控制，已保存的关闭选择会保留。启用后向 Sentry 发送页面列出的技术字段，不自动上传完整日志、诊断 ZIP、媒体信息或观看记录。见[远程诊断说明](docs/DIAGNOSTICS.md#可选远程诊断)。
+## Features
 
-馆藏与口味明细上传在安装器和设置页另设独立选项，默认关闭。设置页先展示完整字段与本机预览，经明确同意后，每周上传作品、标签、评分、观看汇总及全部偏好维度的明细；不含账号、设备或安装标识。明细仍有跨次关联与再识别风险，接收服务可见连接 IP。见[馆藏与口味群体研究](docs/DIAGNOSTICS.md#馆藏与口味群体研究)。
+- **Local and cloud together**: browse hard drives and mounted cloud drives, including 115, PikPak and OneDrive, in one library.
+- **Pick from the video wall**: drag through a full-screen cover wall and play in place, with versions and parts of the same title grouped together.
+- **Player subtitles**: load local subtitles, search SubtitleCat for simplified and traditional Chinese subtitles by video code, then adjust fonts, size, colors and backgrounds. No API key is required; results may include machine translations.
+- **Bring your existing collection**: read NFO files and posters, then fill missing titles, performers, studios and covers from multiple sources while keeping your edits.
+- **Follow across sites**: combine a creator's updates from FANBOX, Patreon, Kemono and other sites, with matching posts grouped into one card.
+- **Find your next watch**: subscribe to performers' new releases, discover titles based on your taste and save them to your want list.
+- **Cloud download**: search by video code or paste a magnet link, send it to 115 or PikPak and organize the downloaded video into your library automatically.
+- **Add JAV from your browser**: detect or select a video code on JavDB, MissAV, Jable and other sites, then send it to Peach for cloud download and library ingestion. The [userscript](https://github.com/peach-mitao/peach-userscript) is maintained independently; see [installation and pairing](docs/JAV_BROWSER.md).
+- **Taste preferences**: combine viewing, feedback, your library, browser history, bookmarks and follows to understand your preferences. Read history and bookmarks from supported local browsers in one action, or import HTML bookmarks and Chromium Bookmarks JSON. Stop reading a source or remove it when needed. See [taste data sources](docs/TASTE_SOURCES.md).
 
-## 截图
+Watch history, favorites and settings stay on your computer. Scanning leaves original files untouched; manual organization offers a preview and an undo for the last batch.
 
-[在线演示](https://demo.peach.video) 可直接体验搜索、筛选和资料页，操作不会保存。点击截图查看原图。
+Scanning, follow updates and new-release metadata collection save their progress and continue unfinished items after the app restarts. See [task recovery](docs/OPERATIONS.md#长时任务断点续跑) for recovery boundaries.
+
+The combined "Send version statistics and error diagnostics (recommended)" option is checked by default. Clear it during installation, first setup or in settings to disable both. Saved opt-out choices are preserved. While enabled, it sends the listed technical fields to Sentry; full logs, diagnostic ZIPs, media details and watch history are excluded. See [remote diagnostics](docs/DIAGNOSTICS.md#可选远程诊断).
+
+Sharing library and taste details is a separate option in the installer and settings, off by default. Review the complete fields and local preview before explicitly consenting to weekly snapshots of works, tags, ratings, viewing summaries and every preference dimension. Account, device and installation identifiers are excluded. Detailed snapshots can still be linked or re-identified, and the receiving service can see the connection IP. See the [diagnostics reference](docs/DIAGNOSTICS.md#馆藏与口味群体研究).
+
+## Screenshots
+
+Try search, filters and profiles in the [upstream read-only demo](https://demo.peach.video). The following upstream screenshots show the Chinese interface. Click a screenshot for the original image.
 
 <table>
   <tr>
-    <td width="50%"><a href="https://peach.video/assets/screenshots/home-20261014.png" target="_blank" rel="noopener"><img src="https://peach.video/assets/screenshots/home-20261014.webp" alt="馆藏：首页筛选与作品卡片" width="600"></a></td>
-    <td width="50%"><a href="https://peach.video/assets/screenshots/profile-20261014.png" target="_blank" rel="noopener"><img src="https://peach.video/assets/screenshots/profile-20261014.webp" alt="女优页：人像、资料与全部作品" width="600"></a></td>
+    <td width="50%"><a href="https://peach.video/assets/screenshots/home-20261014.png" target="_blank" rel="noopener"><img src="https://peach.video/assets/screenshots/home-20261014.webp" alt="Library filters and video cards" width="600"></a></td>
+    <td width="50%"><a href="https://peach.video/assets/screenshots/profile-20261014.png" target="_blank" rel="noopener"><img src="https://peach.video/assets/screenshots/profile-20261014.webp" alt="Performer portrait, profile and videos" width="600"></a></td>
   </tr>
   <tr>
-    <td align="center">馆藏：按人物、来源和标签找片</td>
-    <td align="center">女优页：资料、别名和全部作品</td>
+    <td align="center">Library: browse by performer, source and tag</td>
+    <td align="center">Performer profile: details, aliases and all videos</td>
   </tr>
   <tr>
-    <td><a href="https://peach.video/assets/screenshots/follow-20261014.png" target="_blank" rel="noopener"><img src="https://peach.video/assets/screenshots/follow-20261014.webp" alt="关注：创作者导航与图片更新" width="600"></a></td>
-    <td><a href="https://peach.video/assets/screenshots/stats-20261014.png" target="_blank" rel="noopener"><img src="https://peach.video/assets/screenshots/stats-20261014.webp" alt="统计：馆藏、存储与内容分布" width="600"></a></td>
+    <td><a href="https://peach.video/assets/screenshots/follow-20261014.png" target="_blank" rel="noopener"><img src="https://peach.video/assets/screenshots/follow-20261014.webp" alt="Creator navigation and image updates" width="600"></a></td>
+    <td><a href="https://peach.video/assets/screenshots/stats-20261014.png" target="_blank" rel="noopener"><img src="https://peach.video/assets/screenshots/stats-20261014.webp" alt="Library, storage and content statistics" width="600"></a></td>
   </tr>
   <tr>
-    <td align="center">关注：创作者的跨站更新</td>
-    <td align="center">统计：片子存在哪、看了多少</td>
+    <td align="center">Following: creator updates across sites</td>
+    <td align="center">Statistics: storage and watch history</td>
   </tr>
   <tr>
-    <td colspan="2"><a href="https://peach.video/assets/screenshots/wall-20261014.png" target="_blank" rel="noopener"><img src="https://peach.video/assets/screenshots/wall-20261014-readme.webp" alt="播放墙：全屏作品封面与浏览控件" width="1200"></a></td>
+    <td colspan="2"><a href="https://peach.video/assets/screenshots/wall-20261014.png" target="_blank" rel="noopener"><img src="https://peach.video/assets/screenshots/wall-20261014-readme.webp" alt="Full-screen video cover wall" width="1200"></a></td>
   </tr>
   <tr>
-    <td colspan="2" align="center">播放墙：拖动挑片，原位播放</td>
+    <td colspan="2" align="center">Video wall: drag to browse, play in place</td>
   </tr>
 </table>
 
-## 下载与使用
+## Download and use
+
+For this fork's localized interface, use the [source-install instructions](docs/LOCALIZATION.md#run-this-fork-from-source). The packaged downloads described below are upstream builds; they are not localized builds of this fork.
 
 ### Windows
 
-1. 从 [Releases](https://github.com/peach-mitao/peach/releases) 下载完整安装包 `Peach-<版本>-windows-x64-setup.exe`，双击安装，无需管理员权限；也可下载完整免安装包，解压后运行 `Peach.exe`。
-2. 浏览器打开首次设置页后，选择媒体目录和访问范围。
-3. 开始扫描，随后在浏览器里浏览和播放。
+1. Download the full installer, `Peach-<version>-windows-x64-setup.exe`, from [Releases](https://github.com/peach-mitao/peach/releases) and run it. No administrator rights needed. Alternatively, extract the full portable package and run `Peach.exe`.
+2. Choose media directories and access permissions on the setup page that opens in your browser.
+3. Start scanning, then browse and play in your browser.
 
-完整安装包携带媒体工具，可离线安装；轻量安装包体积更小，安装时按需下载工具。
+The full installer includes media tools for offline installation. The smaller lite installer downloads tools as needed during setup.
 
-测试版尚未签名。若 Windows 提示「已保护你的电脑」，确认来自本项目的 Release，再点「更多信息 → 仍要运行」。安装、更新和故障排查见 [Windows 使用说明](docs/TESTING_DESKTOP.md)。
+Test builds are unsigned. If Windows says “Windows protected your PC”, confirm the file came from the upstream project's Releases, then choose “More info → Run anyway”. See the [Windows guide](docs/TESTING_DESKTOP.md) for installation, updates and troubleshooting.
 
-### macOS 本机构建
+### Build on macOS
 
-macOS 可在本机构建独立 `.app` 与 DMG，运行不需要 Python、源码或另一台电脑。构建与安装见 [macOS 独立测试包](docs/OPERATIONS.md#macos-独立测试包)。
+Build a self-contained `.app` and DMG locally on macOS. Running it requires neither Python, a source checkout, nor another computer. See [the macOS build guide](docs/OPERATIONS.md#macos-独立测试包).
 
-发版流程分别生成 Apple Silicon（`macos-arm64.dmg`）与 Intel（`macos-x86_64.dmg`）测试包；可下载版本以 [Releases](https://github.com/peach-mitao/peach/releases) 的实际资产为准。在「关于本机」确认芯片，打开对应镜像并将 Peach 拖入「应用程序」。测试包未完成 Apple 公证，媒体工具需另行准备。
+The release workflow generates separate Apple Silicon (`macos-arm64.dmg`) and Intel (`macos-x86_64.dmg`) test packages. Check the actual assets on [Releases](https://github.com/peach-mitao/peach/releases) for availability. Check your chip in About This Mac, open the matching image, and drag Peach into Applications. Test packages are not notarized; media tools must be installed separately.
 
-### 从源码运行（Windows、macOS）
+### Run from source (Windows, macOS)
 
-需要 Git、uv 和 Python 3.14 或更高，步骤见[源码运行](docs/OPERATIONS.md#从源码运行windowsmacos)。
+Requires Git, uv and Python 3.14 or newer. Follow the [English source-install guide for this fork](docs/LOCALIZATION.md#run-this-fork-from-source). The detailed [operations guide](docs/OPERATIONS.md#从源码运行windowsmacos) is in Chinese and uses the upstream repository URL.
 
-### Docker（VPS / NAS）
+### Docker (VPS / NAS)
 
-部署步骤与支持范围见 [Docker 部署](docs/DOCKER.md)。
+See [Docker deployment](docs/DOCKER.md) for setup and supported configurations.
 
-## 常见问题
+## FAQ
 
-- **会改我的文件吗？** 扫描、补资料不碰原文件。手动整理会改名或移动；清空回收站会删除文件，资源同步中的清理会删除空目录，均需确认。
-- **支持哪些网盘？** 通过 CloudDrive2 等工具挂载为本地目录的网盘，详见[网盘挂载](docs/CLOUDDRIVE.md)；云下载支持 115 和 PikPak，登录令牌保存在本机。
-- **手机上怎么看？** 首次设置时允许同一局域网的设备访问，手机连同一网络，打开设置页给出的地址，并设置访问密码。
-- **数据存在哪？** 本机的 `peach-data` 文件夹；Windows 版默认位于 `%LOCALAPPDATA%\Peach\peach-data`。
+- **Will it change my files?** Scanning and filling in details leave originals untouched. Manual organization renames or moves files; emptying the trash deletes files, and resource-sync cleanup removes empty folders. Each requires confirmation.
+- **Which cloud drives work?** Drives mounted as local folders through tools such as CloudDrive2; see [cloud drive mounts](docs/CLOUDDRIVE.md). Cloud download supports 115 and PikPak, with sign-in tokens stored locally.
+- **How do I watch on my phone?** Allow devices on the same network during setup, connect your phone to that network, open the address shown and set an access password.
+- **Where is my data?** In the local `peach-data` folder. The Windows build defaults to `%LOCALAPPDATA%\Peach\peach-data`.
 
-## 问题反馈
+## Reporting problems
 
-先查看[用户反馈](https://github.com/peach-mitao/peach/issues)，或[提交问题](https://github.com/peach-mitao/peach/issues/new/choose)，附上版本、操作步骤、预期与实际结果。截图请遮掉凭据、局域网地址和完整路径，不要上传数据库或媒体；安全问题按[安全政策](SECURITY.md)私下报告。
+Report localization and fork-specific problems in [this fork's issue tracker](https://github.com/sanchezrobertodev/peach/issues). Include the version or commit, selected language, steps, expected result and actual result. For upstream behavior, consult [upstream feedback](https://github.com/peach-mitao/peach/issues). Hide credentials, LAN addresses and full paths in screenshots; do not upload databases or media. Report security issues privately through the [security policy](SECURITY.md).
 
-## 文档
+## Documentation
 
-[运行与配置](docs/OPERATIONS.md) · [来源采集](docs/SOURCING.md) · [外部播放器](docs/EXTERNAL_PLAYERS.md) · [变更日志](CHANGELOG.md)
+[Language and source-install guide](docs/LOCALIZATION.md) · [Español](README.es.md) · [Original Chinese README](README.zh-CN.md)
 
-参与开发：[开发约定](AGENTS.md) · [测试与依赖](docs/TESTING.md)
+Most detailed guides below are in Chinese.
 
-## 相关项目
+[Operations](docs/OPERATIONS.md) · [Sourcing](docs/SOURCING.md) · [External players](docs/EXTERNAL_PLAYERS.md) · [Changelog](CHANGELOG.md)
 
-感谢 [amane](https://github.com/sqzw-x/amane)、[Gfriends](https://github.com/gfriends/gfriends)、[CloudDrive2](https://www.clouddrive2.com/) 等项目，完整致谢与复用说明见[复用清单](docs/REUSE.md)。
+Contributing: [Development guide](AGENTS.md) · [Testing and dependencies](docs/TESTING.md)
 
-## Star 历史
+## Related projects
+
+Thanks to [amane](https://github.com/sqzw-x/amane), [Gfriends](https://github.com/gfriends/gfriends), [CloudDrive2](https://www.clouddrive2.com/) and others. See the [reuse inventory](docs/REUSE.md) for full credits and details.
+
+## Upstream Star History
 
 <a href="https://www.star-history.com/?repos=peach-mitao%2Fpeach&amp;type=date&amp;logscale=&amp;releases=&amp;legend=top-left">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=peach-mitao/peach&amp;type=date&amp;theme=dark&amp;logscale&amp;legend=top-left">
     <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=peach-mitao/peach&amp;type=date&amp;logscale&amp;legend=top-left">
-    <img alt="Peach Star 历史" src="https://api.star-history.com/svg?repos=peach-mitao/peach&amp;type=date&amp;logscale&amp;legend=top-left">
+    <img alt="Peach Star History" src="https://api.star-history.com/svg?repos=peach-mitao/peach&amp;type=date&amp;logscale&amp;legend=top-left">
   </picture>
 </a>
 
-## 许可证
+## License
 
-[AGPL-3.0-or-later](LICENSE) · Copyright (C) 2026 longmeidao。第三方组件保留各自的许可证。
+[AGPL-3.0-or-later](LICENSE) · Copyright (C) 2026 longmeidao. Third-party components retain their own licenses.

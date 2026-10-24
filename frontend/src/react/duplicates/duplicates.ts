@@ -7,6 +7,7 @@
  * 数据管理页那张「重复文件」卡片读的是同一份真相的 `total`／`files`／`reclaimable`，
  * 所以它接下面这个 `DUPLICATES_KEY`，不另发一次 `?limit=1`：服务端两种 limit 都要把整张
  * 表扫一遍分完组，省下的只是回程字节，换来的却是两处读数可能对不上。 */
+import { t as peachT } from "../../i18n/index";
 import { apiGet, apiSend } from '../../api';
 import { prefetchMediaSources } from '../media-sources';
 import { queryClient } from '../query';
@@ -91,8 +92,8 @@ export type KeepRule = 'largest' | 'longest' | 'all' | (string & {});
 
 /** 确认弹层里「每组保留……」那半句。 */
 export const KEEP_LABELS: Record<string, string> = {
-  largest: '最大的一个', longest: '最长的一个',
-  '115': '115（没有则留最大）', pikpak: 'PikPak（没有则留最大）', all: '零个文件',
+  largest: peachT("最大的一个"), longest: peachT("最长的一个"),
+  '115': peachT("115（没有则留最大）"), pikpak: peachT("PikPak（没有则留最大）"), all: peachT("零个文件"),
 };
 
 /** 这一批文件里真正出现过的网盘来源。 */
@@ -153,4 +154,4 @@ export async function batchOperate(ids: readonly number[], operation: 'dispose' 
 
 /** 页头说明行与汇总块那一句。 */
 export const duplicatesLede = (data: DuplicatesData, formatSize: (bytes: number) => string) =>
-  `${data.total} 组 · ${data.files} 个文件 · 可回收 ${formatSize(data.reclaimable)}`;
+  peachT("{{v0}} 组 · {{v1}} 个文件 · 可回收 {{v2}}", { v0: data.total, v1: data.files, v2: formatSize(data.reclaimable) });

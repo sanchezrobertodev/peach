@@ -1,3 +1,4 @@
+import { t as peachT } from "../i18n/index";
 /* media 域控制器：本域状态与动作，启动由 Application 的生命周期统一安装。 */
 import { loadSourceStatus, preferencesState, wireDrag } from './preferences.js';
 import { receiptsState } from './receipts.js';
@@ -197,7 +198,7 @@ mediaState.itemDetailHelpers = {
   tagCandidates:()=>(mediaState.facets&&mediaState.facets.tags)||[],
   sourceOffline:key=>preferencesState.sourceOffline(key),
   offlineReason:key=>preferencesState.offlineReason(key),
-  relatedSkeletonHtml:()=>pageSkeletonHtml('正在读取推荐',{cards:true,className:'related-skeleton'}),
+  relatedSkeletonHtml:()=>pageSkeletonHtml(peachT("正在读取推荐"),{cards:true,className:'related-skeleton'}),
   mixRelated:seedId=>mixRelated(seedId),
   wireDrag:el=>wireDrag(el),
   wireDragReorder:(root,options)=>wireDragReorder(root,options),

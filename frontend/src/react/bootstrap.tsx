@@ -1,9 +1,12 @@
+import { t as peachT } from "../i18n/index";
 import './styles.css';
+import { applyDocumentLocale } from '../i18n';
 import { installErrorReporting } from '../error-reporting';
 import { mountApplication } from './application';
+applyDocumentLocale();
 installErrorReporting();
 const host = document.getElementById('appRoot');
-if (!host) throw new Error('主界面宿主缺失');
+if (!host) throw new Error(peachT("主界面宿主缺失"));
 mountApplication(host);
 export { peachHistory } from '../history';
 export { popCount } from '../ui-kit';

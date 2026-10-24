@@ -6,6 +6,8 @@
  * 点下去是钉住。图下那排格子是同一份状态的按钮，键盘也够得着；上游的可点选图例只有一个
  * 选中态，分不出「看一眼」和「钉住」，所以圈的形状与点击走 `radialBarProps` 接到这里。
  * 差异登记在 `../evilcharts/ORIGIN.md`。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useState } from 'react';
 import { Sector, type SectorProps } from 'recharts';
 
@@ -35,7 +37,7 @@ const TILE_PINNED = [
 ];
 
 export function RadialCard(
-  { title, rows, empty, unit = '个视频' }: { title: string; rows: RadialSlice[]; empty: string; unit?: string },
+  { title, rows, empty, unit = peachT("个视频") }: { title: string; rows: RadialSlice[]; empty: string; unit?: string },
 ) {
   /* 钉住的那一段和指针扫过的那一段分开记：扫过去要能回到钉住的那一段，合成一个状态的话
      鼠标一离开就把用户点下的选择也擦了。 */
@@ -60,7 +62,7 @@ export function RadialCard(
             {shown?.mark ? <SourceMark mark={shown.mark} /> : null}{shown ? shown.name : title}
           </h3>
           <b className="text-display-4-medium tabular-nums text-text-primary">
-            {(shown ? shown.value : total).toLocaleString()}
+            {(shown ? shown.value : total).toLocaleString(peachLocale)}
           </b>
         </span>
         <small className="text-caption-1-regular text-text-secondary">{unit}</small>
@@ -95,7 +97,7 @@ export function RadialCard(
                 {row.mark ? <SourceMark mark={row.mark} /> : null}{row.name}
               </span>
             </span>
-            <b className="text-title-2-medium tabular-nums text-text-primary">{row.value.toLocaleString()}</b>
+            <b className="text-title-2-medium tabular-nums text-text-primary">{row.value.toLocaleString(peachLocale)}</b>
             {row.bytes != null ? <small className="text-caption-1-regular text-text-secondary">{fmtSize(row.bytes)}</small> : null}
           </button>
         ))}

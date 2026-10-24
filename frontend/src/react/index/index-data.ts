@@ -6,6 +6,8 @@
  *
  * 索引页自己不调 `/api/items`：点一个标签或按所选标签显示结果，是回目录按它筛选，那一次
  * 取数归遗留壳的目录网格。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import type { InfiniteData, QueryKey } from '@tanstack/react-query';
 
 import { firstGrapheme } from '@peach/legacy/core';
@@ -27,7 +29,7 @@ export const INDEX_URL = '/api/index';
 
 /** 页头标题与名册口径。 */
 export const INDEX_TITLES: Record<IndexKind, string> = {
-  performers: '艺人', creators: '卖家', studios: '厂牌', agencies: '事务所', tags: '标签',
+  performers: peachT("艺人"), creators: peachT("卖家"), studios: peachT("厂牌"), agencies: peachT("事务所"), tags: peachT("标签"),
 };
 
 /** 索引格对应的实体类型，资料页与取图链都按它分。 */
@@ -37,15 +39,15 @@ export const ENTITY_KINDS: Record<Exclude<IndexKind, 'tags'>, string> = {
 
 /** 本地标签的九类。次序就是浮层上排药丸的次序。 */
 export const TAG_CATEGORIES: readonly (readonly [string, string])[] = [
-  ['all', '全部'], ['meta', '影片属性'], ['relationship', '人物关系'], ['role', '角色设定'],
-  ['appearance', '外貌身材'], ['scene', '情境场所'], ['story', '故事剧情'], ['position', '性交体位'],
-  ['general', '其他内容'],
+  ['all', peachT("全部")], ['meta', peachT("影片属性")], ['relationship', peachT("人物关系")], ['role', peachT("角色设定")],
+  ['appearance', peachT("外貌身材")], ['scene', peachT("情境场所")], ['story', peachT("故事剧情")], ['position', peachT("性交体位")],
+  ['general', peachT("其他内容")],
 ];
 
 /** 在线标签的分类来自上游 booru 的 tag_type。 */
 export const ONLINE_TAG_CATEGORIES: readonly (readonly [string, string])[] = [
-  ['all', '全部'], ['general', '通用'], ['artist', '创作者'], ['character', '角色'],
-  ['copyright', '作品'], ['metadata', '元数据'],
+  ['all', peachT("全部")], ['general', peachT("通用")], ['artist', peachT("创作者")], ['character', peachT("角色")],
+  ['copyright', peachT("作品")], ['metadata', peachT("元数据")],
 ];
 /** 本地艺人名册的身份分类；卖家名册不分类。词表与壳的骨架共用一份。 */
 export { IDENTITY_CATEGORIES };
@@ -223,7 +225,7 @@ export const flatItems = <T>(data: InfiniteData<IndexPage<T>> | undefined): T[] 
   data ? data.pages.flatMap((page) => page.items) : [];
 
 /** 读数：取到几条，后面还有就带一个加号。 */
-export const countText = (count: number, more: boolean) => `${count.toLocaleString()}${more ? '+' : ''} 项`;
+export const countText = (count: number, more: boolean) => peachT("{{v0}}{{v1}} 项", { v0: count.toLocaleString(peachLocale), v1: more ? '+' : '' });
 
 /** 一枚标签的类型色键（`../styles.css` 的 `[data-tag-cat]`）。在线那一套取上游 tag_type，
  *  加 `r34-` 前缀与本地同名的类分开：本地的 `artist` 是橙色，在线的是红色。 */
@@ -233,18 +235,18 @@ export const tagColorKey = (online: boolean, cat: string | undefined) =>
 /** 格子底下那个读数。事务所数的是人：它名下的视频是成员拍的，只报视频数会让它唯一独有的
  *  读数消失。数字一律带单位，同一排格子才读得出数的是人还是片，单独一个「0」也不像漏了字。 */
 export const personReadout = (kind: IndexKind, item: IndexPerson) =>
-  kind === 'agencies' ? `${(item.members || 0).toLocaleString()} 人` : `${(item.n || 0).toLocaleString()} 个视频`;
+  kind === 'agencies' ? peachT("{{v0}} 人", { v0: (item.members || 0).toLocaleString(peachLocale) }) : peachT("{{v0}} 个视频", { v0: (item.n || 0).toLocaleString(peachLocale) });
 
 const COLLATOR = { numeric: true, sensitivity: 'base' } as const;
 
 /** 字母表的分组：按显示名的首字归到 A–Z、`#`（数字）、`中文` 或 `其他`，组内按名字排。 */
 export function tagGroups<T extends { k: string }>(items: T[], label: (tag: string) => string): [string, T[]][] {
   const groups = new Map<string, T[]>();
-  for (const item of [...items].sort((a, b) => a.k.localeCompare(b.k, 'zh-CN', COLLATOR))) {
+  for (const item of [...items].sort((a, b) => a.k.localeCompare(b.k, peachLocale, COLLATOR))) {
     const first = firstGrapheme(label(item.k).normalize('NFKC'), '').toUpperCase();
-    const key = /[A-Z]/.test(first) ? first : /[0-9]/.test(first) ? '#' : /[㐀-鿿]/.test(first) ? '中文' : '其他';
+    const key = /[A-Z]/.test(first) ? first : /[0-9]/.test(first) ? '#' : /[㐀-鿿]/.test(first) ? peachT("中文") : peachT("其他");
     const group = groups.get(key);
     if (group) group.push(item); else groups.set(key, [item]);
   }
-  return [...groups].sort(([a], [b]) => a.localeCompare(b, 'zh-CN'));
+  return [...groups].sort(([a], [b]) => a.localeCompare(b, peachLocale));
 }

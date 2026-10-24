@@ -8,6 +8,8 @@
  * 地址栏归壳：点筛选、排序、换媒体都只调 `actions.route`，壳写好地址再把新的 `view` 推回来。
  * 这一页唯一联网的动作是「检查更新」与「抓更早的一页」，两者起的是同一趟后台任务，进度由
  * `helpers.jobProgress` 盯着，跑完失效这一页的查询重取。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { useInfiniteQuery, useMutation, useQuery, type InfiniteData } from '@tanstack/react-query';
 import { icon, leadingGraphemes, requestErrorMessage } from '@peach/legacy/core';
@@ -48,7 +50,7 @@ const HISTORY = spriteGlyph('history');
 
 /** 照片墙那一排的图片布局两档，同壳里 `PHOTO_LAYOUTS`。 */
 export const FOLLOW_PHOTO_LAYOUTS: readonly SegmentOption[] = [
-  ['fixed', '固定比例', 'layout-grid'], ['masonry', '瀑布流', 'columns-2'],
+  ['fixed', peachT("固定比例"), 'layout-grid'], ['masonry', peachT("瀑布流"), 'columns-2'],
 ];
 
 /** 这一页从数据里推出来的那几样：两排的取样、筛选条的选项、可见的组。只随数据、视图与种子变。 */
@@ -160,16 +162,16 @@ export function FollowFeedPage(props: FollowFeedProps) {
     <>
       {/* 进度那一格归 `followJobProgress`：它自己往里插面板、自己开合，React 只给一个空节点。 */}
       <div key={job.generation} ref={job.host} data-follow-progress="" />
-      {!job.busy && job.report ? <Note tone="neutral" title="检查结果">{job.report}</Note> : null}
+      {!job.busy && job.report ? <Note tone="neutral" title={peachT("检查结果")}>{job.report}</Note> : null}
       <div data-follow-feed="" data-select-mode={props.selectMode ? '' : undefined}>
         <Head onManage={actions.openManage}>
           {facets.sources.length ? (
-            <Button variant="primary" data-follow-recheck="" aria-label="检查每个来源的更新"
+            <Button variant="primary" data-follow-recheck="" aria-label={peachT("检查每个来源的更新")}
               aria-busy={job.busy || undefined}
               onClick={() => void job.start(false)}>
               {job.starting === 'check'
-                ? <span className="contents" dangerouslySetInnerHTML={{ __html: spinnerHtml('检查中') }} />
-                : '检查更新'}
+                ? <span className="contents" dangerouslySetInnerHTML={{ __html: spinnerHtml(peachT("检查中")) }} />
+                : peachT("检查更新")}
             </Button>
           ) : null}
         </Head>
@@ -190,8 +192,7 @@ export function FollowFeedPage(props: FollowFeedProps) {
                 {data.groups.length < FOLLOW_AUTO_LOAD_LIMIT ? (
                   <LoadMore key={result.data?.pages.length} entity enabled={() => !job.busyRef.current}
                     load={async () => { await result.fetchNextPage({ throwOnError: true }) }}>
-                    <CHEVRON_DOWN className="size-3.5" />加载更多
-                  </LoadMore>
+                    <CHEVRON_DOWN className="size-3.5" />{peachT("加载更多")}</LoadMore>
                 ) : (
                   <ManualMore busy={result.isFetchingNextPage}
                     error={result.isFetchNextPageError ? requestErrorMessage(result.error) : ''}
@@ -205,8 +206,8 @@ export function FollowFeedPage(props: FollowFeedProps) {
                   aria-busy={job.busy || undefined}
                   onClick={() => void job.start(true)}>
                   {job.olderBusy
-                    ? <><span className="contents" dangerouslySetInnerHTML={{ __html: spinnerHtml('抓取中') }} /><span>抓取中…</span></>
-                    : '抓更早的一页'}
+                    ? <><span className="contents" dangerouslySetInnerHTML={{ __html: spinnerHtml(peachT("抓取中")) }} /><span>{peachT("抓取中…")}</span></>
+                    : peachT("抓更早的一页")}
                 </Button>
                 <span data-follow-backfill="">{backfillState(facets.sources)}</span>
               </span>
@@ -222,11 +223,9 @@ export function FollowFeedPage(props: FollowFeedProps) {
 function Head({ onManage, children }: { onManage(): void; children?: ReactNode }) {
   return (
     <div data-follow-head="">
-      <h2 data-follow-title="">关注</h2>
+      <h2 data-follow-title="">{peachT("关注")}</h2>
       <span data-follow-head-actions="">
-        <Button variant="secondary" leadingIcon={SETTINGS} data-follow-manage="" onClick={onManage}>
-          管理关注
-        </Button>
+        <Button variant="secondary" leadingIcon={SETTINGS} data-follow-manage="" onClick={onManage}>{peachT("管理关注")}</Button>
         {children}
       </span>
     </div>
@@ -239,8 +238,7 @@ function ManualMore({ busy, error, load }: { busy: boolean; error: string; load(
   return (
     <>
       <button type="button" data-entity-more="" aria-busy={busy || undefined} aria-disabled={busy || undefined} onClick={load}>
-        <CHEVRON_DOWN className="size-3.5" />加载更多
-      </button>
+        <CHEVRON_DOWN className="size-3.5" />{peachT("加载更多")}</button>
       {error ? <RetryNote message={error} onRetry={load} /> : null}
     </>
   );
@@ -332,7 +330,7 @@ function Authors({ facets, pressed, context, props, onPick }: {
   if (!facets.authorOrder.length) return null;
   return (
     <div data-follow-authors-bar="">
-      <div ref={row} data-follow-authors="" aria-label="创作者">
+      <div ref={row} data-follow-authors="" aria-label={peachT("创作者")}>
         {facets.authorOrder.map((key) => {
           const list = facets.authorSources.get(key) || [];
           const entity = followAuthorEntity(list);
@@ -342,7 +340,7 @@ function Authors({ facets, pressed, context, props, onPick }: {
           </>;
           return entity ? (
             <FollowAuthorLink key={key} name={entity} actions={props.actions} data-follow-author={key}
-              aria-label={`查看 ${nameOf(key)} 的作者页`}>{content}</FollowAuthorLink>
+              aria-label={peachT("查看 {{v0}} 的作者页", { v0: nameOf(key) })}>{content}</FollowAuthorLink>
           ) : (
             <button key={key} type="button" data-follow-author={key} aria-pressed={pressed === key} onClick={() => onPick(key)}>
               {content}
@@ -363,7 +361,7 @@ function Works({ rows, pressed, props, onPick }: {
   useEffect(() => { props.helpers.wireDrag(row.current) }, [props.helpers]);
   if (!rows.length) return null;
   return (
-    <div ref={row} data-follow-works="" aria-label="按题材筛选">
+    <div ref={row} data-follow-works="" aria-label={peachT("按题材筛选")}>
       {rows.map((work) => (
         <button key={work[0]} type="button" data-follow-work={work[0]} aria-pressed={pressed === work[0]}
           onClick={() => onPick(work[0])}>
@@ -404,7 +402,7 @@ function Glass({ facets, view, total, busy, props, route }: {
   const extras = providers.length + facets.tagRows.length > 0;
   const images = view.media === 'images';
   return (
-    <FilterGlassRows label="筛选与排序" topLabel={showMedia ? '媒体与关注筛选' : '关注筛选'}
+    <FilterGlassRows label={peachT("筛选与排序")} topLabel={showMedia ? peachT("媒体与关注筛选") : peachT("关注筛选")}
       attrs={{ 'data-filter-frame': '', 'data-follow-filter-glass': '' }}
       topClassName="gap-1.5 overflow-visible" busy={busy}
       panes={<>
@@ -414,10 +412,10 @@ function Glass({ facets, view, total, busy, props, route }: {
       top={<>
         {showMedia ? (
           <>
-            <div ref={mediaRow} role="group" aria-label="媒体类型" data-entity-media="" onPointerLeave={mediaGlide.leave}>
-              {([['videos', '视频', facets.mediaCounts.videos, 'play', 'video'],
-                ['images', '图片', facets.mediaCounts.images, 'pics', 'image']] as const).map(([value, text, count, symbol, kind]) => {
-                const title = `${text} ${Math.max(0, count || 0).toLocaleString()}`;
+            <div ref={mediaRow} role="group" aria-label={peachT("媒体类型")} data-entity-media="" onPointerLeave={mediaGlide.leave}>
+              {([['videos', peachT("视频"), facets.mediaCounts.videos, 'play', 'video'],
+                ['images', peachT("图片"), facets.mediaCounts.images, 'pics', 'image']] as const).map(([value, text, count, symbol, kind]) => {
+                const title = `${text} ${Math.max(0, count || 0).toLocaleString(peachLocale)}`;
                 return (
                   <button key={value} type="button" data-media-view={value} data-media-icon={kind}
                     aria-pressed={view.media === value} aria-label={title} title={title}
@@ -430,7 +428,7 @@ function Glass({ facets, view, total, busy, props, route }: {
           </>
         ) : null}
         <div ref={scroll} data-entity-scroll="">
-          <div ref={stateRow} role="group" aria-label="状态" data-entity-states="" onPointerLeave={stateGlide.leave}>
+          <div ref={stateRow} role="group" aria-label={peachT("状态")} data-entity-states="" onPointerLeave={stateGlide.leave}>
             {FOLLOW_FILTERS.map(([key, label]) => (
               <button key={key} type="button" data-entity-state={key} data-follow-filter={key} data-entity-press=""
                 aria-pressed={view.status === key} onPointerEnter={stateGlide.hover}
@@ -443,7 +441,7 @@ function Glass({ facets, view, total, busy, props, route }: {
           <div ref={tagRow} data-entity-tags="">
             {providers.map(([key, label]) => (
               <button key={key} type="button" data-follow-provider={key} data-entity-press=""
-                aria-pressed={facets.provider === key} title={label} aria-label={`来源：${label}`}
+                aria-pressed={facets.provider === key} title={label} aria-label={peachT("来源：{{v0}}", { v0: label })}
                 onClick={() => route({ provider: facets.provider === key ? '' : key })}
                 dangerouslySetInnerHTML={{ __html: sourceMark(key, label) }} />
             ))}
@@ -461,17 +459,17 @@ function Glass({ facets, view, total, busy, props, route }: {
       </>}
       bottom={<>
         <h3 data-entity-readout="" data-follow-readout="">
-          {`${total.toLocaleString()} 项更新 · 显示 ${facets.visible.length.toLocaleString()}`}
+          {peachT("{{v0}} 项更新 · 显示 {{v1}}", { v0: total.toLocaleString(peachLocale), v1: facets.visible.length.toLocaleString(peachLocale) })}
         </h3>
         <LibraryShortcuts currentHref={() => location.pathname + location.search} kind="creator" />
         <span data-entity-sorts="">
           <Shuffle onPress={actions.shuffle} />
           {images ? (
             <>
-              <Segments label="图片布局" value={props.photoLayout} options={FOLLOW_PHOTO_LAYOUTS}
+              <Segments label={peachT("图片布局")} value={props.photoLayout} options={FOLLOW_PHOTO_LAYOUTS}
                 onChange={(value) => actions.setPhotoLayout(value === 'fixed' ? 'fixed' : 'masonry')} />
-              <button type="button" data-follow-images-only="" aria-pressed={props.imagesOnly} title="仅显示图片"
-                aria-label="仅显示图片" onClick={() => actions.setImagesOnly(!props.imagesOnly)}>
+              <button type="button" data-follow-images-only="" aria-pressed={props.imagesOnly} title={peachT("仅显示图片")}
+                aria-label={peachT("仅显示图片")} onClick={() => actions.setImagesOnly(!props.imagesOnly)}>
                 {props.imagesOnly ? <span data-view-glide="" aria-hidden="true" /> : null}
                 <span className="contents" dangerouslySetInnerHTML={{ __html: icon('captions-off') }} />
               </button>
@@ -508,16 +506,16 @@ function Combo({ conditions, onDrop, onClear }: {
       {conditions.length ? (
         <>
           {conditions.map((row) => {
-            const text = `${row.kind === '标签' ? '' : `${row.kind} `}${row.label}`;
+            const text = `${row.kind === '标签' ? '' : `${peachT(row.kind)} `}${row.label}`;
             return (
               <span key={`${row.kind}:${row.key}`} data-combo-chip="">
                 {text}
-                <button type="button" aria-label={`撤掉 ${text}`} data-follow-drop={row.key} data-follow-drop-kind={row.kind}
+                <button type="button" aria-label={peachT("撤掉 {{v0}}", { v0: text })} data-follow-drop={row.key} data-follow-drop-kind={row.kind}
                   onClick={() => onDrop(row)}>✕</button>
               </span>
             );
           })}
-          <button type="button" data-combo-clear="" onClick={onClear}>全部清除</button>
+          <button type="button" data-combo-clear="" onClick={onClear}>{peachT("全部清除")}</button>
         </>
       ) : null}
     </div>
@@ -530,7 +528,7 @@ function BrokenNote({ count, onManage }: { count: number; onManage(): void }) {
     <div data-follow-broken="" onClick={(event) => {
       if ((event.target as HTMLElement).closest('[data-follow-manage]')) onManage();
     }} dangerouslySetInnerHTML={{
-      __html: `<div class="geist-note geist-note-error fwarn" role="alert">${icon('alert')}<span>${count} 个来源上次检查失败，去<button type="button" class="flink" data-follow-manage>管理关注</button>看原因。</span></div>`,
+      __html: peachT("<div class=\"geist-note geist-note-error fwarn\" role=\"alert\">{{v0}}<span>{{v1}} 个来源上次检查失败，去<button type=\"button\" class=\"flink\" data-follow-manage>管理关注</button>看原因。</span></div>", { v0: icon('alert'), v1: count }),
     }} />
   );
 }
@@ -595,13 +593,13 @@ function cardId(group: FollowGroup, view: FollowView): number {
  *  一个来源都没有。没设筛选时不叫人去改筛选。 */
 function Empty({ data, filtered }: { data: FollowPage; filtered: boolean }) {
   const html = (data.groups || []).length
-    ? emptyStateHtml('search-x', '当前筛选下没有更新', '切换媒体类型、创作者、来源、时长或标签后再试。')
+    ? emptyStateHtml('search-x', peachT("当前筛选下没有更新"), peachT("切换媒体类型、创作者、来源、时长或标签后再试。"))
     : (data.sources || []).length
       ? filtered
-        ? emptyStateHtml('rss', '没有符合条件的更新', '切换状态或来源筛选后再试。')
-        : emptyStateHtml('rss', '还没有更新', '点「检查更新」去各个来源取一遍；来源有新内容时会集中显示在这里。')
-      : emptyStateHtml('rss', '还没有关注任何来源', '添加创作者或订阅来源后，更新会集中显示在这里。',
-        { actions: '<a class="geist-button primary" href="/subscriptions?tab=add">添加关注</a>' });
+        ? emptyStateHtml('rss', peachT("没有符合条件的更新"), peachT("切换状态或来源筛选后再试。"))
+        : emptyStateHtml('rss', peachT("还没有更新"), peachT("点「检查更新」去各个来源取一遍；来源有新内容时会集中显示在这里。"))
+      : emptyStateHtml('rss', peachT("还没有关注任何来源"), peachT("添加创作者或订阅来源后，更新会集中显示在这里。"),
+        { actions: peachT("<a class=\"geist-button primary\" href=\"/subscriptions?tab=add\">添加关注</a>") });
   return <div data-follow-empty="" className="contents" dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
@@ -610,7 +608,7 @@ function Empty({ data, filtered }: { data: FollowPage; filtered: boolean }) {
  * 而新状态不在这一档时整组移出；再在后台重读一遍，拿服务端的口径校正。回执带一颗撤销键，保存
  * 进数据库的不给撤销——那是另一件事。只读端写入必然 409，那是正常状态，照实写在卡上。资料页的在线
  * 视图用的是同一个钩子，`view` 是它那一份只按创作者筛的视图。 */
-const STATUS_RECEIPTS: Record<string, string> = { new: '已恢复未看', seen: '已标记已看', ignored: '已忽略' };
+const STATUS_RECEIPTS: Record<string, string> = { new: peachT("已恢复未看"), seen: peachT("已标记已看"), ignored: peachT("已忽略") };
 
 export function useFollowWrite(props: Pick<FollowFeedProps, 'view' | 'revision' | 'actions'>) {
   const { view, revision, actions } = props;
@@ -640,7 +638,7 @@ export function useFollowWrite(props: Pick<FollowFeedProps, 'view' | 'revision' 
     onSuccess: (_result, { id, to, was }) => {
       apply(id, to);
       refresh();
-      actions.toast(STATUS_RECEIPTS[to] || '已更新关注状态', {
+      actions.toast(STATUS_RECEIPTS[to] || peachT("已更新关注状态"), {
         undo: was !== 'saved' ? async () => {
           await apiSend(FOLLOW_STATUS_URL, { item: id, to: was });
           apply(id, was);
@@ -650,7 +648,7 @@ export function useFollowWrite(props: Pick<FollowFeedProps, 'view' | 'revision' 
     },
     onError: (error, { id }) => {
       mark(id, requestErrorMessage(error), setFailures);
-      actions.failure('更新关注状态', error);
+      actions.failure(peachT("更新关注状态"), error);
     },
     onSettled: (_result, _error, { id }) => mark(id, '', setBusy),
   });
@@ -659,11 +657,11 @@ export function useFollowWrite(props: Pick<FollowFeedProps, 'view' | 'revision' 
     onSuccess: (_result, id) => {
       apply(id, 'saved');
       refresh();
-      actions.toast('已保存到数据库');
+      actions.toast(peachT("已保存到数据库"));
     },
     onError: (error, id) => {
       mark(id, requestErrorMessage(error), setFailures);
-      actions.failure('保存到数据库', error);
+      actions.failure(peachT("保存到数据库"), error);
     },
     onSettled: (_result, _error, id) => mark(id, '', setBusy),
   });

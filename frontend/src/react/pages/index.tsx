@@ -7,6 +7,8 @@
  *
  * 这个包不要会话就能取（ADR-0094）：不得 import 别的产物，不得内嵌数据库、配置或凭据派生的数据。 */
 import './pages.css';
+import { I18nProvider } from 'react-aria';
+import { applyDocumentLocale, locale } from '../../i18n';
 import { installErrorReporting } from '../../error-reporting';
 
 import type { ComponentType } from 'react';
@@ -23,7 +25,8 @@ const PAGES: Readonly<Record<string, ComponentType<{ data: PageData }>>> = {
   error: ErrorPage,
 };
 
+applyDocumentLocale();
 installErrorReporting();
 const mount = document.getElementById('peach-page');
 const Page = mount ? PAGES[mount.dataset.page ?? ''] : undefined;
-if (mount && Page) createRoot(mount).render(<Page data={{ ...mount.dataset }} />);
+if (mount && Page) createRoot(mount).render(<I18nProvider locale={locale}><Page data={{ ...mount.dataset }} /></I18nProvider>);

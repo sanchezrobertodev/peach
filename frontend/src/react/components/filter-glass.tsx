@@ -5,6 +5,7 @@
  * 也在那一条上。吸到顶栏下沿那一刻由 `use-stuck.ts` 标 `data-stuck`，影换成抬起来那一档。
  * 胶囊键 30px 高、透明底、一圈 `--glass-low`，
  * 悬停换成 `--glass-rim` 边加 `--glass-pick-fill` 底——玻璃上的键不是 BoardUI 那种实心按钮。 */
+import { t as peachT } from "../../i18n/index";
 import { useRef, type ReactNode, type RefObject } from 'react';
 import { cx } from '@/utils/cx';
 import { IconButton, type IconButtonProps } from '@/components/base/buttons/icon-button';
@@ -14,7 +15,7 @@ import { useStuck } from './use-stuck';
 import { useHorizontalScroller } from './use-horizontal-scroller';
 
 const BusyIcon = ({ className }: { className?: string }) => <span aria-hidden className={className}
-  dangerouslySetInnerHTML={{ __html: spinnerHtml('正在处理') }} />;
+  dangerouslySetInnerHTML={{ __html: spinnerHtml(peachT("正在处理")) }} />;
 
 /** 筛选栏动作使用 30px 尺寸和蓝色动作表面。 */
 export function FilterIconButton({ label, icon, busy = false, onPress, ...props }:

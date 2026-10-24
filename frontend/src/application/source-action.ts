@@ -1,3 +1,4 @@
+import { t as peachT } from "../i18n/index";
 import { esc } from '../core';
 import { setActionBusy } from '../ui-kit/controls';
 import { spinnerHtml } from '../ui-kit/markup';
@@ -17,7 +18,7 @@ export function createRevealSourceAction(ports: SourceActionPorts) {
     const html = button?.innerHTML ?? '', label = button?.textContent?.trim() ?? '';
     if (button) {
       setActionBusy(button);
-      button.innerHTML = `${spinnerHtml('正在定位')}${label ? `<span>${esc(label)}</span>` : ''}`;
+      button.innerHTML = `${spinnerHtml(peachT("正在定位"))}${label ? `<span>${esc(label)}</span>` : ''}`;
     }
     status.textContent = '';
     try {

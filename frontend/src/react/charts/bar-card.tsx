@@ -3,6 +3,8 @@
  * 页头的大数是各类合计。每根柱子的数标在柱端，数值轴不画：几类之间差一两个数量级时，
  * 短柱子从刻度上读不出数。柱子由 Motion 逐根长出来，系统开了减弱动态效果时直接画终态
  * （`../entry.tsx` 的 `MotionConfig`）；悬停浮层是 `./chart-tip.tsx`。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { EvilBarChart } from '@/registry/charts/recharts-bar-chart';
 
 import { CategoryTick, categoryAxisWidth, CHART_CARD, ChartEmpty, ChartHead, tone } from './chart-card';
@@ -19,14 +21,15 @@ export const BAR_LABEL_ROOM = 56;
 
 /** 柱端的数：十万以上读成「万」「亿」，柱端那一小截放得下；全数在悬停浮层里。 */
 export function shortCount(value: number): string {
+  if (peachLocale !== 'zh-CN') return new Intl.NumberFormat(peachLocale, { notation: 'compact', maximumFractionDigits: 1 }).format(value);
   const abs = Math.abs(value);
   const scaled = (unit: number, name: string) => {
     const figure = value / unit;
-    return `${figure.toLocaleString(undefined, { maximumFractionDigits: Math.abs(figure) < 100 ? 1 : 0 })}${name}`;
+    return `${figure.toLocaleString(peachLocale, { maximumFractionDigits: Math.abs(figure) < 100 ? 1 : 0 })}${name}`;
   };
-  if (abs >= 1e8) return scaled(1e8, '亿');
-  if (abs >= 1e5) return scaled(1e4, '万');
-  return value.toLocaleString();
+  if (abs >= 1e8) return scaled(1e8, peachT("亿"));
+  if (abs >= 1e5) return scaled(1e4, peachT("万"));
+  return value.toLocaleString(peachLocale);
 }
 
 /** 柱端的数。`position` 跟着柱子的走向：竖柱标在顶上，横条标在右端。 */
@@ -56,7 +59,7 @@ export function BarCard(
      名字放不下就由 `CategoryTick` 截断。 */
   return (
     <section className={CHART_CARD} aria-label={title}>
-      <ChartHead title={title} figure={total.toLocaleString()} note={unit} />
+      <ChartHead title={title} figure={total.toLocaleString(peachLocale)} note={unit} />
       <EvilBarChart data={data} config={{ value: { label: series, colors: tone(color) } }}
         layout={layout} barRadius={4}
         chartProps={horizontal ? { margin: { top: 5, right: BAR_LABEL_ROOM, bottom: 5, left: 5 } } : undefined}

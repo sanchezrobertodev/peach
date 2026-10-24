@@ -88,15 +88,13 @@ describe('馆藏卡片与列表', () => {
       } finally { await opened.close() }
     });
     it(`${viewport.name} 全集排序、每页数量与跨页选择`, { timeout: 90_000 }, async () => {
-      const opened = await visit(browser, '/?browse=folders&loc=local', viewport);
-      const { page } = opened;
-      try {
-        const requests: URLSearchParams[] = [];
-        const entries = Array.from({ length: 45 }, (_, index) => ({
-          id: 9000 + index, name: `条目 ${String(index + 1).padStart(2, '0')}${index === 44 ? '超长文件名'.repeat(60) : ''}.mp4`,
-          medium: 'video', location: 'local', duration: 45 - index, size: index * 1024,
-        }));
-        await page.route('**/api/items?*', route => {
+      const requests: URLSearchParams[] = [];
+      const entries = Array.from({ length: 45 }, (_, index) => ({
+        id: 9000 + index, name: `条目 ${String(index + 1).padStart(2, '0')}${index === 44 ? '超长文件名'.repeat(60) : ''}.mp4`,
+        medium: 'video', location: 'local', duration: 45 - index, size: index * 1024,
+      }));
+      const opened = await visit(browser, '/?browse=folders&loc=local', viewport, page =>
+        page.route('**/api/items?*', route => {
           const params = new URL(route.request().url()).searchParams;
           requests.push(params);
           const direction = params.get('dir') === 'asc' ? 1 : -1;
@@ -104,7 +102,9 @@ describe('馆藏卡片与列表', () => {
             ? direction * (a.duration - b.duration) : direction * a.name.localeCompare(b.name));
           const offset = Number(params.get('offset') || 0), limit = Number(params.get('limit') || 60);
           return route.fulfill({ json: { items: sorted.slice(offset, offset + limit), total: sorted.length } });
-        });
+        }));
+      const { page } = opened;
+      try {
         await page.getByRole('radiogroup', { name: '馆藏显示方式' }).locator('label')
           .filter({ has: page.getByRole('radio', { name: '列表', exact: true }) }).click();
         await page.locator('[data-catalog-row][data-id="9044"]').waitFor();

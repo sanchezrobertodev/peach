@@ -5,6 +5,7 @@
  * 挂播放器之前由持有方调一次 `configurePlayer` 接上。 */
 
 /** 播放器读写的那几项设置。对象由持有方给出，播放器改了就地写回再调 `save`。 */
+import { t as peachT } from "../i18n/index";
 export interface PlayerSettings {
   ambientMode: boolean;
   theaterMode: boolean;
@@ -32,6 +33,6 @@ let current: PlayerHost | null = null;
 export function configurePlayer(host: PlayerHost): void { current = host }
 
 export function playerHost(): PlayerHost {
-  if (!current) throw new Error('播放器还没有接上宿主（configurePlayer）');
+  if (!current) throw new Error(peachT("播放器还没有接上宿主（configurePlayer）"));
   return current;
 }

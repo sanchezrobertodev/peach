@@ -4,6 +4,7 @@
  * （`key` 每次加一，Swiper 从头建），关掉时只把内容渲染成空，根和容器留着给下一次。不进
  * 路由树：那一套是给壳的页面容器用的，容器归壳、换页就被整块重写；灯箱浮在所有页面
  * 之上，哪一页都能打开，跟哪个页面容器都不同生共死。 */
+import { t as peachT } from "../../i18n/index";
 import { useId, useLayoutEffect, useRef, useState } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { flushSync } from 'react-dom';
@@ -103,7 +104,7 @@ function PhotoLightbox({ slides, index, Swiper, host: actions }: {
       pagination: {
         el: pagination.current, clickable: true, dynamicBullets: true, dynamicMainBullets: 3,
         renderBullet: (at: number, className: string) =>
-          `<button type="button" class="${className}" aria-label="查看第 ${at + 1} 张图片"></button>`,
+          peachT("<button type=\"button\" class=\"{{v0}}\" aria-label=\"查看第 {{v1}} 张图片\"></button>", { v0: className, v1: at + 1 }),
       },
       navigation: { prevEl: back.current, nextEl: fwd.current },
       on: {
@@ -192,10 +193,10 @@ function PhotoLightbox({ slides, index, Swiper, host: actions }: {
     setBroken((prev) => new Set(prev).add(at));
   };
   const apply = (raw: number | 'fit') => zoom.current?.apply(raw);
-  const revealLabel = '<span>在资源管理器中显示</span>';
+  const revealLabel = peachT("<span>在资源管理器中显示</span>");
 
   return (
-    <dialog ref={box} aria-label="图片浏览" data-photo-lightbox="" data-has-strip={many ? '' : undefined}
+    <dialog ref={box} aria-label={peachT("图片浏览")} data-photo-lightbox="" data-has-strip={many ? '' : undefined}
       onCancel={(event) => { event.preventDefault(); closePhotoLightbox() }}
       onClick={(event) => {
         // 主画布铺满视口后，黑色留白属于 zoom 容器而不是最外层；两者都视为背景。
@@ -204,16 +205,16 @@ function PhotoLightbox({ slides, index, Swiper, host: actions }: {
         if (detail.current?.dismissOutside(target)) return;
         if (target === box.current || target.classList.contains('swiper-zoom-container')) closePhotoLightbox();
       }}>
-      <button type="button" data-photo-close="" aria-label="关闭" onClick={closePhotoLightbox}
+      <button type="button" data-photo-close="" aria-label={peachT("关闭")} onClick={closePhotoLightbox}
         dangerouslySetInnerHTML={{ __html: icon('x') }} />
-      <div ref={mainEl} className="swiper" data-photo-main="" role="region" aria-roledescription="轮播"
-        aria-label="图片浏览">
+      <div ref={mainEl} className="swiper" data-photo-main="" role="region" aria-roledescription={peachT("轮播")}
+        aria-label={peachT("图片浏览")}>
         <div className="swiper-wrapper">
           {slides.map((item, at) => (
             <div key={at} className="swiper-slide">
               <div className="swiper-zoom-container">
                 {lost.has(at)
-                  ? <span data-photo-missing="">图片取不到</span>
+                  ? <span data-photo-missing="">{peachT("图片取不到")}</span>
                   : <img src={broken.has(at) ? item.thumb : item.src} alt={item.name ?? ''} loading="lazy"
                     referrerPolicy="no-referrer" onLoad={(event) => loaded(at, event.currentTarget)}
                     onError={() => failed(at)} />}
@@ -222,29 +223,29 @@ function PhotoLightbox({ slides, index, Swiper, host: actions }: {
           ))}
         </div>
         {/* 方向只翻图标，不转整个按钮。两枚都画朝左那一枚，朝右的在样式里转半圈。 */}
-        <button ref={back} type="button" data-photo-nav="back" aria-label="上一张"
+        <button ref={back} type="button" data-photo-nav="back" aria-label={peachT("上一张")}
           dangerouslySetInnerHTML={{ __html: icon('chevron-left') }} />
-        <button ref={fwd} type="button" data-photo-nav="fwd" aria-label="下一张"
+        <button ref={fwd} type="button" data-photo-nav="fwd" aria-label={peachT("下一张")}
           dangerouslySetInnerHTML={{ __html: icon('chevron-left') }} />
       </div>
       <div data-photo-bar="">
         <button ref={toggle} type="button" data-photo-detail-toggle="" aria-expanded="false" aria-controls={detailId}
-          aria-haspopup="dialog" aria-label="图片详情" title="图片详情" dangerouslySetInnerHTML={{ __html: icon('info') }} />
+          aria-haspopup="dialog" aria-label={peachT("图片详情")} title={peachT("图片详情")} dangerouslySetInnerHTML={{ __html: icon('info') }} />
         <div>
           <div data-photo-count="" aria-live="polite">{`${active + 1} / ${slides.length}`}</div>
-          {many ? <div ref={pagination} data-photo-pagination="" aria-label="选择图片" /> : null}
+          {many ? <div ref={pagination} data-photo-pagination="" aria-label={peachT("选择图片")} /> : null}
         </div>
         <div data-photo-zoom="">
-          <button type="button" data-zoom-step="-1" aria-label="缩小"
+          <button type="button" data-zoom-step="-1" aria-label={peachT("缩小")}
             onClick={() => apply(percent - PHOTO_ZOOM_STEP)} dangerouslySetInnerHTML={{ __html: icon('zoom-out') }} />
           <input ref={range} type="range" min={PHOTO_ZOOM_MIN} max={PHOTO_ZOOM_MAX} step="1" value={percent}
-            aria-label="缩放" onChange={(event) => apply(Number(event.currentTarget.value))} />
-          <button type="button" data-zoom-step="1" aria-label="放大"
+            aria-label={peachT("缩放")} onChange={(event) => apply(Number(event.currentTarget.value))} />
+          <button type="button" data-zoom-step="1" aria-label={peachT("放大")}
             onClick={() => apply(percent + PHOTO_ZOOM_STEP)} dangerouslySetInnerHTML={{ __html: icon('zoom-in') }} />
           <b data-photo-zoom-readout="">{`${percent}%`}</b>
-          <button type="button" data-photo-scale="fit" aria-label="适应窗口" title="适应窗口"
+          <button type="button" data-photo-scale="fit" aria-label={peachT("适应窗口")} title={peachT("适应窗口")}
             onClick={() => apply('fit')} dangerouslySetInnerHTML={{ __html: icon('maximize') }} />
-          <button type="button" data-photo-scale="original" aria-label="原大小" title="原大小"
+          <button type="button" data-photo-scale="original" aria-label={peachT("原大小")} title={peachT("原大小")}
             onClick={() => apply(100)}>1:1</button>
         </div>
       </div>
@@ -259,7 +260,7 @@ function PhotoLightbox({ slides, index, Swiper, host: actions }: {
         </div>
         <button type="button" data-photo-reveal="" hidden={!asset || !actions}
           onClick={(event) => void reveal(event.currentTarget)}
-          dangerouslySetInnerHTML={{ __html: (busy ? spinnerHtml('正在定位') : icon('folder-open')) + revealLabel }} />
+          dangerouslySetInnerHTML={{ __html: (busy ? spinnerHtml(peachT("正在定位")) : icon('folder-open')) + revealLabel }} />
         <span data-photo-status="" aria-live="polite">{status.at === active ? status.text : ''}</span>
       </section>
       <div ref={stripEl} className="swiper" data-photo-strip="">

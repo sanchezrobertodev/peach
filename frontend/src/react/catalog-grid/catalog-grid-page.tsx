@@ -7,6 +7,8 @@
  * 网格每接一页经 `onCount` 报一次总数与显示的卡数，读数画在首页筛选条（`catalog-filter` 岛）的
  * 下排。无限滚动见下面的 `LoadMore`：哨兵进入视口 320px
  * 内自动取下一页，点它等于手动取；失败在哨兵后面留一条可重试的 Note，之后只有手动才重试。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { useInfiniteQuery, type InfiniteData, type QueryKey } from '@tanstack/react-query';
 import { mixFace as mixArtwork, mixLabel, relayoutCovers, type Artwork } from '@peach/card-art';
@@ -144,7 +146,7 @@ function GridBody(props: CatalogGridProps) {
       error={!result.data && !result.isPending ? requestErrorMessage(result.error) : ''}
       retry={() => void result.refetch()}
       emptyHtml={result.data && !wallPool.length ? tiles.length
-        ? emptyStateHtml('image', '这批作品没有封面', result.hasNextPage ? '载入更多作品后继续浏览。' : '换个筛选范围再试。')
+        ? emptyStateHtml('image', peachT("这批作品没有封面"), result.hasNextPage ? peachT("载入更多作品后继续浏览。") : peachT("换个筛选范围再试。"))
         : props.emptyHtml?.({ trash, libraryEmpty:!!result.data.pages[0]?.libraryEmpty }) : ''}
       loadMore={loadNext} actions={actions} helpers={helpers} javImage={layout.javImage} />;
     if (result.isPending) return null;
@@ -224,10 +226,10 @@ export function LoadMore({ entity, load, enabled, children }: {
   return (
     <>
       {entity
-        ? <button ref={attach} type="button" data-entity-more="" {...aria} onClick={() => void run(true)}>{children ?? '载入更多'}</button>
+        ? <button ref={attach} type="button" data-entity-more="" {...aria} onClick={() => void run(true)}>{children ?? peachT("载入更多")}</button>
         /* 失败时只留下面那条重试：哨兵收起但不卸下，重试接上之后照旧由它续页。 */
         : <div ref={attach} data-load-more="" {...aria} hidden={Boolean(state.error)} onClick={() => void run(true)}
-          dangerouslySetInnerHTML={{ __html: loadingDotsHtml('继续载入中…') }} />}
+          dangerouslySetInnerHTML={{ __html: loadingDotsHtml(peachT("继续载入中…")) }} />}
       {state.error ? <RetryNote message={state.error} onRetry={() => void run(true)} /> : null}
     </>
   );
@@ -286,10 +288,9 @@ function ShortsStrip({ cut, props, onOpen }: {
   useEffect(() => { if (row.current) wireDrag(row.current) }, [wireDrag]);
   return (
     <section data-shorts-strip="">
-      <h2>
-        竖屏 <span data-shorts-count="">{`${cut.total.toLocaleString()} 个`}</span>
+      <h2>{peachT("竖屏") + " "}<span data-shorts-count="">{peachT("{{v0}} 个", { v0: cut.total.toLocaleString(peachLocale) })}</span>
         <button type="button" data-shorts-enter="" onClick={() => props.actions.openShorts()}>
-          <Icon name="gallery-vertical-end" /><span>进入沉浸模式</span>
+          <Icon name="gallery-vertical-end" /><span>{peachT("进入沉浸模式")}</span>
         </button>
       </h2>
       <div ref={row} data-shorts-row="">
@@ -328,13 +329,13 @@ function HomeMix({ seed, layout, helpers, actions }: {
   const artwork = mixFace(seed, layout, false);
   return (
     <MixCard data-mix-seed={String(seed.id)} name={`Mix · ${label}`}
-      caption={`${helpers.displayName(seed, seed.name || '')}及相似作品`} count={0} badge="Mix" glyph wholeCard
+      caption={peachT("{{v0}}及相似作品", { v0: helpers.displayName(seed, seed.name || '') })} count={0} badge="Mix" glyph wholeCard
       poster={null} artwork={artwork}
       artworkIdentity={size === 'small' ? artwork.html : mixFace(seed, { ...layout, size: 'small' }, false).html}
       relayoutArt={(root) => relayoutCovers(root, size)}
       ratio={cardRatio(seed, 'grid', layout)}
       flipImages={flipImages} faceHtml={(id) => faces.current.get(id) || ''} canFlip={actions.canFlip}
       faces={[]} onOpenEntity={actions.openEntity}
-      onOpen={(anchor) => actions.openMix(seed.id, anchor)} openLabel={`打开 Mix · ${label}`} />
+      onOpen={(anchor) => actions.openMix(seed.id, anchor)} openLabel={peachT("打开 Mix · {{v0}}", { v0: label })} />
   );
 }

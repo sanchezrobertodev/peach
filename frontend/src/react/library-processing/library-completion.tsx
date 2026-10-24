@@ -1,3 +1,5 @@
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { cardArtwork } from '@peach/card-art';
@@ -52,7 +54,7 @@ function Completion({ assetIds, onComplete }: { assetIds: number[]; onComplete?(
       || completed.current === started) return;
     completed.current = started;
     if (state.status === 'complete') {
-      setOutcome(`补全完成：取得 ${state.covers || 0} 张封面，生成 ${state.previews || 0} 部视频预览。`);
+      setOutcome(peachT("补全完成：取得 {{v0}} 张封面，生成 {{v1}} 部视频预览。", { v0: state.covers || 0, v1: state.previews || 0 }));
     }
     void queryClient.invalidateQueries({ queryKey: ['catalog-grid'] });
     onComplete?.();
@@ -61,17 +63,17 @@ function Completion({ assetIds, onComplete }: { assetIds: number[]; onComplete?(
   if (processingActive(state)) return null;
   const busy = start.isPending || processingActive(state);
   const problem = start.error ? errorMessage(start.error) : job.error ? DISCONNECTED_TEXT
-    : started && state?.job_id === started && state.status === 'failed' ? state.error || '补全未完成' : '';
-  const message = problem || (start.isPending ? '正在启动补全…'
-    : outcome || `这批影片中有 ${assetIds.length.toLocaleString()} 部暂无预览，可补全资料与图片。`);
-  return <section aria-label="补全预览" aria-live="polite" data-library-completion="" className="@container mb-4">
+    : started && state?.job_id === started && state.status === 'failed' ? state.error || peachT("补全未完成") : '';
+  const message = problem || (start.isPending ? peachT("正在启动补全…")
+    : outcome || peachT("这批影片中有 {{v0}} 部暂无预览，可补全资料与图片。", { v0: assetIds.length.toLocaleString(peachLocale) }));
+  return <section aria-label={peachT("补全预览")} aria-live="polite" data-library-completion="" className="@container mb-4">
     <Note tone={problem ? 'warning' : 'neutral'} action={<div className="flex flex-wrap items-center gap-2"><ProcessingActions busy={busy} metadataOnly={state?.metadata_only} onRun={command => {
       if (busy) return;
       setOutcome('');
       start.mutate(command);
     }} /></div>}>
       {message}{' '}<LinkButton href="/data-cleanup#libraryProcessing" size="small" trailingIcon={RiArrowRightLine}>
-      {problem ? '查看并处理' : '查看处理详情'}
+      {problem ? peachT("查看并处理") : peachT("查看处理详情")}
     </LinkButton></Note>
   </section>;
 }

@@ -2,6 +2,8 @@
  *
  * 分三次取会出现「在跑那段是新的、完成那段是旧的」这种自相矛盾的一屏，所以只有一个
  * queryKey。首屏由 `prefetchTasks` 写进 Query 缓存，组件挂上去读的就是它。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { apiGet } from '../../api';
 import { queryClient } from '../query';
 
@@ -82,12 +84,12 @@ export async function prefetchTasks(signal: AbortSignal): Promise<void> {
 }
 
 export const TRIGGER_LABELS: Record<string, string> = {
-  manual: '手动', scheduled: '定时', startup: '启动', cli: '命令行',
+  manual: peachT("手动"), scheduled: peachT("定时"), startup: peachT("启动"), cli: peachT("命令行"),
 };
 
 const STATUS_LABELS: Record<string, string> = {
-  pending: '排队中', running: '进行中', succeeded: '已完成',
-  failed: '失败', cancelled: '已取消', interrupted: '被打断',
+  pending: peachT("排队中"), running: peachT("进行中"), succeeded: peachT("已完成"),
+  failed: peachT("失败"), cancelled: peachT("已取消"), interrupted: peachT("被打断"),
 };
 
 /** 状态的中文名。表里的状态集是封闭的，认不出来只可能是表先改了，那就原样显示。 */
@@ -96,13 +98,13 @@ export const statusLabel = (status: string): string => STATUS_LABELS[status] || 
 /* 摘要里的键来自各域自己的状态字典，是英文标识；能认出来的翻成中文，认不出的原样
    显示——瞎猜一个中文名比留着英文键更难查。 */
 const SUMMARY_LABELS: Record<string, string> = {
-  checked: '已检查', total: '总数', scanned: '已扫描', identified: '已识别',
-  candidates: '资料结果', covers: '封面', changed: '已改动', operation: '操作',
-  ok: '取得', miss: '未取得', kept: '保留', planned: '计划', done: '已处理', added: '新增',
-  written: '已写入', removed: '已移除', exit_code: '退出码', issue_count: '问题',
-  followups: '派出后继', followups_duplicate: '已在排队', followups_truncated: '超上限未派',
-  followups_depth_exceeded: '超深度未派', outcome: '结果', name: '档案名称',
-  matched: '图库命中', size: '尺寸', source: '来源', cover_network: '封面连不上图片主机',
+  checked: peachT("已检查"), total: peachT("总数"), scanned: peachT("已扫描"), identified: peachT("已识别"),
+  candidates: peachT("资料结果"), covers: peachT("封面"), changed: peachT("已改动"), operation: peachT("操作"),
+  ok: peachT("取得"), miss: peachT("未取得"), kept: peachT("保留"), planned: peachT("计划"), done: peachT("已处理"), added: peachT("新增"),
+  written: peachT("已写入"), removed: peachT("已移除"), exit_code: peachT("退出码"), issue_count: peachT("问题"),
+  followups: peachT("派出后继"), followups_duplicate: peachT("已在排队"), followups_truncated: peachT("超上限未派"),
+  followups_depth_exceeded: peachT("超深度未派"), outcome: peachT("结果"), name: peachT("档案名称"),
+  matched: peachT("图库命中"), size: peachT("尺寸"), source: peachT("来源"), cover_network: peachT("封面连不上图片主机"),
 };
 
 /** 把一批任务按 `parent_run_id` 归到各自的父任务下。没有父的那些留在外面。 */
@@ -159,7 +161,7 @@ export function followupDetail(row: TaskRunPayload): string {
   const item = label.startsWith(prefix) ? label.slice(prefix.length) : label === row.task_label ? '' : label;
   const total = row.progress_total || 0;
   const tail = errorHeadline(row.error) || summaryText(row.result_summary)
-    || (isActive(row) && total > 0 ? `${progressText(row.progress_current, total)} 项` : '');
+    || (isActive(row) && total > 0 ? peachT("{{v0}} 项", { v0: progressText(row.progress_current, total) }) : '');
   return [item, tail].filter(Boolean).join(' · ');
 }
 
@@ -167,19 +169,19 @@ export function followupDetail(row: TaskRunPayload): string {
 export function elapsedText(seconds: number | null | undefined): string {
   if (typeof seconds !== 'number' || !Number.isFinite(seconds) || seconds < 0) return '';
   const whole = Math.floor(seconds);
-  if (whole < 60) return `${whole} 秒`;
+  if (whole < 60) return peachT("{{v0}} 秒", { v0: whole });
   const minutes = Math.floor(whole / 60);
-  if (minutes < 60) return `${minutes} 分 ${whole % 60} 秒`;
+  if (minutes < 60) return peachT("{{v0}} 分 {{v1}} 秒", { v0: minutes, v1: whole % 60 });
   const hours = Math.floor(minutes / 60);
-  if (hours < 48) return `${hours} 小时 ${minutes % 60} 分`;
-  return `${Math.floor(hours / 24).toLocaleString()} 天 ${hours % 24} 小时`;
+  if (hours < 48) return peachT("{{v0}} 小时 {{v1}} 分", { v0: hours, v1: minutes % 60 });
+  return peachT("{{v0}} 天 {{v1}} 小时", { v0: Math.floor(hours / 24).toLocaleString(peachLocale), v1: hours % 24 });
 }
 
 /** 进度读数「已做 / 总数」：服务端偶尔报出超过总数的已做数，按总数封顶。 */
 export function progressText(current: number | null | undefined, total: number | null | undefined): string {
   const all = Math.max(0, Number(total) || 0);
   const done = Math.min(all, Math.max(0, Number(current) || 0));
-  return `${done.toLocaleString()} / ${all.toLocaleString()}`;
+  return `${done.toLocaleString(peachLocale)} / ${all.toLocaleString(peachLocale)}`;
 }
 
 /** 一段报错在列表里只露的那一行。Python traceback 的第一行永远是「Traceback (most recent call
@@ -195,7 +197,7 @@ export function momentText(stamp: string | null | undefined): string {
   if (!stamp) return '';
   const moment = new Date(stamp);
   if (Number.isNaN(moment.getTime())) return '';
-  return moment.toLocaleString(undefined,
+  return moment.toLocaleString(peachLocale,
     { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 }
 
@@ -212,6 +214,6 @@ export function summaryText(summary: Record<string, unknown>): string {
     .filter(([key, value]) => !SUMMARY_HIDDEN.has(key)
       && (typeof value === 'number' || typeof value === 'string')
       && String(value) !== '')
-    .map(([key, value]) => `${SUMMARY_LABELS[key] || key} ${typeof value === 'number' ? value.toLocaleString() : value}`)
+    .map(([key, value]) => `${SUMMARY_LABELS[key] || key} ${typeof value === 'number' ? value.toLocaleString(peachLocale) : value}`)
     .join(' · ');
 }

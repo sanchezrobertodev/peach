@@ -7,6 +7,8 @@
  * 卡是媒体卡，不是 Board 的填充卡：透明底、无内边距，面只在封面那一块。纸边、翻页、
  * 徽标底色与叠放头像的让位几何写在 `../styles.css` 的 `[data-mix-*]` 那一组规则里：
  * 伪元素、`color-mix` 与相邻兄弟选择器在工具类里写不出来。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useCallback, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { avatarInner, representativeOf } from '@peach/card-art';
 import { firstGrapheme } from '@peach/legacy/core';
@@ -96,8 +98,8 @@ function Avatars({ faces, fallback, onOpenEntity }: {
   return (
     <div data-mix-avatars="">
       {faces.slice(0, 5).map((face) => (
-        <button key={`${face.kind}:${face.id}`} type="button" title={`打开资料页：${face.name}`}
-          aria-label={`打开资料页：${face.name}`} onClick={() => onOpenEntity(face.kind, face.name)}
+        <button key={`${face.kind}:${face.id}`} type="button" title={peachT("打开资料页：{{v0}}", { v0: face.name })}
+          aria-label={peachT("打开资料页：{{v0}}", { v0: face.name })} onClick={() => onOpenEntity(face.kind, face.name)}
           className={`${RING} cursor-pointer outline-none`}
           dangerouslySetInnerHTML={{ __html: avatarInner(face.name, face, representativeOf(face.name), face.kind) }} />
       ))}
@@ -133,7 +135,7 @@ export function MixCard({
             ? <ArtSlot artwork={artwork} identity={artworkIdentity} relayout={relayoutArt} />
             : poster
               ? <Poster key={poster} src={poster} />
-              : <span className="text-caption-1-regular tracking-caps text-text-secondary uppercase">无预览</span>}
+              : <span className="text-caption-1-regular tracking-caps text-text-secondary uppercase">{peachT("无预览")}</span>}
           <div data-mix-faces="" hidden={!flip.faces.length}>
             {flip.faces.map((src, index) => (
               <div key={src} data-mix-face={index === flip.current ? 'on' : index === flip.leaving ? 'off' : ''}>
@@ -148,7 +150,7 @@ export function MixCard({
           <span data-mix-badge=""
             className="absolute right-2.25 bottom-2.25 z-6 flex min-h-7 items-center gap-1.5 rounded-2lg px-2.25 py-1 text-caption-1-semibold text-text-white">
             <PLAY aria-hidden className="size-3.75" />
-            {badge ?? `${count.toLocaleString()} 个视频`}
+            {badge ?? peachT("{{v0}} 个视频", { v0: count.toLocaleString(peachLocale) })}
           </span>
         </div>
       </div>

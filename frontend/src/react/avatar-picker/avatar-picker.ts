@@ -3,6 +3,8 @@
  * 候选图走 `/avatar-choice?ref=`：页面只递服务端自己列出来的 ref，地址由服务端按索引拼。
  * 手填地址先交给 `/api/avatar-frame`，过了服务端的公网判据、取回来留在缓存里，才变成
  * 一个 `url:` ref；本机文件只在浏览器里预览，确认时按原字节发出去。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { ApiError, apiGet, apiSend } from '../../api';
 import {
   centeredBox, frameWithin, isUsableSize, type CropBox, type CropSize,
@@ -91,7 +93,7 @@ async function sendBytes<T>(url: string, file: File): Promise<T> {
   const response = await fetch(url, { method: 'POST', credentials: 'same-origin', body: file });
   const payload = await response.json().catch(() => null) as (T & { error?: string }) | null;
   if (response.ok) return payload as T;
-  throw new ApiError(payload?.error || `请求失败（${response.status}）`, response.status, payload);
+  throw new ApiError(payload?.error || peachT("请求失败（{{v0}}）", { v0: response.status }), response.status, payload);
 }
 
 /** 一张候选按 `aspect` 取景的那一块：有取景区就在它里面取，没有就整张图居中。
@@ -138,25 +140,25 @@ export function pickerNote(name: string, data: AvatarChoices | undefined): strin
   const elsewhere = data.matched_names.filter((one) => one !== name);
   if (elsewhere.length) {
     const named = `「${elsewhere.slice(0, NOTE_NAMES).join('」「')}」`;
-    const more = elsewhere.length > NOTE_NAMES ? `等 ${elsewhere.length.toLocaleString()} 个名字` : '';
-    return `${name}：图库里按${named}${more}找到的。`;
+    const more = elsewhere.length > NOTE_NAMES ? peachT("等 {{v0}} 个名字", { v0: elsewhere.length.toLocaleString(peachLocale) }) : '';
+    return peachT("{{v0}}：图库里按{{v1}}{{v2}}找到的。", { v0: name, v1: named, v2: more });
   }
   return data.choices.length
-    ? `${name}：换上的那张留在本机，随时能换回来。`
-    : `${name}：还没有备选图片，可输入番号、图片地址或从本机选择。`;
+    ? peachT("{{v0}}：换上的那张留在本机，随时能换回来。", { v0: name })
+    : peachT("{{v0}}：还没有备选图片，可输入番号、图片地址或从本机选择。", { v0: name });
 }
 
 /** 超过两天按天数说：「124 小时」要人自己去除。 */
 const indexAge = (hours: number): string =>
-  hours < 48 ? `${Math.max(1, Math.round(hours))} 小时` : `${Math.floor(hours / 24)} 天`;
+  hours < 48 ? peachT("{{v0}} 小时", { v0: Math.max(1, Math.round(hours)) }) : peachT("{{v0}} 天", { v0: Math.floor(hours / 24) });
 
 /** 图库索引没取过或已过期、这一次也一张图库图都没拿到时的那句提示；别的情形是空串。
  *  没取过和过期是两回事：过期的索引照样在查，只是新收的人像查不到。 */
 export function indexNote(data: AvatarChoices | undefined): string {
   if (!data || !data.index_stale || data.choices.some((one) => one.source === 'gfriends')) return '';
   return data.index_age_hours === null
-    ? '图库索引还没取过，只能从用过的图里选。'
-    : `图库索引 ${indexAge(data.index_age_hours)}没更新，新收的人像这里还查不到。`;
+    ? peachT("图库索引还没取过，只能从用过的图里选。")
+    : peachT("图库索引 {{v0}}没更新，新收的人像这里还查不到。", { v0: indexAge(data.index_age_hours) });
 }
 
 /** 多人合演的作品：格子上标人数，框选时提醒先找到她自己的脸。 */
@@ -164,25 +166,25 @@ export const sharedCast = (choice: AvatarChoice): boolean => choice.cast > 1;
 
 export const cropNote = (choice: AvatarChoice): string =>
   sharedCast(choice)
-    ? `${choice.label}：${choice.cast.toLocaleString()} 人合演，先找到她自己的脸，再拖动方框选一块。`
-    : `${choice.label}：拖动方框选一块，滚轮或角上那枚方块改大小。`;
+    ? peachT("{{v0}}：{{v1}} 人合演，先找到她自己的脸，再拖动方框选一块。", { v0: choice.label, v1: choice.cast.toLocaleString(peachLocale) })
+    : peachT("{{v0}}：拖动方框选一块，滚轮或角上那枚方块改大小。", { v0: choice.label });
 
 const SOURCE_LABELS: Record<string, string> = {
-  gfriends: '图库', history: '用过的', asset: '作品画面', code: '番号封面',
-  url: '地址', upload: '本机', social: '社媒头像', online: '在线作品',
+  gfriends: peachT("图库"), history: peachT("用过的"), asset: peachT("作品画面"), code: peachT("番号封面"),
+  url: peachT("地址"), upload: peachT("本机"), social: peachT("社媒头像"), online: peachT("在线作品"),
 };
 
 /** 底图那一排每一格的名字：封面一格，九宫格九格按位置数。 */
 export function baseLabel(ref: string): string {
   if (ref.startsWith('follow:')) {
     const what = ref.split(':')[2];
-    return what === 'cover' ? '作品封面' : `内容图片 ${Number(what.replace('image', '') || 0) + 1}`;
+    return what === 'cover' ? peachT("作品封面") : peachT("内容图片 {{v0}}", { v0: Number(what.replace('image', '') || 0) + 1 });
   }
-  if (ref.startsWith('cover:')) return '封面';
+  if (ref.startsWith('cover:')) return peachT("封面");
   const what = ref.split(':')[2] || '';
-  if (what === 'cover') return '封面';
+  if (what === 'cover') return peachT("封面");
   const cell = Number(what.replace('cell', ''));
-  return Number.isFinite(cell) ? `第 ${cell + 1} 格` : what;
+  return Number.isFinite(cell) ? peachT("第 {{v0}} 格", { v0: cell + 1 }) : what;
 }
 
 /** 一格的完整说明，进 `title`：哪儿来的、多大、按谁找到的。作品画面再接上服务端的说明：
@@ -190,6 +192,6 @@ export function baseLabel(ref: string): string {
 export const choiceDetail = (choice: AvatarChoice): string =>
   `${SOURCE_LABELS[choice.source] || choice.source} · ${choice.label}`
   + (choice.width ? ` · ${choice.width}×${choice.height}` : '')
-  + (sharedCast(choice) ? ` · ${choice.cast.toLocaleString()} 人合演` : '')
-  + (choice.found_by ? ` · 按「${choice.found_by}」找到` : '')
+  + (sharedCast(choice) ? peachT(" · {{v0}} 人合演", { v0: choice.cast.toLocaleString(peachLocale) }) : '')
+  + (choice.found_by ? peachT(" · 按「{{v0}}」找到", { v0: choice.found_by }) : '')
   + (choice.source === 'asset' && choice.detail && choice.detail !== choice.label ? ` · ${choice.detail}` : '');

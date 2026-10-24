@@ -21,6 +21,8 @@
  *
  * 宿主不包 `.peach-react`：这一列一直在 Preflight 之外，按钮与字号继承的是遗留层的全局规则，样式全在
  * `sidebar.css`，不用工具类。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import {
   createContext, useContext, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore,
   type DragEvent, type MouseEvent, type ReactNode,
@@ -226,18 +228,18 @@ function catalogGroups(
     };
   };
   return [
-    spec('来源', 'src', facets.locations, 'loc', true),
+    spec(peachT("来源"), 'src', facets.locations, 'loc', true),
     facets.duration
-      ? { title: '时长', kind: 'meta', active: false, body: <Duration host={at} filters={filters} /> }
+      ? { title: peachT("时长"), kind: 'meta', active: false, body: <Duration host={at} filters={filters} /> }
       : null,
     /* 产地紧挨着来源：两者回答的都是「这批片打哪来」，一个说存储，一个说发行体系。可多选。 */
-    spec('产地', 'general', facets.regions, 'region', true),
-    spec('画幅', 'meta', facets.orientations, 'orient', false),
-    spec('创作者', 'artist', facets.creators, 'creator', false, 'creator'),
-    spec('内容标签', 'general', facets.tags, 'tag', false, 'tag'),
-    spec('影片属性', 'meta', facets.tech, 'tag', false, 'tech'),
+    spec(peachT("产地"), 'general', facets.regions, 'region', true),
+    spec(peachT("画幅"), 'meta', facets.orientations, 'orient', false),
+    spec(peachT("创作者"), 'artist', facets.creators, 'creator', false, 'creator'),
+    spec(peachT("内容标签"), 'general', facets.tags, 'tag', false, 'tag'),
+    spec(peachT("影片属性"), 'meta', facets.tech, 'tag', false, 'tech'),
     facets.followTags.length ? {
-      title: '关注标签', kind: 'online', active: false,
+      title: peachT("关注标签"), kind: 'online', active: false,
       body: <FollowChips rows={facets.followTags} host={at} selected={null} badges />,
     } : null,
   ];
@@ -253,15 +255,15 @@ function followGroups(
   const selected = new Set(content.selected);
   return [
     providers.length ? {
-      title: '来源', kind: 'src', active: providers.some((row) => provider.includes(row.value)),
+      title: peachT("来源"), kind: 'src', active: providers.some((row) => provider.includes(row.value)),
       body: <ChipList rows={providers} filterKey="provider" multi={false} selected={provider} counts={null} host={at}
         onToggle={(_key, value) => at.selectFollowProvider(value)} />,
     } : null,
     content.duration
-      ? { title: '时长', kind: 'meta', active: false, body: <Duration host={at} filters={filters} commit={at.setFollowDuration} /> }
+      ? { title: peachT("时长"), kind: 'meta', active: false, body: <Duration host={at} filters={filters} commit={at.setFollowDuration} /> }
       : null,
     content.tags.length ? {
-      title: '内容标签', kind: 'online', active: content.tags.some((row) => selected.has(row.value)),
+      title: peachT("内容标签"), kind: 'online', active: content.tags.some((row) => selected.has(row.value)),
       body: <FollowChips rows={content.tags} host={at} selected={selected} badges={false} />,
     } : null,
   ];
@@ -347,7 +349,7 @@ function ChipList({ rows, filterKey, multi, selected, counts, host: at, onToggle
             onClick={() => onToggle(filterKey, row.value, multi)}>
             <Dot dot={row.dot} />
             <span data-sidebar-chip-label="">{row.label}</span>
-            {n === null ? null : <span data-sidebar-count="" data-count-badge={`${filterKey}:${row.value}`}>{n.toLocaleString()}</span>}
+            {n === null ? null : <span data-sidebar-count="" data-count-badge={`${filterKey}:${row.value}`}>{n.toLocaleString(peachLocale)}</span>}
           </button>
         );
       })}
@@ -405,7 +407,7 @@ function MoreList({ epoch, title, rows, latest, limit, filterKey, selected, coun
         counts={counts} host={at} />
       {expandable && rows.length > limit
         ? <button type="button" ref={button} data-sidebar-more={filterKey} aria-expanded={expanded}
-            aria-label={`${expanded ? '收起' : '展开全部'}${title}`} onClick={more}><Icon name="chevron-down" /></button>
+            aria-label={`${expanded ? peachT("收起") : peachT("展开全部")}${title}`} onClick={more}><Icon name="chevron-down" /></button>
         : null}
     </>
   );
@@ -422,7 +424,7 @@ function FollowChips({ rows, host: at, selected, badges }: {
           onClick={() => (selected ? at.selectFollowTag(row.value) : at.openFollowTag(row.value))}>
           <span data-sidebar-chip-label="">{row.label}</span>
           <span data-sidebar-count="" data-count-badge={badges ? `follow:${row.value}` : undefined}>
-            {badges ? (row.n ?? 0).toLocaleString() : row.n}
+            {badges ? (row.n ?? 0).toLocaleString(peachLocale) : row.n}
           </span>
         </button>
       ))}
@@ -495,7 +497,7 @@ function Duration({ host: at, filters, commit: onCommit = at.setDuration }: {
 
   const tip = (end: 'min' | 'max', value: number) => (
     <output data-sidebar-range-tip="" data-range-end={end} data-range-active={active === end ? '' : undefined} aria-hidden="true">
-      {end === 'max' && value >= DURATION_MAX ? '不限' : `${value} 分钟`}
+      {end === 'max' && value >= DURATION_MAX ? peachT("不限") : peachT("{{v0}} 分钟", { v0: value })}
     </output>
   );
   return (
@@ -503,9 +505,9 @@ function Duration({ host: at, filters, commit: onCommit = at.setDuration }: {
       <div data-sidebar-range="" id="durationRange" ref={group}>
         <span data-sidebar-range-base="" />
         <span data-sidebar-range-fill="" />
-        <input id="durMin" type="range" min="0" max={DURATION_MAX} step="5" value={lo} aria-label="最短时长（分钟）"
+        <input id="durMin" type="range" min="0" max={DURATION_MAX} step="5" value={lo} aria-label={peachT("最短时长（分钟）")}
           ref={minInput} onChange={(event) => move('min', Number(event.currentTarget.value))} />
-        <input id="durMax" type="range" min="0" max={DURATION_MAX} step="5" value={hi} aria-label="最长时长（分钟）"
+        <input id="durMax" type="range" min="0" max={DURATION_MAX} step="5" value={hi} aria-label={peachT("最长时长（分钟）")}
           ref={maxInput} onChange={(event) => move('max', Number(event.currentTarget.value))} />
         {tip('min', lo)}
         {tip('max', hi)}

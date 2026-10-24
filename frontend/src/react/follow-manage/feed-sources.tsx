@@ -8,6 +8,8 @@
  * 服务端是唯一真相：开关与移除之后重取这一份，不在前端按响应拼一份新的本地状态。
  *
  * 勾选和关注列表同一套：勾在行首，点一行的空白处也是选这一行，选中了底部浮出批量操作。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
@@ -58,15 +60,15 @@ const feedTableFeatures = tableFeatures({
 });
 
 const COLUMN_LABELS: Record<string, string> = {
-  select: '选择',
-  name: '名称',
-  kind: '类型',
-  origin: '来源',
-  status: '状态',
-  interval: '频率',
-  fetched: '上次拉取',
-  fresh: '上次新增',
-  actions: '操作',
+  select: peachT("选择"),
+  name: peachT("名称"),
+  kind: peachT("类型"),
+  origin: peachT("来源"),
+  status: peachT("状态"),
+  interval: peachT("频率"),
+  fetched: peachT("上次拉取"),
+  fresh: peachT("上次新增"),
+  actions: peachT("操作"),
 };
 
 /** 表头里不占字的列：勾选那一格自己会说「选择 谁」，行尾三个控件也各带自己的名字。 */
@@ -88,9 +90,9 @@ function originHost(url: string): string {
 
 /** 一条源此刻的状态：拉不动最要紧，其次才是开着还是停着。 */
 function StatusChip({ source }: { source: FeedSource }) {
-  if (source.last_error) return <Chip variant="caption" color="rose">拉取失败</Chip>;
-  if (!source.enabled) return <Chip variant="caption" color="neutral">已暂停</Chip>;
-  return <Chip variant="caption" color="lime">正常</Chip>;
+  if (source.last_error) return <Chip variant="caption" color="rose">{peachT("拉取失败")}</Chip>;
+  if (!source.enabled) return <Chip variant="caption" color="neutral">{peachT("已暂停")}</Chip>;
+  return <Chip variant="caption" color="lime">{peachT("正常")}</Chip>;
 }
 
 /** 名字前的圆框：和关注列表的创作者圆标同一个尺寸与底色。里面那段由 `card-art` 的 `avatarInner` 拼：
@@ -143,11 +145,11 @@ interface RowHandlers {
 function confirmRemove(sources: FeedSource[], write: () => Promise<unknown>) {
   const one = sources.length === 1 ? sources[0] : null;
   return confirmModal({
-    title: one ? '移除订阅源' : `移除 ${sources.length} 条订阅源`,
+    title: one ? peachT("移除订阅源") : peachT("移除 {{v0}} 条订阅源", { v0: sources.length }),
     body: one
-      ? `将移除订阅源「${feedName(one)}」，之后不再拉取它的新作；已经拉到的新作保留。`
-      : '将移除所选订阅源，之后不再拉取它们的新作；已经拉到的新作保留。',
-    confirmLabel: one ? '移除订阅源' : '移除所选订阅源', danger: true,
+      ? peachT("将移除订阅源「{{v0}}」，之后不再拉取它的新作；已经拉到的新作保留。", { v0: feedName(one) })
+      : peachT("将移除所选订阅源，之后不再拉取它们的新作；已经拉到的新作保留。"),
+    confirmLabel: one ? peachT("移除订阅源") : peachT("移除所选订阅源"), danger: true,
     onConfirm: write,
   });
 }
@@ -188,10 +190,10 @@ export function FeedSources({ readOnly, toast }: {
       const done = result.ids.length - failed.length;
       setSelected(new Set());
       void reload();
-      if (result.action === 'remove' && done) toast(`已移除 ${done} 条订阅源`);
+      if (result.action === 'remove' && done) toast(peachT("已移除 {{v0}} 条订阅源", { v0: done }));
       if (failed.length) {
         const first = failed[0]!;
-        action.setError(`${failed.length} 条没有写入：${first.ok ? '' : errorMessage(first.error)}`);
+        action.setError(peachT("{{v0}} 条没有写入：{{v1}}", { v0: failed.length, v1: first.ok ? '' : errorMessage(first.error) }));
       }
     },
     onError: (cause) => action.setError(errorMessage(cause)),
@@ -213,7 +215,7 @@ export function FeedSources({ readOnly, toast }: {
       (signal) => checkFeeds(signal, [source.id]), () => void reload()),
     remove: (source) => void confirmRemove([source], async () => {
       await removeFeed(source.id);
-      toast(`已移除订阅源「${feedName(source)}」`);
+      toast(peachT("已移除订阅源「{{v0}}」", { v0: feedName(source) }));
       void reload();
     }),
   };
@@ -230,7 +232,7 @@ export function FeedSources({ readOnly, toast }: {
         cell: (context) => (
           <Checkbox slot={null} isSelected={context.row.getIsSelected()}
             onChange={(on) => context.row.toggleSelected(on)}
-            aria-label={`选择 ${feedName(context.row.original)}`} />
+            aria-label={peachT("选择 {{v0}}", { v0: feedName(context.row.original) })} />
         ),
       }),
       column.accessor(feedName, {
@@ -245,7 +247,7 @@ export function FeedSources({ readOnly, toast }: {
               <FeedAvatar source={context.row.original} />
               {context.getValue()}
               {alias ? (
-                <span className="text-body-2-regular text-text-secondary" title={`站上这一页挂在「${alias}」名下`}>
+                <span className="text-body-2-regular text-text-secondary" title={peachT("站上这一页挂在「{{v0}}」名下", { v0: alias })}>
                   {alias}
                 </span>
               ) : null}
@@ -262,13 +264,13 @@ export function FeedSources({ readOnly, toast }: {
         id: 'origin',
         header: label('origin'),
         cell: (context) => (
-          <a href={context.getValue()} target="_blank" rel="noreferrer noopener" title="打开来源页面"
+          <a href={context.getValue()} target="_blank" rel="noreferrer noopener" title={peachT("打开来源页面")}
             className="text-text-primary underline-offset-2 hover:underline">
             {originHost(context.getValue())}
           </a>
         ),
       }),
-      column.accessor((source) => source.last_error ? '拉取失败' : source.enabled ? '已启用' : '已暂停', {
+      column.accessor((source) => source.last_error ? peachT("拉取失败") : source.enabled ? peachT("已启用") : peachT("已暂停"), {
         id: 'status',
         header: label('status'),
         cell: (context) => <StatusChip source={context.row.original} />,
@@ -281,12 +283,12 @@ export function FeedSources({ readOnly, toast }: {
       column.accessor((row) => row.last_fetched_at ? Date.parse(row.last_fetched_at) || 0 : 0, {
         id: 'fetched',
         header: label('fetched'),
-        cell: (context) => <span className="whitespace-nowrap tabular-nums">{context.row.original.last_fetched_at ? localTime(context.row.original.last_fetched_at) : '还没拉过'}</span>,
+        cell: (context) => <span className="whitespace-nowrap tabular-nums">{context.row.original.last_fetched_at ? localTime(context.row.original.last_fetched_at) : peachT("还没拉过")}</span>,
       }),
       column.accessor((row) => row.last_new_count, {
         id: 'fresh',
         header: label('fresh'),
-        cell: (context) => <span className="whitespace-nowrap tabular-nums">{`${context.getValue()} 条`}</span>,
+        cell: (context) => <span className="whitespace-nowrap tabular-nums">{peachT("{{v0}} 条", { v0: context.getValue() })}</span>,
       }),
       column.display({
         id: 'actions',
@@ -295,16 +297,16 @@ export function FeedSources({ readOnly, toast }: {
            刷新与垃圾桶字形，xs 那一档和开关一样高。 */
         cell: (context) => (
           <span className="flex items-center gap-1">
-            <Switch aria-label={`启用 ${feedName(context.row.original)}`}
+            <Switch aria-label={peachT("启用 {{v0}}", { v0: feedName(context.row.original) })}
               isSelected={context.row.original.enabled} isDisabled={handlers.current.readOnly}
               onChange={(enabled) => handlers.current.toggle(context.row.original, enabled)} />
             <Button variant="secondary" size="xs" iconOnly leadingIcon={RiRefreshLine}
-              aria-label={`拉取 ${feedName(context.row.original)}`}
+              aria-label={peachT("拉取 {{v0}}", { v0: feedName(context.row.original) })}
               disabled={handlers.current.readOnly}
               {...busyProps(handlers.current.busy === `check-${context.row.original.id}`)}
               onClick={() => handlers.current.fetch(context.row.original)} />
             <Button variant="secondary" size="xs" iconOnly leadingIcon={RiDeleteBinLine}
-              aria-label={`移除 ${feedName(context.row.original)}`}
+              aria-label={peachT("移除 {{v0}}", { v0: feedName(context.row.original) })}
               disabled={handlers.current.readOnly}
               onClick={() => handlers.current.remove(context.row.original)} />
           </span>
@@ -331,8 +333,8 @@ export function FeedSources({ readOnly, toast }: {
 
   if (!data) {
     return feeds.error
-      ? <Note tone="error" title="打不开订阅源">{errorMessage(feeds.error)}</Note>
-      : <Help>正在读订阅源。</Help>;
+      ? <Note tone="error" title={peachT("打不开订阅源")}>{errorMessage(feeds.error)}</Note>
+      : <Help>{peachT("正在读订阅源。")}</Help>;
   }
 
   const check = () => void action.run('check', (signal) => checkFeeds(signal), () => void reload());
@@ -347,13 +349,13 @@ export function FeedSources({ readOnly, toast }: {
   return (
     <div className="flex flex-col gap-3">
       <AddFeed readOnly={readOnly} toast={toast} onAdded={() => void reload()} />
-      <section aria-label="JAV 订阅列表"
+      <section aria-label={peachT("JAV 订阅列表")}
         className={cardClass({ padding: 'none', className: 'flex flex-col gap-4 px-6 py-5 max-sm:px-4' })}>
       <div className="flex flex-wrap items-center gap-2">
-        <h3 className="mr-auto text-title-2-medium text-text-primary">JAV 订阅源</h3>
-        <span className="text-body-2-regular text-text-secondary">{`${sources.length.toLocaleString()} 个订阅源 · ${(Number(data.unread) || 0).toLocaleString()} 条未看`}</span>
-        <Button onClick={check} disabled={readOnly} {...busyProps(action.busy === 'check')}>立即拉取</Button>
-        <DataTableSort label="JAV 订阅源" sorting={sorting} onChange={(next) => { setSorting(next); setPage(1); }}
+        <h3 className="mr-auto text-title-2-medium text-text-primary">{peachT("JAV 订阅源")}</h3>
+        <span className="text-body-2-regular text-text-secondary">{peachT("{{v0}} 个订阅源 · {{v1}} 条未看", { v0: sources.length.toLocaleString(peachLocale), v1: (Number(data.unread) || 0).toLocaleString(peachLocale) })}</span>
+        <Button onClick={check} disabled={readOnly} {...busyProps(action.busy === 'check')}>{peachT("立即拉取")}</Button>
+        <DataTableSort label={peachT("JAV 订阅源")} sorting={sorting} onChange={(next) => { setSorting(next); setPage(1); }}
           options={['name', 'kind', 'origin', 'status', 'interval', 'fetched', 'fresh'].map((id) => ({ id, label: COLUMN_LABELS[id]! }))} />
       </div>
 
@@ -362,35 +364,33 @@ export function FeedSources({ readOnly, toast }: {
           {/* 拉不动的源并成一条：每条源一行「源名：报错首行」，几条源同时坏也不把表格推出首屏；
               表格里那一行的状态徽章同时标着「拉取失败」。 */}
           {failing.length ? (
-            <Note tone="error" title={`${failing.length.toLocaleString()} 条订阅源拉取失败`}
+            <Note tone="error" title={peachT("{{v0}} 条订阅源拉取失败", { v0: failing.length.toLocaleString(peachLocale) })}
               extra={<ul className="flex flex-col gap-0.5 text-body-2-regular">
                 {failing.map((source) => (
                   <li key={source.id} className="min-w-0 truncate" title={source.last_error || ''}>
-                    {`${feedName(source)}：${errorHeadline(source.last_error || '') || '未说明原因'}`}
+                    {`${feedName(source)}：${errorHeadline(source.last_error || '') || peachT("未说明原因")}`}
                   </li>
                 ))}
-              </ul>}>
-              这些订阅源这一轮没有取到新条目。
-            </Note>
+              </ul>}>{peachT("这些订阅源这一轮没有取到新条目。")}</Note>
           ) : null}
           {action.error ? <ErrorText>{action.error}</ErrorText> : null}
         </div>
       ) : null}
 
-        <SelectionDock visible={chosen.length > 0} label="订阅源批量操作" count={`已选 ${chosen.length} 条订阅源`}>
+        <SelectionDock visible={chosen.length > 0} label={peachT("订阅源批量操作")} count={peachT("已选 {{v0}} 条订阅源", { v0: chosen.length })}>
           <Button variant="secondary" size="small" disabled={readOnly} {...busyProps(bulk.isPending)}
-            onClick={() => bulk.mutate({ ids: chosen.map((row) => row.id), action: 'enabled' })}>启用</Button>
+            onClick={() => bulk.mutate({ ids: chosen.map((row) => row.id), action: 'enabled' })}>{peachT("启用")}</Button>
           <Button variant="secondary" size="small" disabled={readOnly} {...busyProps(bulk.isPending)}
-            onClick={() => bulk.mutate({ ids: chosen.map((row) => row.id), action: 'paused' })}>暂停</Button>
+            onClick={() => bulk.mutate({ ids: chosen.map((row) => row.id), action: 'paused' })}>{peachT("暂停")}</Button>
           <Button variant="danger" size="small" disabled={readOnly} {...busyProps(bulk.isPending)}
             onClick={() => void confirmRemove(chosen,
-              () => bulk.mutateAsync({ ids: chosen.map((row) => row.id), action: 'remove' }))}>移除</Button>
-          <Button variant="ghost" size="small" onClick={() => setSelected(new Set())}>取消选择</Button>
+              () => bulk.mutateAsync({ ids: chosen.map((row) => row.id), action: 'remove' }))}>{peachT("移除")}</Button>
+          <Button variant="ghost" size="small" onClick={() => setSelected(new Set())}>{peachT("取消选择")}</Button>
         </SelectionDock>
 
       {sources.length ? (
         <DataTableFrame follow onRowClick={(key) => toggleRow(Number(key))}>
-          <Table aria-label="JAV 订阅源" size="sm"
+          <Table aria-label={peachT("JAV 订阅源")} size="sm"
             sortDescriptor={sorting[0] ? { column: sorting[0].id, direction: sorting[0].desc ? 'descending' : 'ascending' } : undefined}
             onSortChange={(sort) => table.getColumn(String(sort.column))?.toggleSorting(sort.direction === 'descending')}>
             <TableHeader>
@@ -420,18 +420,16 @@ export function FeedSources({ readOnly, toast }: {
           </Table>
         </DataTableFrame>
       ) : (
-        <EmptyState icon={RiRssLine} title="还没有订阅源" shell="plain">
-          在上面按女优名添加，或在人物页点「订阅新作」。
-        </EmptyState>
+        <EmptyState icon={RiRssLine} title={peachT("还没有订阅源")} shell="plain">{peachT("在上面按女优名添加，或在人物页点「订阅新作」。")}</EmptyState>
       )}
       {sources.length ? (
-        <DataTableFooter label="JAV 订阅" total={win.total} unit="个订阅源"
+        <DataTableFooter label={peachT("JAV 订阅")} total={win.total} unit={peachT("个订阅源")}
           pagination={{ pageIndex: win.page - 1, pageSize }}
           onChange={(next) => { setPageSize(next.pageSize); setPage(next.pageIndex + 1); }} />
       ) : null}
       <footer className="-mx-6 -mb-5 flex flex-wrap items-center gap-2 border-t border-separator-border rounded-b-2xl bg-card-footer px-6 py-4 max-sm:-mx-4 max-sm:px-4">
         <span role="status" className="mr-auto text-body-2-regular text-text-secondary">
-          {`未看 ${(Number(data.unread) || 0).toLocaleString()} · 已启用 ${sources.filter((source) => source.enabled).length.toLocaleString()} / ${sources.length.toLocaleString()}`}
+          {peachT("未看 {{v0}} · 已启用 {{v1}} / {{v2}}", { v0: (Number(data.unread) || 0).toLocaleString(peachLocale), v1: sources.filter((source) => source.enabled).length.toLocaleString(peachLocale), v2: sources.length.toLocaleString(peachLocale) })}
         </span>
       </footer>
       </section>

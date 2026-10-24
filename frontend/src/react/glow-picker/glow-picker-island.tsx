@@ -11,6 +11,7 @@
  *
  * 光晕关掉之后卡上只剩强调色可挑：上面那一组球和它的「重置」换的是一层现在不画的东西，点下去
  * 屏幕上没有任何反应，整组收起来，卡就只说当前还管用的那一件事。 */
+import { t as peachT } from "../../i18n/index";
 import { useSyncExternalStore } from 'react';
 
 import { ACCENT_CHOICES, chooseAccent, resetGlowColors } from '@peach/appearance';
@@ -38,13 +39,13 @@ function GlowPicker({ host: at }: { host: GlowPickerHost }) {
   return (
     <>
       <header data-glow-head="" data-glow-presets="" hidden={!glow.on}>
-        <span>光晕</span>
+        <span>{peachT("光晕")}</span>
         {/* 这里重置的是配色，不是整份光晕：强度和颗粒一起清掉会让人以为按错了键。整份恢复默认在详细设置那一屏。 */}
-        <button type="button" data-glow-preset-reset="" onClick={() => resetGlowColors(store)}>重置</button>
+        <button type="button" data-glow-preset-reset="" onClick={() => resetGlowColors(store)}>{peachT("重置")}</button>
       </header>
-      <GlowPresetGrid store={store} label="光晕" hidden={!glow.on} />
-      <p data-glow-head="" data-glow-sub=""><span>强调色</span></p>
-      <div data-accent-grid="" role="group" aria-label="强调色">
+      <GlowPresetGrid store={store} label={peachT("光晕")} hidden={!glow.on} />
+      <p data-glow-head="" data-glow-sub=""><span>{peachT("强调色")}</span></p>
+      <div data-accent-grid="" role="group" aria-label={peachT("强调色")}>
         {/* 强调色那一排同样不带颜色：球拿的就是这一档真会写上去的 400 与 600 两级。 */}
         {ACCENT_CHOICES.map(([key, label]) => (
           <button type="button" key={key} data-glow-chip="" data-accent={key} aria-pressed={key === accent}
@@ -53,7 +54,7 @@ function GlowPicker({ host: at }: { host: GlowPickerHost }) {
           </button>
         ))}
       </div>
-      <footer><button type="button" className="geist-button primary" data-glow-detail="" onClick={() => at.openDetails()}>详细设置</button></footer>
+      <footer><button type="button" className="geist-button primary" data-glow-detail="" onClick={() => at.openDetails()}>{peachT("详细设置")}</button></footer>
     </>
   );
 }

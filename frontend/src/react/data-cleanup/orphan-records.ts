@@ -2,6 +2,8 @@
  *
  * 一个读端点、一个写端点。列表带每条在六张表里的记录数、行上的评分与次数和在库候选；
  * 接回把记录搬到选中的文件、删掉旧行，记一个可整批撤回的批次。彻底删除走批量接口的 `delete`。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { apiGet, apiSend } from '../../api';
 import { BATCH_URL } from '../duplicates/duplicates';
 
@@ -44,12 +46,12 @@ export type RecordKey = RecordTable | RowRecord;
 
 /** 六张表在这一块里的名字，顺序就是显示顺序。 */
 export const RECORD_LABELS: ReadonlyArray<readonly [RecordTable, string]> = [
-  ['asset_preference', '喜欢与理由'],
-  ['watch_queue', '稍后看'],
-  ['playlist_item', '播放列表'],
-  ['asset_quality_goal', '寻找更好版本'],
-  ['activity_event', '观看历史'],
-  ['asset_tag_preference', '隐藏标签'],
+  ['asset_preference', peachT("喜欢与理由")],
+  ['watch_queue', peachT("稍后看")],
+  ['playlist_item', peachT("播放列表")],
+  ['asset_quality_goal', peachT("寻找更好版本")],
+  ['activity_event', peachT("观看历史")],
+  ['asset_tag_preference', peachT("隐藏标签")],
 ];
 
 export const fetchOrphanRecords = (signal?: AbortSignal) =>
@@ -66,21 +68,21 @@ export const purgeOrphan = (id: number | number[]) =>
 
 /** 行上四列的写法：分值与次数照写；只记过最近播放、没有播放次数时写「播放过」。 */
 const rowRecordsText = (records: OrphanRecord['records']) => [
-  records.rating ? `评分 ${records.rating}` : '',
-  records.play_count ? `播放 ${Number(records.play_count).toLocaleString()} 次`
-    : records.last_played ? '播放过' : '',
-  records.o_count ? `高潮 ${Number(records.o_count).toLocaleString()} 次` : '',
+  records.rating ? peachT("评分 {{v0}}", { v0: records.rating }) : '',
+  records.play_count ? peachT("播放 {{v0}} 次", { v0: Number(records.play_count).toLocaleString(peachLocale) })
+    : records.last_played ? peachT("播放过") : '',
+  records.o_count ? peachT("高潮 {{v0}} 次", { v0: Number(records.o_count).toLocaleString(peachLocale) }) : '',
 ];
 
 /** 一条带的记录排成一句：「喜欢与理由 1 · 观看历史 3 · 评分 4 · 播放 2 次」。 */
 export const recordsText = (records: OrphanRecord['records']) => [
   ...RECORD_LABELS
     .filter(([table]) => records[table])
-    .map(([table, label]) => `${label} ${Number(records[table]).toLocaleString()}`),
+    .map(([table, label]) => `${label} ${Number(records[table]).toLocaleString(peachLocale)}`),
   ...rowRecordsText(records),
 ].filter(Boolean).join(' · ');
 
-const minutes = (seconds: number | null) => (seconds ? `${Math.round(seconds / 60)} 分钟` : '');
+const minutes = (seconds: number | null) => (seconds ? peachT("{{v0}} 分钟", { v0: Math.round(seconds / 60) }) : '');
 
 /** 下拉框里一个候选文件那一行。 */
 export const candidateText = (item: OrphanCandidate) =>

@@ -446,7 +446,8 @@ class LeftoverProcessTests(_WorktreeCase):
 
     def sleeper(self, cwd: Path) -> subprocess.Popen:
         cwd.mkdir(parents=True, exist_ok=True)
-        child = subprocess.Popen([sys.executable, "-c", "import sys; sys.stdin.read()"],
+        # Windows venv 启动器自身位于临时目录；检查等待 stdin 的解释器进程。
+        child = subprocess.Popen([sys._base_executable, "-c", "import sys; sys.stdin.read()"],
                                  cwd=cwd, stdin=subprocess.PIPE)
         deadline = time.monotonic() + 10
         while time.monotonic() < deadline:
@@ -457,7 +458,7 @@ class LeftoverProcessTests(_WorktreeCase):
         return child
 
     def stop(self, child: subprocess.Popen) -> None:
-        # EOF 让解释器自己退出；Windows venv 启动器也会等其子进程结束。
+        # EOF 让解释器自己退出。
         child.communicate(timeout=10)
 
     def test_a_process_working_in_a_worktree_is_listed_with_its_details(self):

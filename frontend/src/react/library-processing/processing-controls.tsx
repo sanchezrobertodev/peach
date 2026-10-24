@@ -1,3 +1,4 @@
+import { t as peachT } from "../../i18n/index";
 import { Button } from '@/components/base/buttons/button';
 import { RiPauseLine, RiPlayLine } from '@remixicon/react';
 
@@ -16,7 +17,7 @@ export function ProcessingControls({ state, disabled = false }: {
 }) {
   const action = useAction();
   const active = processingActive(state);
-  const controlLabel = state.status === 'paused' ? '继续' : state.status === 'pausing' ? '正在暂停' : '暂停';
+  const controlLabel = state.status === 'paused' ? peachT("继续") : state.status === 'pausing' ? peachT("正在暂停") : peachT("暂停");
   const change = (command: ProcessingControlCommand) => {
     if (disabled || action.busy) return;
     void action.run(command.action, signal =>

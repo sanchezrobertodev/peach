@@ -8,6 +8,7 @@
  * 出来，关注条目的大小由 `/follow-qualities` 回源 HEAD 带回；连上游都不给 content-length 时没有
  * 任何办法把秒换成字节，角标改报还能往前放多久。缓冲吃满后浏览器停拉，增量归零，此时保留上一次
  * 读数而不是跳回 0——那不是速度掉了，是没有在下载。 */
+import { t as peachT } from "../i18n/index";
 import { esc, icon, realDuration } from '@peach/legacy/core';
 
 import type { VjsPlayer } from './types';
@@ -102,9 +103,7 @@ export function playerStatsPlot(samples: number[], kind: 'speed' | 'activity' | 
 /** 统计键、加载速度角标与统计面板。作品详情与关注详情共用这一组；挂载在 Video.js 包住
  *  `<video>` 之前插到它前面，Video.js 一包，`video` 的父级就换成它自己的那层了。 */
 export function playerStatsOverlayHtml(): string {
-  return `<button data-player-stats-button="" id="playerStatsBtn" aria-label="播放统计" title="播放统计" aria-pressed="false" hidden>${icon('chart')}</button>
-       <div data-player-net="" id="playerNet" role="status" aria-live="polite" hidden></div>
-       <div data-player-stats="" id="playerStats" role="status" hidden></div>`;
+  return peachT("<button data-player-stats-button=\"\" id=\"playerStatsBtn\" aria-label=\"播放统计\" title=\"播放统计\" aria-pressed=\"false\" hidden>{{v0}}</button>\n       <div data-player-net=\"\" id=\"playerNet\" role=\"status\" aria-live=\"polite\" hidden></div>\n       <div data-player-stats=\"\" id=\"playerStats\" role=\"status\" hidden></div>", { v0: icon('chart') });
 }
 
 export function streamEntries(id: number, session = ''): PerformanceResourceTiming[] {
@@ -130,7 +129,7 @@ export function playerSpeedBits(player: VjsPlayer | null, id: number, session = 
 }
 
 export function fmtSpeed(bits: number): string {
-  if (!Number.isFinite(bits) || bits <= 0) return '加载中…';
+  if (!Number.isFinite(bits) || bits <= 0) return peachT("加载中…");
   const bytes = bits / 8;
   return bytes >= 1048576 ? `${(bytes / 1048576).toFixed(1)} MB/s` : `${Math.max(1, Math.round(bytes / 1024))} KB/s`;
 }
@@ -139,5 +138,5 @@ export function fmtSpeed(bits: number): string {
  *  ——现在断网还能往前放多久。 */
 export function fmtLoadRate(bits: number, ahead: number): string {
   if (bits > 0) return fmtSpeed(bits);
-  return ahead > 0 ? `已缓冲 ${Math.round(ahead)} 秒` : fmtSpeed(0);
+  return ahead > 0 ? peachT("已缓冲 {{v0}} 秒", { v0: Math.round(ahead) }) : fmtSpeed(0);
 }

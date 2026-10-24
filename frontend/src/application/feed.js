@@ -1,3 +1,4 @@
+import { t as peachT } from "../i18n/index";
 /* feed 域控制器：本域状态与动作，启动由 Application 的生命周期统一安装。 */
 import { coverImage } from './../card-art/markup';
 import { feedIdentity } from './../card-art/feed-identity';
@@ -15,11 +16,11 @@ export const feedState = { FEED_SKELETON_CARDS: undefined, feedNewSkeletonHtml: 
 export function feedNewCoverHtml(item){
   if(item.has_cover)return coverImage(item,'big');
   if(!item.cover_url)return item.cover_fetching
-    ?`<span class="nopic" data-feed-cover-state="fetching">${loadingDotsHtml('抓取中')}</span>`
-    :'<span class="nopic" data-feed-cover-state="missing">无封面</span>';
+    ?`<span class="nopic" data-feed-cover-state="fetching">${loadingDotsHtml(peachT("抓取中"))}</span>`
+    :peachT("<span class=\"nopic\" data-feed-cover-state=\"missing\">无封面</span>");
   return coverImage(item,'big').replace(/ src="[^"]*"/,
     ` src="${esc(item.cover_url)}" referrerpolicy="no-referrer" data-panel-prior="1"`)
-    .replace('data-drop="self"', 'data-drop="initial" data-initial="无封面" data-drop-class="nopic"');
+    .replace('data-drop="self"', peachT("data-drop=\"initial\" data-initial=\"无封面\" data-drop-class=\"nopic\""));
 }
 
 export function feedNewCardHtml(item){
@@ -29,20 +30,13 @@ export function feedNewCardHtml(item){
     .join('');
   const cover=feedNewCoverHtml(item);
   // 番号与标题排在同一个两行的标题块里，和资产卡一样：番号加粗打头，标题接在后面截断。
-  const name=item.code||String(item.title||'').trim()||'未命名新作';
+  const name=item.code||String(item.title||'').trim()||peachT("未命名新作");
   const heading=item.code
     ?javTitleHtml({is_jav:true,code:item.code,name:item.code,display_title:item.title||''})
     :esc(name);
   const open=item.code
-    ?`<a class="feednewopen" href="/works/${encodeURIComponent(item.code)}" aria-label="打开 ${esc(name)} 的作品详情"></a>`:'';
-  return `<article class="card feednewcard${item.read?' isread':''}" data-feed-id="${item.id}">
-    ${open}<div class="pic" style="--card-ratio:${COVER_FRONT_RATIO}">${cover}
-      <div class="hovertools feednewtools">
-        <button type="button" data-feed-action="${item.wanted?'unwant':'want'}" aria-pressed="${!!item.wanted}" title="${item.wanted?'取消想要':'想要'}" aria-label="想要 ${esc(name)}">${icon('star')}</button>
-        <button type="button" data-feed-action="ignore" title="不想看" aria-label="不想看 ${esc(name)}">${icon('x')}</button>
-        <button type="button" data-feed-action="read" title="标为已看过" aria-label="标为已看过 ${esc(name)}">${icon('check')}</button></div></div>
-    <div class="meta">${feedIdentity(item)}<div class="mtext"><span class="t">${heading}</span>
-      <div class="s mono">${label||(item.title?'':'资料还没取到')}</div></div></div></article>`;
+    ?peachT("<a class=\"feednewopen\" href=\"/works/{{v0}}\" aria-label=\"打开 {{v1}} 的作品详情\"></a>", { v0: encodeURIComponent(item.code), v1: esc(name) }):'';
+  return peachT("<article class=\"card feednewcard{{v0}}\" data-feed-id=\"{{v1}}\">\n    {{v2}}<div class=\"pic\" style=\"--card-ratio:{{v3}}\">{{v4}}\n      <div class=\"hovertools feednewtools\">\n        <button type=\"button\" data-feed-action=\"{{v5}}\" aria-pressed=\"{{v6}}\" title=\"{{v7}}\" aria-label=\"想要 {{v8}}\">{{v9}}</button>\n        <button type=\"button\" data-feed-action=\"ignore\" title=\"不想看\" aria-label=\"不想看 {{v10}}\">{{v11}}</button>\n        <button type=\"button\" data-feed-action=\"read\" title=\"标为已看过\" aria-label=\"标为已看过 {{v12}}\">{{v13}}</button></div></div>\n    <div class=\"meta\">{{v14}}<div class=\"mtext\"><span class=\"t\">{{v15}}</span>\n      <div class=\"s mono\">{{v16}}</div></div></div></article>", { v0: item.read?' isread':'', v1: item.id, v2: open, v3: COVER_FRONT_RATIO, v4: cover, v5: item.wanted?'unwant':'want', v6: !!item.wanted, v7: item.wanted?peachT("取消想要"):peachT("想要"), v8: esc(name), v9: icon('star'), v10: esc(name), v11: icon('x'), v12: esc(name), v13: icon('check'), v14: feedIdentity(item), v15: heading, v16: label||(item.title?'':peachT("资料还没取到")) });
 }
 
 export function installEntityShapeBootstrap(){
@@ -81,8 +75,8 @@ export function prepareHomeFeed(host){
 
 export function feedNetworkNote(unreachable,items){
   if(!(unreachable>0)||!items.some(item=>!item.has_cover))return '';
-  return noteHtml(`${unreachable} 部新作的封面连不上 DMM 图片主机，中国移动宽带常见。把 DMM / FANZA 的连接方式设成 Peach 代理，下一轮会自动重取。`,
-    {variant:'warning',className:'feednetwork',actionLabel:'配置连接方式',actionHref:'/sources'});
+  return noteHtml(peachT("{{v0}} 部新作的封面连不上 DMM 图片主机，中国移动宽带常见。把 DMM / FANZA 的连接方式设成 Peach 代理，下一轮会自动重取。", { v0: unreachable }),
+    {variant:'warning',className:'feednetwork',actionLabel:peachT("配置连接方式"),actionHref:'/sources'});
 }
 
 export function feedRowHtml(data){

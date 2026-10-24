@@ -1,3 +1,4 @@
+import { t as peachT } from "../i18n/index";
 /* receipts 域控制器：本域状态与动作，启动由 Application 的生命周期统一安装。 */
 import { $, esc, icon, newSeed, seededRank } from '../core';
 import { playUiSound } from '../ui-kit/sounds';
@@ -38,15 +39,15 @@ receiptsState.actionReceipt = (message,{undo=null,timeout=undo?8000:6000}={})=>{
   let item=null;
   item=receiptsState.toast({text:message},{
     timeout,
-    action:undo?{label:'撤销',run:async()=>{
-      try{await undo();item.replaceMessage({text:'已撤销'})}
-      catch(error){item.replaceMessage({text:`撤销失败：${error.message||'请重试'}`},{warn:true})}
+    action:undo?{label:peachT("撤销"),run:async()=>{
+      try{await undo();item.replaceMessage({text:peachT("已撤销")})}
+      catch(error){item.replaceMessage({text:peachT("撤销失败：{{v0}}", { v0: error.message||peachT("请重试") })},{warn:true})}
     }}:null,
   });
   return item;
 };
 receiptsState.actionFailure = (message,error)=>receiptsState.toast(
-  {text:`${message}失败：${error?.message||'请重试'}`},{warn:true});
+  {text:peachT("{{v0}}失败：{{v1}}", { v0: message, v1: error?.message||peachT("请重试") })},{warn:true});
 receiptsState.rollSeed = ()=>newSeed();
 receiptsState.seededSample = (rows,count,seed,key=row=>row.k)=>{
   if(rows.length<=count)return rows;

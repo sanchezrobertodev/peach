@@ -8,6 +8,8 @@
  * 取图失败时兜底链（`card-art/image-fallback.ts`）会把 `<img>`
  * 从 DOM 里摘掉、人脸放大（`avatarFrame`）往图上写内联尺寸、等待微光挂在图的父元素上，这几样
  * 都直接改节点，所以那几格用 `dangerouslySetInnerHTML`，React 不拥有里面的节点。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { entityFaceImg, facePos } from '@peach/card-art';
@@ -53,7 +55,7 @@ export function EntityHeroPage({ kind, name, entity, feedNew, feedHost, actions,
 
   return (
     <>
-      <section data-entity-card="" aria-label="资料">
+      <section data-entity-card="" aria-label={peachT("资料")}>
         <div data-entity-profile={facts.length ? 'facts' : ''}>
           <div data-entity-portrait-wrap="">
             <Portrait kind={kind} name={name} helpers={helpers} people={people} company={company} />
@@ -76,7 +78,7 @@ export function EntityHeroPage({ kind, name, entity, feedNew, feedHost, actions,
               <div className="flex min-w-0 flex-wrap gap-2 text-caption-1-regular text-text-secondary">
                 {/* 账号名常是一长串无空格的英文，窄屏下得能在任意处折行。 */}
                 {entity.related_identities.map((identity) => {
-                  const text = `${identity.relation === 'same_person' ? '同一人' : '关联账号'}：${identity.canonical_name}`;
+                  const text = `${identity.relation === 'same_person' ? peachT("同一人") : peachT("关联账号")}：${identity.canonical_name}`;
                   return (
                     <button type="button" key={identity.id} title={text}
                       className="min-w-0 max-w-full text-text-primary underline wrap-anywhere"
@@ -109,7 +111,7 @@ export function EntityHeroPage({ kind, name, entity, feedNew, feedHost, actions,
           ) : null}
         </div>
         {costars.length ? (
-          <div data-entity-foot="" aria-label="同台艺人">
+          <div data-entity-foot="" aria-label={peachT("同台艺人")}>
             <div ref={costarRow} data-related-people="">
               {costars.map((person) => (
                 <button key={person.k} type="button" data-related-performer={person.k}
@@ -153,22 +155,22 @@ function AliasLine({ kind, entity, actions }: { kind: string; entity: EntityHero
   const agencyNode = agency ? (agency.linked
     ? <a href={entityPath('agency', agency.name, agency.id)} data-agency={agency.name} onClick={go('agency', agency.name)}>{agency.name}</a>
     : agency.name) : null;
-  const count = <><b>{entity.asset_count.toLocaleString()}</b> 个视频</>;
+  const count = <><b>{entity.asset_count.toLocaleString(peachLocale)}</b>{" " + peachT("个视频")}</>;
   if (kind === 'performer' || kind === 'creator') {
     const line = nameLine(entity.name_groups);
     return (
       <div data-entity-alias="meta">
         <IdentityMeta entity={entity} />
-        <span data-meta-item="" title="视频"><Glyph name="film" /><span>{count}</span></span>
+        <span data-meta-item="" title={peachT("视频")}><Glyph name="film" /><span>{count}</span></span>
         {entity.follow?.key ? <FollowMeta follow={entity.follow} actions={actions} /> : null}
-        {agencyNode ? <span data-meta-item="" title="事务所"><Glyph name="briefcase" /><span>{agencyNode}</span></span> : null}
+        {agencyNode ? <span data-meta-item="" title={peachT("事务所")}><Glyph name="briefcase" /><span>{agencyNode}</span></span> : null}
         {line ? (
           <div data-meta-item="names">
             <Glyph name="id-card" />
-            <span data-alias-names="" title="别名">{line.names.map((one, at) => <span key={at}>{one}</span>)}</span>
+            <span data-alias-names="" title={peachT("别名")}>{line.names.map((one, at) => <span key={at}>{one}</span>)}</span>
             {line.rest > 0 ? (
-              <MorePop id="entityAliasPop" hook="alias" rest={line.rest} label={`另外 ${line.rest.toLocaleString()} 个别名`}
-                heading={`${line.total.toLocaleString()} 个别名`}>
+              <MorePop id="entityAliasPop" hook="alias" rest={line.rest} label={peachT("另外 {{v0}} 个别名", { v0: line.rest.toLocaleString(peachLocale) })}
+                heading={peachT("{{v0}} 个别名", { v0: line.total.toLocaleString(peachLocale) })}>
                 <dl>
                   {(entity.name_groups?.groups || []).map((group, at) => (
                     <NameGroup key={at} label={group.label} names={group.names} />
@@ -184,15 +186,15 @@ function AliasLine({ kind, entity, actions }: { kind: string; entity: EntityHero
   const aliases = entity.display_aliases || [];
   /* 事务所页数的是人，不是片；片商页同理，旗下有几个 label 是它自己的读数（ADR-0051）。 */
   const members = kind === 'agency'
-    ? <> · <b>{(entity.member_count || 0).toLocaleString()}</b> 位艺人</>
-    : (entity.labels || []).length ? <> · <b>{entity.labels!.length.toLocaleString()}</b> 个厂牌</> : null;
+    ? <> · <b>{(entity.member_count || 0).toLocaleString(peachLocale)}</b>{" " + peachT("位艺人")}</>
+    : (entity.labels || []).length ? <> · <b>{entity.labels!.length.toLocaleString(peachLocale)}</b>{" " + peachT("个厂牌")}</> : null;
   const maker = entity.maker;
   return (
     <div data-entity-alias="meta">
       {kind === 'creator' ? <IdentityMeta entity={entity} /> : null}
-      <span data-meta-item="" title="视频"><Glyph name="film" /><span>{count}{members}</span></span>
-      {agencyNode ? <span data-meta-item="" title="事务所"><Glyph name="briefcase" /><span>{agencyNode}</span></span> : null}
-      {maker ? <span data-meta-item="" title="片商"><Glyph name="clapperboard" /><a href={entityPath('studio', maker.name, maker.id)} data-studio-link={maker.name}
+      <span data-meta-item="" title={peachT("视频")}><Glyph name="film" /><span>{count}{members}</span></span>
+      {agencyNode ? <span data-meta-item="" title={peachT("事务所")}><Glyph name="briefcase" /><span>{agencyNode}</span></span> : null}
+      {maker ? <span data-meta-item="" title={peachT("片商")}><Glyph name="clapperboard" /><a href={entityPath('studio', maker.name, maker.id)} data-studio-link={maker.name}
         onClick={go('studio', maker.name)}>{maker.name}</a></span> : null}
       {aliases.length ? <CompanyAliases aliases={aliases} /> : null}
     </div>
@@ -206,10 +208,10 @@ function CompanyAliases({ aliases }: { aliases: string[] }) {
   return (
     <div data-meta-item="names" data-company-names="">
       <Glyph name="id-card" />
-      <span data-alias-names="" title="别名">{shown.map((name, at) => <span key={at}>{name}</span>)}</span>
+      <span data-alias-names="" title={peachT("别名")}>{shown.map((name, at) => <span key={at}>{name}</span>)}</span>
       {rest ? (
-        <MorePop id="entityAliasPop" hook="alias" rest={rest} label={`另外 ${rest.toLocaleString()} 个别名`}
-          heading={`${aliases.length.toLocaleString()} 个别名`}>
+        <MorePop id="entityAliasPop" hook="alias" rest={rest} label={peachT("另外 {{v0}} 个别名", { v0: rest.toLocaleString(peachLocale) })}
+          heading={peachT("{{v0}} 个别名", { v0: aliases.length.toLocaleString(peachLocale) })}>
           <dl><NameGroup names={aliases.map((name) => ({ name }))} /></dl>
         </MorePop>
       ) : null}
@@ -222,11 +224,10 @@ function CompanyAliases({ aliases }: { aliases: string[] }) {
 function FollowMeta({ follow, actions }: { follow: HeroFollow; actions: EntityHeroActions }) {
   const from = follow.providers.join(' · ');
   return (
-    <span data-meta-item="" data-entity-follow="" title={from ? `关注 · ${from}` : '关注'}>
+    <span data-meta-item="" data-entity-follow="" title={from ? peachT("关注 · {{v0}}", { v0: from }) : peachT("关注")}>
       <Glyph name="rss" />
       <a href="?media=online" onClick={(event) => { event.preventDefault(); actions.openFollowAuthor(follow.key) }}>
-        {follow.n.toLocaleString()} 项更新
-      </a>
+        {follow.n.toLocaleString(peachLocale)}{" " + peachT("项更新")}</a>
     </span>
   );
 }
@@ -251,12 +252,10 @@ function HeldAuthors({ follow, entity, actions }: {
   return (
     <div data-entity-held="" className="flex flex-col gap-2">
       {follow.held.map((group) => (
-        <Note key={group.key} tone="info" title={`关注里有同名作者 ${group.name}`}
+        <Note key={group.key} tone="info" title={peachT("关注里有同名作者 {{v0}}", { v0: group.name })}
           action={<Button size="small" {...busyProps(busy === group.key)}
-            onClick={() => { void confirm(group.key, group.name) }}>是同一个人</Button>}>
-          {[group.providers.join(' · '), `${group.n.toLocaleString()} 项更新`].filter(Boolean).join(' · ')}
-          。和 {entity.canonical_name} 是同一个人吗？
-        </Note>
+            onClick={() => { void confirm(group.key, group.name) }}>{peachT("是同一个人")}</Button>}>
+          {[group.providers.join(' · '), peachT("{{v0}} 项更新", { v0: group.n.toLocaleString(peachLocale) })].filter(Boolean).join(' · ')}{peachT("。和") + " "}{entity.canonical_name}{" " + peachT("是同一个人吗？")}</Note>
       ))}
     </div>
   );
@@ -303,8 +302,8 @@ function FactTags({ tags }: { tags: string[] }) {
     <>
       {shown.map((tag) => <span key={tag} data-fact-tag="" title={tag}>{tag}</span>)}
       {rest ? (
-        <MorePop id="entityTagPop" hook="fact" rest={rest} label={`另外 ${rest.toLocaleString()} 个标签`}
-          heading={`${tags.length.toLocaleString()} 个标签`}>
+        <MorePop id="entityTagPop" hook="fact" rest={rest} label={peachT("另外 {{v0}} 个标签", { v0: rest.toLocaleString(peachLocale) })}
+          heading={peachT("{{v0}} 个标签", { v0: tags.length.toLocaleString(peachLocale) })}>
           <div data-fact-tags="">{tags.map((tag) => <span key={tag} data-fact-tag="" title={tag}>{tag}</span>)}</div>
         </MorePop>
       ) : null}
@@ -342,7 +341,7 @@ function HeroLinkView({ link }: { link: LinkView }) {
       return (
         <span data-link="private" title={link.sources ? link.sources.join('\n') : link.label}>
           <LinkIcon mark={{ globe: true }} />
-          <span data-link-label="">{link.sources ? link.label : `来源 · ${link.label}`}</span>
+          <span data-link-label="">{link.sources ? link.label : peachT("来源 · {{v0}}", { v0: link.label })}</span>
         </span>
       );
     default:
@@ -382,7 +381,7 @@ function EntryMarks({ entity, actions, helpers }: {
   };
   const toggle = async (on: boolean) => {
     if (!await write(on)) return;
-    helpers.receipt(on ? '已订阅新作' : '已取消订阅新作', { undo: async () => { await write(!on) } });
+    helpers.receipt(on ? peachT("已订阅新作") : peachT("已取消订阅新作"), { undo: async () => { await write(!on) } });
     if (on) actions.refreshFeedAfterCheck();
   };
   return (

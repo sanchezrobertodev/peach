@@ -5,6 +5,8 @@
  * `../evilcharts/ORIGIN.md`。雷达的半径是平方根刻度，浮层仍读原始次数。流向图保留 `d3-sankey` 自绘（ADR-0076）：几何全写成属性，流的粗细
  * 是 `stroke-width`，颜色只取 BoardUI 的 `chart-*` 档；指向一条流或一个节点时读数换成它的，
  * 换的是 React 状态，指针离开或焦点移走就回到总数。差异登记在 `../boardui/ORIGIN.md`。 */
+import { locale as peachLocale } from "../../i18n/index";
+import { t as peachT } from "../../i18n/index";
 import { useState } from 'react';
 import { Text } from 'recharts';
 
@@ -53,7 +55,7 @@ const FLOW_FILL = [
 ];
 
 /** 口味维度两张图的系列：一个维度下命中的标签次数。颜色跟着口味页读数卡的 `chart-4`。 */
-const DIMENSION_CONFIG = { value: { label: '标签命中', colors: tone(CHART_COLORS[3]) } };
+const DIMENSION_CONFIG = { value: { label: peachT("标签命中"), colors: tone(CHART_COLORS[3]) } };
 
 /** 排行条的最低高度按条数给，一条一格 32：窄屏里排行条独占一行、或维度不足三个画不出雷达时，
  *  它就是这么高。旁边有雷达时整块跟着雷达那一栏拉到等高，多出来的高度拉开条与条的间距。
@@ -129,26 +131,26 @@ export function CreatorSankey({ flows }: { flows: CreatorFlow[] | undefined }) {
       : shown.label === key);
   return (
     <section className={CHART_CARD}>
-      <ChartHead title="创作者线索来源" figure={(shown ? shown.value : graph.total).toLocaleString()}
-        note={shown ? shown.label : '条线索'} />
+      <ChartHead title={peachT("创作者线索来源")} figure={(shown ? shown.value : graph.total).toLocaleString(peachLocale)}
+        note={shown ? shown.label : peachT("条线索")} />
       {/* 两侧各留一截给节点名，画布窄于 640 时字缩到读不清：手机上换成按线索数排的一列流向。 */}
-      <ol aria-label="来源网站与创作者线索" className="flex flex-col sm:hidden">
+      <ol aria-label={peachT("来源网站与创作者线索")} className="flex flex-col sm:hidden">
         {[...graph.links].sort((a, b) => b.value - a.value).map((link) => (
           <li key={link.key}
             className="flex items-baseline justify-between gap-3 border-b border-separator-border py-2 text-body-2-regular text-text-primary last:border-b-0">
             <span className="min-w-0 wrap-anywhere">{link.label}</span>
-            <b className="shrink-0 tabular-nums">{link.value.toLocaleString()}</b>
+            <b className="shrink-0 tabular-nums">{link.value.toLocaleString(peachLocale)}</b>
           </li>
         ))}
       </ol>
       <div className="min-w-0 max-sm:hidden">
         <svg viewBox={`0 0 ${FLOW_VIEWBOX.width} ${graph.height}`} fill="none"
-          role="img" aria-label="来源网站与创作者线索"
+          role="img" aria-label={peachT("来源网站与创作者线索")}
           className="block h-auto w-full" onPointerLeave={() => setShown(null)}>
           <g>
             {graph.links.map((link) => (
               <path key={link.key} d={link.d} strokeWidth={link.width} tabIndex={0} role="img"
-                aria-label={`${link.label}：${link.value} 条线索`}
+                aria-label={peachT("{{v0}}：{{v1}} 条线索", { v0: link.label, v1: link.value })}
                 fillOpacity={0} strokeOpacity={linkLit(link, link.label) ? 0.55 : 0.08}
                 className={`outline-none transition-opacity ${FLOW_STROKE[link.color]}`}
                 onPointerEnter={() => setShown({ value: link.value, label: link.label, node: null })}
@@ -159,7 +161,7 @@ export function CreatorSankey({ flows }: { flows: CreatorFlow[] | undefined }) {
           <g>
             {graph.nodes.map((item) => (
               <g key={item.id} tabIndex={0} role="img"
-                aria-label={`${item.name}：${item.value} 条线索`}
+                aria-label={peachT("{{v0}}：{{v1}} 条线索", { v0: item.name, v1: item.value })}
                 className="outline-none focus-visible:opacity-100"
                 onPointerEnter={() => setShown(
                   { value: item.value, label: item.name, node: item.index })}
@@ -173,7 +175,7 @@ export function CreatorSankey({ flows }: { flows: CreatorFlow[] | undefined }) {
                   {flowLabel(item.name)}
                   <tspan x={FLOW_LABEL_X[item.side]} dy={15}>
                     {item.side === 'source'
-                      ? item.value.toLocaleString()
+                      ? item.value.toLocaleString(peachLocale)
                       : `${item.share.toFixed(1)}%`}
                   </tspan>
                 </text>
@@ -183,7 +185,7 @@ export function CreatorSankey({ flows }: { flows: CreatorFlow[] | undefined }) {
         </svg>
       </div>
       <footer className="flex justify-between gap-3 text-caption-1-regular text-text-secondary max-sm:hidden">
-        <span>来源网站</span><span>创作者 · 线索占比</span>
+        <span>{peachT("来源网站")}</span><span>{peachT("创作者 · 线索占比")}</span>
       </footer>
     </section>
   );

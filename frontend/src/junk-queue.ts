@@ -6,6 +6,7 @@
  * 计数行骨架是壳在 React 包加载之前铺的那一版，画在 `.peach-react` 里，结构、`data-*` 钩子与
  * 类名和页面等数据时画出来的那一版逐项相同（`junk-queue/junk-count.tsx`，用例对照两者），
  * 所以接管那一拍这一行不跳。分类与视图此刻就有答案，只有读数和各类的计数徽标要等数据。 */
+import { t as peachT } from "./i18n/index";
 import { esc } from '@peach/legacy/core';
 
 import { islandSummary } from './island-skeleton';
@@ -17,9 +18,9 @@ export interface JunkRoute { kind: JunkKind; view: JunkView }
 
 /** 分类条上的几项：键、标签、雪碧图字形。键与 `/api/ads?kind=` 的取值一一对应。 */
 export const JUNK_KIND_OPTIONS: readonly (readonly [JunkKind, string, string])[] = [
-  ['', '全部', 'layout-grid'], ['video', '视频', 'play'], ['image', '图片', 'pics'],
-  ['archive', '压缩包', 'file-archive'], ['audio', '音频', 'file-audio'], ['url', '网址', 'globe'],
-  ['other', '其它', 'hard-drive'],
+  ['', peachT("全部"), 'layout-grid'], ['video', peachT("视频"), 'play'], ['image', peachT("图片"), 'pics'],
+  ['archive', peachT("压缩包"), 'file-archive'], ['audio', peachT("音频"), 'file-audio'], ['url', peachT("网址"), 'globe'],
+  ['other', peachT("其它"), 'hard-drive'],
 ];
 
 /** 认不出的分类一律落回「全部」。 */
@@ -44,11 +45,11 @@ export function junkPath(kind: JunkKind = '', view: JunkView = 'pending'): strin
 /** 分类条末尾那一项：待判断时去「已排除」，已排除时回「待判断」。 */
 export function junkViewLink(view: JunkView): { view: JunkView; label: string; glyph: string; href: string } {
   return view === 'dismissed'
-    ? { view: 'pending', label: '返回待判断', glyph: 'rotate-ccw', href: junkPath('', 'pending') }
-    : { view: 'dismissed', label: '已排除', glyph: 'eye-off', href: junkPath('', 'dismissed') };
+    ? { view: 'pending', label: peachT("返回待判断"), glyph: 'rotate-ccw', href: junkPath('', 'pending') }
+    : { view: 'dismissed', label: peachT("已排除"), glyph: 'eye-off', href: junkPath('', 'dismissed') };
 }
 
-export const junkSummaryLabel = (view: JunkView) => (view === 'dismissed' ? '已排除' : '待判断');
+export const junkSummaryLabel = (view: JunkView) => (view === 'dismissed' ? peachT("已排除") : peachT("待判断"));
 
 const glyph = (name: string) => `<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-${name}"></use></svg>`;
 
@@ -61,7 +62,7 @@ export function junkCountSkeletonHtml({ kind, view }: JunkRoute): string {
   return `<div class="peach-react" data-junk-count-skeleton=""><div data-junk-count="">`
     + `<div data-junk-summary="" aria-live="polite">${islandSummary(junkSummaryLabel(view))}</div>`
     + `<div data-junk-filters-frame="" data-filter-glass="" data-glass-pane=""><span data-view-glide="" aria-hidden="true" hidden></span>`
-    + `<nav data-junk-filters="" aria-label="垃圾文件分类">${links}<i data-junk-divider="" aria-hidden="true"></i>`
+    + peachT("<nav data-junk-filters=\"\" aria-label=\"垃圾文件分类\">{{v0}}<i data-junk-divider=\"\" aria-hidden=\"true\"></i>", { v0: links })
     + `<a href="${other.href}" data-junk-view-link="${other.view}"${view === 'dismissed' ? ' aria-current="page"' : ''}>${glyph(other.glyph)}${other.label}</a>`
     + `</nav></div></div></div>`;
 }

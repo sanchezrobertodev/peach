@@ -18,6 +18,10 @@ describe('通知和任务卡的共用外框', () => {
       const artifacts = path.resolve('..', 'build', 'agent-verification', 'processing-controls');
       await mkdir(artifacts, { recursive: true });
       try {
+        await page.getByRole('region', { name: '扫描与采集', exact: true }).waitFor();
+        // 暂停任务的同步按钮持续 aria-busy；页面就绪由内容与骨架判断。
+        await page.locator('[data-cleanup-go="ads"]').waitFor();
+        await page.waitForFunction(() => !document.querySelector('#main [data-skeleton]'));
         const task = page.locator('#toasts [data-processing-dock]');
         await task.waitFor();
         await page.evaluate(async theme => {
@@ -57,6 +61,7 @@ describe('通知和任务卡的共用外框', () => {
         const baseline = await page.addStyleTag({ content:
           '#toasts :is([data-sonner-toast][data-styled=true],[data-processing-dock]){box-shadow:var(--elevation-dropdown)!important}' });
         const original = await measure();
+        assert.equal(original.length, 2, JSON.stringify(original));
         for (let at = 0; at < aligned.length; at++) {
           assert.equal(aligned[at]!.width, original[at]!.width);
           assert.equal(aligned[at]!.height, original[at]!.height);

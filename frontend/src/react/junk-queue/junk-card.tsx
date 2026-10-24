@@ -8,6 +8,7 @@
  *
  * 标题照遗留层写成转义后的 HTML：`data-middle-truncate` 由中段截断（`src/ui-kit/middle-truncate.ts`）按宽度
  * 从中间截断，它直接改写这一格的文字，交给 React 管的话下一次重画会和它互相覆盖。 */
+import { t as peachT } from "../../i18n/index";
 import { memo, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { esc, fmtSize } from '@peach/legacy/core';
 import { spinnerHtml } from '@peach/legacy/ui';
@@ -84,9 +85,9 @@ function JunkCardView({ item, view, selected, selectMode, helpers, actions }: Ju
 
   const title = openable
     ? <button type="button" data-junk-title="" data-junk-open="" data-middle-truncate="" title={name}
-      onClick={clickTitle} dangerouslySetInnerHTML={{ __html: esc(name || '未命名资源') }} />
+      onClick={clickTitle} dangerouslySetInnerHTML={{ __html: esc(name || peachT("未命名资源")) }} />
     : <span data-junk-title="" data-middle-truncate="" title={name}
-      dangerouslySetInnerHTML={{ __html: esc(name || '未命名资源') }} />;
+      dangerouslySetInnerHTML={{ __html: esc(name || peachT("未命名资源")) }} />;
 
   return (
     <article ref={card} data-media-card="" data-variant="junk" data-junk-card="" data-id={item.id} data-junk-kind={kind}
@@ -106,22 +107,22 @@ function JunkCardView({ item, view, selected, selectMode, helpers, actions }: Ju
         <div data-junk-facts="">
           <span data-junk-who="">{label}</span>
           {item.why ? <span data-junk-why="">{item.why}</span> : null}
-          <span data-junk-size="">{Number(item.size) > 0 ? fmtSize(Number(item.size)) : '大小未知'}</span>
+          <span data-junk-size="">{Number(item.size) > 0 ? fmtSize(Number(item.size)) : peachT("大小未知")}</span>
         </div>
       </div>
       <footer data-junk-actions="">
-        <button type="button" data-junk-action="reveal" title="在资源管理器中显示" aria-label="在资源管理器中显示"
+        <button type="button" data-junk-action="reveal" title={peachT("在资源管理器中显示")} aria-label={peachT("在资源管理器中显示")}
           {...busyAttrs('reveal')} onClick={reveal}>
-          {busy === 'reveal' ? <span data-junk-spinner="" dangerouslySetInnerHTML={{ __html: spinnerHtml('正在定位') }} /> : <Icon name="folder-open" />}
-          <span data-junk-label="">打开位置</span>
+          {busy === 'reveal' ? <span data-junk-spinner="" dangerouslySetInnerHTML={{ __html: spinnerHtml(peachT("正在定位")) }} /> : <Icon name="folder-open" />}
+          <span data-junk-label="">{peachT("打开位置")}</span>
         </button>
         <button type="button" data-junk-action={decision.operation} title={decision.label} aria-label={decision.label}
           {...busyAttrs(decision.operation)} onClick={operate(decision.operation)}>
           <Icon name={decision.glyph} /><span data-junk-label="">{decision.label}</span>
         </button>
-        <button type="button" data-junk-action="dispose" title="移入回收站" aria-label="移入回收站"
+        <button type="button" data-junk-action="dispose" title={peachT("移入回收站")} aria-label={peachT("移入回收站")}
           {...busyAttrs('dispose')} onClick={operate('dispose')}>
-          <Icon name="trash" /><span data-junk-label="">移入回收站</span>
+          <Icon name="trash" /><span data-junk-label="">{peachT("移入回收站")}</span>
         </button>
         <span data-junk-state="" aria-live="polite">{status}</span>
       </footer>

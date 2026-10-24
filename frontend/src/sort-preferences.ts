@@ -2,12 +2,13 @@
  * 启动时的设置归一化（`appearance/settings.ts`）读的都是这一份。 */
 
 /** `[键, 显示名]`。随机排第一：它是出厂默认，也没有方向。 */
+import { t as peachT } from "./i18n/index";
 export const SORTS: readonly (readonly [key: string, label: string])[] = [
-  ['seed', '随机'], ['rating', '评分'], ['o', '高潮计数'], ['plays', '观看次数'], ['dur', '时长'],
-  ['size', '体积'], ['new', '入库时间'], ['played', '观看时间'],
+  ['seed', peachT("随机")], ['rating', peachT("评分")], ['o', peachT("高潮计数")], ['plays', peachT("观看次数")], ['dur', peachT("时长")],
+  ['size', peachT("体积")], ['new', peachT("入库时间")], ['played', peachT("观看时间")],
 ];
 /** 只在 JAV 语境里出现的那一列。 */
-export const JAV_RELEASE_SORT: readonly [key: string, label: string] = ['release', '发行时间'];
+export const JAV_RELEASE_SORT: readonly [key: string, label: string] = ['release', peachT("发行时间")];
 export const SORT_KEYS: readonly string[] = [...SORTS, JAV_RELEASE_SORT].map(([key]) => key);
 
 /** `[desc, asc]` 两种方向的说法。 */
@@ -16,9 +17,9 @@ export type SortDirWords = Readonly<Record<string, readonly [desc: string, asc: 
 /* 方向词按列各自定义：同一个 desc 在时间列上是「从新到旧」，在时长上是「从长到短」，
    写成通用的「降序」等于让界面解释 SQL。数组是 [desc,asc]，在表里就等于这一列可翻转。 */
 export const SORT_DIR_WORDS: SortDirWords = {
-  rating: ['从高到低', '从低到高'], o: ['从多到少', '从少到多'],
-  plays: ['从多到少', '从少到多'], dur: ['从长到短', '从短到长'], size: ['从大到小', '从小到大'],
-  new: ['从新到旧', '从旧到新'], played: ['从近到远', '从远到近'], release: ['从新到旧', '从旧到新'],
+  rating: [peachT("从高到低"), peachT("从低到高")], o: [peachT("从多到少"), peachT("从少到多")],
+  plays: [peachT("从多到少"), peachT("从少到多")], dur: [peachT("从长到短"), peachT("从短到长")], size: [peachT("从大到小"), peachT("从小到大")],
+  new: [peachT("从新到旧"), peachT("从旧到新")], played: [peachT("从近到远"), peachT("从远到近")], release: [peachT("从新到旧"), peachT("从旧到新")],
 };
 
 /* 旧键沿用：地址栏、书签和设置里存着把方向写进键名的值。方向现在单独由 `dir` 表达，
