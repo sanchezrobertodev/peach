@@ -63,7 +63,7 @@ def package_dmg(app: Path, destination: Path) -> Path:
             "symlinks": {"Applications": "/Applications"},
             "background": str(background), "window_rect": ((160, 160), (640, 420)),
             "icon_locations": {"Peach.app": (174, 220), "Applications": (466, 220)},
-            "icon_size": 128, "text_size": 13, "hide_extensions": ["Peach.app"],
+            "icon_size": 128, "text_size": 13,
             "default_view": "icon-view", "arrange_by": None,
             "show_toolbar": False, "show_sidebar": False, "show_status_bar": False,
             "show_tab_view": False, "show_pathbar": False,

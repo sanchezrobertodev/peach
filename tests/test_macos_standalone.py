@@ -49,6 +49,7 @@ class MacStandaloneDistributionTests(TestCase):
             self.assertEqual(settings["files"], [str(app)])
             self.assertEqual(settings["symlinks"], {"Applications": "/Applications"})
             self.assertEqual(settings["filesystem"], "APFS")
+            self.assertEqual(settings.get("hide_extensions", []), [])
             self.assertEqual((resource / "runtime").read_bytes(), b"native executable")
             self.assertEqual(settings["icon_locations"],
                              {"Peach.app": (174, 220), "Applications": (466, 220)})
