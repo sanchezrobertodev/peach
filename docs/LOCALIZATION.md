@@ -24,6 +24,8 @@ The upstream website, demo and screenshots show the upstream application. Upstre
 
 ## Run this fork from source
 
+Windows and macOS builds of this fork are published on the [localized releases page](https://github.com/sanchezrobertodev/peach/releases). Windows users can choose the full installer or portable ZIP. macOS users should select the Apple Silicon (`arm64`) or Intel (`x86_64`) DMG. The macOS builds use ad-hoc signing and are not Apple-notarized; media tools must be installed separately. The browser language selector is available in both desktop distributions. The Windows update checker and lightweight installer's tool downloads use this fork's releases.
+
 Install Git and uv. The project requires Python 3.14 or newer and pins its interpreter in `.python-version`; uv downloads a missing interpreter as needed. The commands below run from the checkout root.
 
 Clone this fork:

@@ -9,7 +9,7 @@
 <p align="center">
   <a href="https://github.com/sanchezrobertodev/peach">Repositorio de esta versión</a> ·
   <a href="https://peach.video">Web del proyecto original</a> ·
-  <a href="https://github.com/peach-mitao/peach/releases">Instaladores originales</a> ·
+  <a href="https://github.com/sanchezrobertodev/peach/releases">Descargas traducidas</a> ·
   <a href="https://demo.peach.video">Demostración original</a> ·
   <a href="https://github.com/peach-mitao/peach/releases/tag/intro-video">Vídeo de presentación</a> ·
   <a href="https://github.com/sanchezrobertodev/peach/issues">Informar de un problema</a> ·
@@ -32,7 +32,7 @@ https://github.com/user-attachments/assets/a5610874-e611-41bb-be22-7d99f0d64b62
 
 > **18+** Para personas adultas que gestionan sus propias colecciones de contenido para adultos. El repositorio no contiene archivos multimedia ni datos de sitios externos. El acceso a esos sitios requiere las cuentas y los permisos correspondientes.
 
-Esta es la [versión con localización al inglés y al español](https://github.com/sanchezrobertodev/peach) de [peach-mitao/peach](https://github.com/peach-mitao/peach), creado por longmeidao y quienes contribuyen al proyecto original. La web, la demostración, las capturas, los indicadores de versión, los instaladores y la hoja de ruta enlazados pertenecen al proyecto original. Sus instaladores no incluyen los cambios de localización de este repositorio; para utilizarlos, ejecuta esta versión desde el código fuente.
+Esta es la [versión con localización al inglés y al español](https://github.com/sanchezrobertodev/peach) de [peach-mitao/peach](https://github.com/peach-mitao/peach), creado por longmeidao y quienes contribuyen al proyecto original. Descarga las compilaciones para Windows y macOS en [las versiones de este repositorio](https://github.com/sanchezrobertodev/peach/releases), o ejecútalo desde el código fuente. La web, la demostración, las capturas, los indicadores de estado y la hoja de ruta enlazados pertenecen al proyecto original. Sus instaladores no incluyen los cambios de localización de este repositorio.
 
 ## Idioma de la interfaz
 

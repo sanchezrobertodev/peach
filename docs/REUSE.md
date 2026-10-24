@@ -1,5 +1,9 @@
 # 复用清单
 
+## 本地化发行验证
+
+前端单元测试复用 Happy DOM `21.0.4`（MIT，开发依赖），该补丁修复 [GHSA-834v-8h66-3h79](https://github.com/advisories/GHSA-834v-8h66-3h79) 中的模块导入别名注入。它沿用现有 Vitest 消费者，不进入浏览器包，也不增加运行时依赖。发行查询继续复用现有 HTTPX 与 GitHub Releases API；本地化分支的更新检查、轻量安装器工具下载和下载说明均指向 `sanchezrobertodev/peach`。
+
 ## 界面语言
 
 英文与西班牙文界面复用 [i18next](https://www.i18next.com/overview/getting-started)，固定版本 `26.5.10`，[MIT 许可全文](../web/vendor/i18next-LICENSE.txt)。此版本支持本项目 TypeScript 7；`26.0.0` 的可选 peer 范围不含 TypeScript 7，npm 实际拒绝安装，因此采用兼容版本。npm 包展开约 544 KB，浏览器构建只包含运行时及本地词表；没有网络翻译请求或 Python 依赖。
