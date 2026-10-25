@@ -43,6 +43,12 @@ class DesktopLanguageTests(unittest.TestCase):
             with self.subTest(value=value):
                 self.assertEqual(desktop_i18n.normalize(value), expected)
 
+    def test_non_windows_host_does_not_call_windows_locale_api(self):
+        with patch.object(desktop_i18n.os, "name", "posix"), \
+                patch.object(desktop_i18n.sys, "platform", "win32"), \
+                patch.object(desktop_i18n.locale, "getlocale", return_value=("es_MX", "UTF-8")):
+            self.assertEqual(desktop_i18n.system_language(), "es")
+
     def test_catalogs_preserve_fields_and_percent_placeholders(self):
         catalogs = []
         for language in ("en", "es"):

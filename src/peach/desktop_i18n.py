@@ -24,7 +24,7 @@ def normalize(value: str | None) -> str:
 
 
 def system_language() -> str:
-    if sys.platform == "win32":
+    if os.name == "nt":
         import ctypes
         language_id = ctypes.windll.kernel32.GetUserDefaultUILanguage()
         return normalize(locale.windows_locale.get(language_id))
