@@ -744,11 +744,16 @@ class SourceSyncTests(unittest.TestCase):
             Mock(return_value=Mock(returncode=113, stdout="")), uid=501))
 
     def test_windows_tray_lists_source_sync_next_to_ledger(self):
-        source = inspect.getsource(PeachTray.__init__)
-        self.assertIn('MenuItem("同步开发进度", self.sync_source,', source)
-        self.assertIn('visible=lambda _: not standalone()', source)
-        self.assertLess(source.index("同步开发进度"), source.index("ledger_menu_items"))
-        self.assertLess(source.index("ledger_menu_items"), source.index("重启服务"))
+        snapshot = VersionSnapshot("0.47.0", "master", "abc12345", False, True, "origin/master")
+        with patch.object(tray_module.pystray, "Icon"), patch.object(tray_module, "REPLICATION_ENABLED", True):
+            app = PeachTray(ServiceManager(()), FakeVersions(snapshot), FakeUpdates())
+            menu = app._menu()
+            labels = [item.text for item in menu.items]
+            self.assertLess(labels.index("同步开发进度"), labels.index("同步数据库"))
+            self.assertLess(labels.index("同步数据库"), labels.index("重启服务"))
+            source_sync = next(item for item in menu.items if item.text == "同步开发进度")
+            with patch.object(tray_module, "standalone", return_value=True):
+                self.assertFalse(source_sync.visible)
 
     def test_windows_source_sync_tests_then_restarts_services(self):
         snapshot = VersionSnapshot("0.6.4", "master", "abc12345", False, True, "origin/master")
@@ -1286,7 +1291,8 @@ class TrayCommandLineTests(unittest.TestCase):
 
     def _run(self, argv):
         stdout, stderr = io.StringIO(), io.StringIO()
-        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr), \
+                patch.dict(os.environ, {"PEACH_DESKTOP_LANGUAGE": "en"}):
             with self.assertRaises(SystemExit) as raised:
                 tray_main(argv)
         return raised.exception.code, stdout.getvalue(), stderr.getvalue()
@@ -1302,7 +1308,7 @@ class TrayCommandLineTests(unittest.TestCase):
         code, stdout, _ = self._run(["--help"])
         self.assertEqual(code, 0)
         self.assertIn("peach-tray", stdout)
-        self.assertIn("托盘", stdout)
+        self.assertIn("tray", stdout)
         self._assert_nothing_touched()
 
     def test_unknown_argument_exits_two_and_leaves_the_state_directory_alone(self):

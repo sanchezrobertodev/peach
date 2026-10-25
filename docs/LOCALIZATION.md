@@ -18,7 +18,15 @@ The selection is stored in the current browser under the `peach.locale` local-st
 
 The browser translations cover navigation, setup and login, settings, playback controls, collection screens and notices. Some server-generated responses and error details can still contain Chinese. Language selection and persistence are tested in both languages at desktop and mobile viewport sizes.
 
-Media titles, performer names, tags, source metadata and user-entered text keep their original values. Language selection does not rewrite the library. Desktop tray text, installers, terminal output and most detailed documentation can also remain in Chinese. Subtitle search retains the sources and subtitle languages described in the README; interface language does not translate subtitles.
+Media titles, performer names, tags, source metadata and user-entered text keep their original values. Language selection does not rewrite the library. Terminal output, raw server diagnostics and most detailed documentation can remain in Chinese. Subtitle search retains the sources and subtitle languages described in the README; interface language does not translate subtitles.
+
+## Installer and desktop language
+
+The Windows full and lightweight installers offer English, Spanish and Simplified Chinese. The selected language covers installation, consent explanations, errors and uninstall messages, and is saved for the desktop app. Silent installation supports `/LANG=en`, `/LANG=es` and `/LANG=chs`.
+
+Use **Language / Idioma** in the Windows tray or macOS menu bar to switch the desktop interface immediately, without restarting services. Menus, status text, notifications, update messages and diagnostic dialogs use this language. On first launch without an installer choice, the desktop follows the operating system's language, with English as the fallback. The setting is stored in the user's default Peach data directory under `state/desktop-language.txt`, independently of the library's chosen data location and the browser language. `PEACH_DESKTOP_LANGUAGE` can override the startup choice.
+
+En Windows, el instalador completo y el ligero permiten elegir inglés, español o chino simplificado; también traducen los avisos de consentimiento, los errores y la desinstalación. En Windows y macOS, cambia el idioma de escritorio desde **Language / Idioma** en el menú de Peach. El cambio se guarda y no reinicia los servicios. El idioma del navegador se elige por separado.
 
 The upstream website, demo and screenshots show the upstream application. Upstream installers and container images do not contain this fork's localization changes. Release availability must be checked in the repository that publishes each artifact.
 
@@ -67,6 +75,8 @@ The build produces the main application bundle and the separate setup, login and
 ## Contribute translations
 
 The browser catalogs are `frontend/src/i18n/en.json` and `frontend/src/i18n/es.json`. Chinese source messages are their keys. `t(source, values)` resolves a message; placeholders such as `{{v0}}` must occur in both translations. New messages must be added to both catalogs. `npm --prefix frontend run check:i18n` checks key parity, placeholders and source consumers, and also runs before each build.
+
+Desktop catalogs are GNU gettext files in `resources/locales/<en|es>/LC_MESSAGES/desktop.po`. Preserve named fields such as `{p0}` and formatting specifications. Compile each edited PO file with `msgfmt --check-format -o desktop.mo desktop.po` and commit both files. The existing resource pipeline includes the catalogs in wheels and Windows/macOS packages. Inno Setup uses its built-in English/Spanish messages and the three-language custom messages in `scripts/installer/peach.iss`. The desktop tests check catalog parity, interpolation, selection, persistence and menu behavior.
 
 Locale precedence is a supported `?lang=` URL parameter, the saved browser preference, then a supported browser language. English is the fallback. For example, `?lang=es-MX` selects Spanish. Language switching updates both the saved preference and URL so it also works when browser storage is unavailable. Server-supplied setup errors use a small, explicit set of templates in `frontend/src/i18n/server-message.ts`; unknown diagnostics remain verbatim.
 

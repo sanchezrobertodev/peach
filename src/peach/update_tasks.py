@@ -1,6 +1,8 @@
 """同一数据目录内，任务起跑与安装准备共用进程间闸门。"""
 from __future__ import annotations
 
+from .desktop_i18n import tr as desktop_text
+
 from contextlib import contextmanager
 from contextvars import ContextVar
 import json
@@ -48,9 +50,9 @@ def _read(path: Path) -> dict:
     except FileNotFoundError:
         return {}
     except (OSError, ValueError) as exc:
-        raise UpdateBusy("任务保护状态无法读取，请检查数据目录后重试。") from exc
+        raise UpdateBusy(desktop_text('任务保护状态无法读取，请检查数据目录后重试。')) from exc
     if not isinstance(value, dict):
-        raise UpdateBusy("任务保护状态无效，请检查数据目录后重试。")
+        raise UpdateBusy(desktop_text('任务保护状态无效，请检查数据目录后重试。'))
     return value
 
 
@@ -75,7 +77,7 @@ def admission(db: Path):
     root = state_for(db)
     with _mutex(root):
         if _maintenance(root):
-            raise UpdateBusy("正在准备安装更新，暂时不能启动新任务。请等待安装完成。")
+            raise UpdateBusy(desktop_text('正在准备安装更新，暂时不能启动新任务。请等待安装完成。'))
         yield
 
 
@@ -104,7 +106,7 @@ def reserve(db: Path, *, owner: int | None = None) -> str:
     root = state_for(db)
     with _mutex(root):
         if _maintenance(root):
-            raise UpdateBusy("已有更新安装正在进行，请等待完成。")
+            raise UpdateBusy(desktop_text('已有更新安装正在进行，请等待完成。'))
         token = uuid.uuid4().hex
         atomic_write_text(root / "install.json", json.dumps({
             "pid": owner if owner is not None else os.getpid(), "token": token}))
@@ -122,7 +124,7 @@ def is_pausing(db: Path) -> bool:
 def check_pause(db: Path | None) -> None:
     if db is not None and is_pausing(db):
         from .jobs import JobPaused
-        raise JobPaused('任务已暂停，安装完成后自动继续。')
+        raise JobPaused(desktop_text('任务已暂停，安装完成后自动继续。'))
 
 
 def _running(db: Path) -> list[str]:
@@ -134,12 +136,12 @@ def _running(db: Path) -> list[str]:
         for path in (root / "active").glob("*.json"):
             data = _read(path)
             if _alive(data):
-                labels.append(str(data.get("label") or "后台任务"))
+                labels.append(str(data.get("label") or desktop_text('后台任务')))
             else:
                 path.unlink(missing_ok=True)
         gate = task_gate(db, host=socket.gethostname(), alive=process_alive)
         if gate.error:
-            labels.append('任务状态未取得')
+            labels.append(desktop_text('任务状态未取得'))
         labels.extend(run.describe() for run in (*gate.blocking, *gate.resumable)
                       if run.status == "running" and (run.pid is None or process_alive(run.pid)))
         # 旧版 CLI 已有 PID 锁，预检同时兼容这些仍在运行的批次。
@@ -150,7 +152,7 @@ def _running(db: Path) -> list[str]:
             try:
                 pid = int(path.read_text(encoding="ascii").strip())
             except (OSError, ValueError):
-                raise UpdateBusy("批处理进程状态无法确认，安装已取消。") from None
+                raise UpdateBusy(desktop_text('批处理进程状态无法确认，安装已取消。')) from None
             paused = _read(root / 'paused' / f'{pid}.json')
             if process_alive(pid) and not paused:
                 labels.append(path.stem)
@@ -159,7 +161,7 @@ def _running(db: Path) -> list[str]:
             with FileLock(library_lock, timeout=0):
                 pass
         except Timeout:
-            labels.append('馆藏资料与预览处理')
+            labels.append(desktop_text('馆藏资料与预览处理'))
         return list(dict.fromkeys(labels))
 
 
@@ -190,7 +192,7 @@ def transfer(db: Path, token: str, owner: int) -> None:
     with _mutex(root):
         data = _read(root / "install.json")
         if not token or data.get("token") != token:
-            raise UpdateBusy("更新安装预约已失效，请重新准备更新。")
+            raise UpdateBusy(desktop_text('更新安装预约已失效，请重新准备更新。'))
         atomic_write_text(root / "install.json", json.dumps({"pid": owner, "token": token}))
 
 

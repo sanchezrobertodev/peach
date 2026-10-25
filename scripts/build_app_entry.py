@@ -86,8 +86,19 @@ def installer_reporting(usage: str, errors: str) -> int:
 
 def installer_command(argv: list[str]) -> int:
     """执行安装辅助协议，启动与故障只在本机取证。"""
-    from peach import remote_reporting, error_reporting
+    from peach import desktop_i18n
+    with desktop_i18n.session():
+        return _installer_command(argv)
+
+
+def _installer_command(argv: list[str]) -> int:
+    from peach import remote_reporting, error_reporting, desktop_i18n
     remote_reporting.disable_for_process()
+    if len(argv) == 3 and argv[1] == "--installer-language":
+        if argv[2] not in {"en", "es", "chs"}:
+            return 2
+        desktop_i18n.set_language(argv[2], persist=True)
+        return 0
     if len(argv) == 4 and argv[1] == "--installer-reporting":
         return installer_reporting(argv[2], argv[3])
     if len(argv) == 3 and argv[1] == "--installer-library-sharing":
@@ -132,7 +143,9 @@ def main(argv: list[str] | None = None) -> int:
         from peach.support_bundle import save_bundle
         path = save_bundle(Path(argv[2]) if len(argv) == 3 else None)
         if len(argv) == 2 and os.name == "nt":
-            ctypes.windll.user32.MessageBoxW(None, f"诊断报告已保存：\n{path}", "Peach 诊断报告", 0x40)
+            from peach import desktop_i18n, tray_diagnostics
+            with desktop_i18n.session():
+                tray_diagnostics.show_report(path)
         elif sys.stdout is not None:
             print(path)
         return 0
@@ -163,7 +176,9 @@ if __name__ == "__main__":
     except Exception as error:
         message = error_reporting.failure_details("desktop-entry", error)
         if os.name == "nt":
-            ctypes.windll.user32.MessageBoxW(None, message, "Peach 启动失败", 0x10)
+            from peach import desktop_i18n
+            with desktop_i18n.session():
+                ctypes.windll.user32.MessageBoxW(None, message, desktop_i18n.tr("Peach 启动失败"), 0x10)
         elif sys.stderr is not None:
             print(message, file=sys.stderr)
         raise SystemExit(1)

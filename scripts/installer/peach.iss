@@ -20,8 +20,8 @@ AppName=Peach
 AppVersion={#AppVersion}
 AppVerName=Peach {#AppVersion}
 AppPublisher=Peach
-AppPublisherURL=https://github.com/peach-mitao/peach
-AppSupportURL=https://github.com/peach-mitao/peach/issues
+AppPublisherURL=https://github.com/sanchezrobertodev/peach
+AppSupportURL=https://github.com/sanchezrobertodev/peach/issues
 ; 只装到当前用户：自更新在程序目录旁边建事务目录再整目录切换，Program Files 不可写。
 PrivilegesRequired=lowest
 DefaultDirName={userpf}\Peach
@@ -43,29 +43,114 @@ UninstallDisplayName=Peach
 Compression=lzma2/max
 SolidCompression=yes
 WizardStyle=modern
+ShowLanguageDialog=yes
 CloseApplications=yes
 RestartApplications=no
 
 [Languages]
+Name: "en"; MessagesFile: "compiler:Default.isl"
+Name: "es"; MessagesFile: "compiler:Languages\Spanish.isl"
 Name: "chs"; MessagesFile: "ChineseSimplified.isl"
 
 [CustomMessages]
+en.StillRunning=Peach is still running and could not exit automatically. Quit Peach from the tray menu and try again.
+es.StillRunning=Peach sigue en ejecución y no pudo cerrarse automáticamente. Sal de Peach desde el menú de la bandeja y vuelve a intentarlo.
 chs.StillRunning=Peach 仍在运行，未能自动退出。请从托盘菜单退出 Peach 后重试。
+en.TaskCheckFailed=Cannot confirm background task status. Installation was cancelled. Wait for tasks to finish and try again.
+es.TaskCheckFailed=No se puede confirmar el estado de las tareas en segundo plano. Se canceló la instalación. Espera a que terminen y vuelve a intentarlo.
 chs.TaskCheckFailed=无法确认后台任务状态，安装已取消。请等待任务结束后重试。
+en.MigrationFailed=The local database could not be updated. Peach may fail to start. The backup made before upgrading is in the database folder inside your data directory, with a name beginning ledger.pre-migrate-.
+es.MigrationFailed=No se pudo actualizar la base de datos local. Peach podría no iniciarse. La copia de seguridad previa está en la carpeta database del directorio de datos y su nombre comienza por ledger.pre-migrate-.
 chs.MigrationFailed=本地数据库未能更新到新版本，Peach 启动后可能出错。升级前的备份在数据目录的 database 文件夹里，文件名以 ledger.pre-migrate- 开头。
+en.DataKept=Peach has been uninstalled. Settings, the local database and viewing history remain in %1 and can be removed manually. Media files are unaffected.
+es.DataKept=Peach se ha desinstalado. La configuración, la base de datos local y el historial de reproducción se conservan en %1 y se pueden eliminar manualmente. Los archivos multimedia no se ven afectados.
 chs.DataKept=Peach 已卸载。设置、本地数据库和观看记录保留在 %1，需要时可手动删除；媒体文件不受影响。
+en.DirectoryOverlapsData=The application folder cannot overlap the Peach data directory. Choose a separate application folder.
+es.DirectoryOverlapsData=La carpeta de la aplicación no puede coincidir con el directorio de datos de Peach ni contenerlo. Elige una carpeta independiente.
 chs.DirectoryOverlapsData=程序目录不能与 Peach 数据目录重叠。请选择独立的程序文件夹。
+en.DirectoryNotDedicated=Choose an empty folder or an existing Peach installation folder. Uninstalling Peach removes the entire application folder.
+es.DirectoryNotDedicated=Elige una carpeta vacía o una instalación existente de Peach. Al desinstalar Peach se elimina toda la carpeta de la aplicación.
 chs.DirectoryNotDedicated=请选择空文件夹或已有的 Peach 安装目录。卸载 Peach 时会移除整个程序文件夹。
+en.DirectoryNotWritable=The current user cannot write to the application folder or its parent. Choose a writable location so Peach can be installed and updated.
+es.DirectoryNotWritable=El usuario actual no puede escribir en la carpeta de la aplicación o en su carpeta superior. Elige una ubicación con permiso de escritura para instalar y actualizar Peach.
 chs.DirectoryNotWritable=当前用户无法写入程序目录或其上级目录。请选择有写入权限的位置，以便安装和更新 Peach。
+en.DirectoryLink=The application and data directories cannot use directory links. Choose ordinary folders.
+es.DirectoryLink=Los directorios de la aplicación y de datos no pueden usar enlaces de directorio. Elige carpetas normales.
 chs.DirectoryLink=程序目录和数据目录不能经过目录链接。请选择普通文件夹。
+en.DirectoryMove=Uninstall the existing Peach installation first (your data will be kept), then choose a new application folder.
+es.DirectoryMove=Desinstala primero la instalación existente de Peach (se conservarán tus datos) y después elige una nueva carpeta.
 chs.DirectoryMove=请先卸载现有 Peach（保留数据），再选择新的安装目录。
+en.ReportingFailed=Could not save version statistics and error reporting choices. Choose again during setup or in Settings. Uploads will not be enabled without saved consent.
+es.ReportingFailed=No se pudieron guardar las opciones de estadísticas de versión y diagnósticos. Puedes elegirlas de nuevo en la configuración inicial o en Ajustes. No se activarán los envíos sin consentimiento guardado.
 chs.ReportingFailed=版本统计与错误诊断选项未能保存。首次设置或设置页可再次选择；未保存的同意不会启用上传。
+en.LibrarySharingFailed=Could not save library and preference upload choices. You can choose again in Settings.
+es.LibrarySharingFailed=No se pudieron guardar las opciones de envío de biblioteca y preferencias. Puedes elegirlas de nuevo en Ajustes.
 chs.LibrarySharingFailed=馆藏与口味上传选项未能保存。可在设置页重新选择。
+en.ReportingTask=Send version statistics and error diagnostics (recommended): version, system information, failure type, code location and occurrence count
+es.ReportingTask=Enviar estadísticas de versión y diagnósticos de errores (recomendado): versión, información del sistema, tipo de fallo, ubicación en el código y número de incidencias
+chs.ReportingTask=发送版本统计与错误诊断（推荐）：版本、系统信息、故障类型、代码位置与发生次数
+en.UploadGroup=Data uploads (can be disabled in Settings):
+es.UploadGroup=Envío de datos (se puede desactivar en Ajustes):
+chs.UploadGroup=数据上传（可在设置页关闭）：
+en.SharingTask=Upload library and detailed preferences (anonymized)
+es.SharingTask=Enviar la biblioteca y las preferencias detalladas (anonimizadas)
+chs.SharingTask=上传馆藏与各类偏好明细（匿名化处理）
+en.OpenRepository=Open the Peach repository to star the project
+es.OpenRepository=Abrir el repositorio de Peach para añadir una estrella
+chs.OpenRepository=打开 Peach 仓库，给项目加星
+en.SharingTitle=Library and preference uploads
+es.SharingTitle=Envío de biblioteca y preferencias
+chs.SharingTitle=馆藏与口味明细上传
+en.SharingSubtitle=Used to study library composition and preferences across Peach users.
+es.SharingSubtitle=Se utiliza para estudiar la composición de las bibliotecas y las preferencias de los usuarios de Peach.
+chs.SharingSubtitle=用于 Peach 用户群体的馆藏结构与偏好研究。
+en.SharingConsent=Continuing means you consent to weekly uploads of the details below. Go back and uncheck this option to opt out.
+es.SharingConsent=Al continuar, aceptas el envío semanal de los datos siguientes. Para no participar, vuelve atrás y desmarca la opción.
+chs.SharingConsent=继续表示同意每周上传以下明细；不参与可返回取消勾选。
+en.SharingWorks=Works: deduplicated work identifiers, ratings, likes, dislikes, watched and watch-later status, play counts, viewing percentage and manually added tags.
+es.SharingWorks=Obras: identificadores de obras sin duplicados, valoraciones, me gusta, no me gusta, estados de visto y ver más tarde, número de reproducciones, porcentaje visto y etiquetas añadidas manualmente.
+chs.SharingWorks=作品：去重后的作品编号、评分、喜欢、不喜欢、已看、稍后看、播放次数、观看比例与手动添加的标签。
+en.SharingPreferences=Preference summaries: counts of favorites, likes, dislikes and viewed items, and rating distributions grouped by performer, creator, studio, series, manual tags, period and duration (identified works and unidentified entries are separate), plus names of explicitly favorited entities.
+es.SharingPreferences=Resúmenes de preferencias: cantidades de favoritos, me gusta, no me gusta y elementos vistos, y distribución de valoraciones por intérprete, creador, estudio, serie, etiquetas manuales, época y duración (separando obras identificadas y entradas sin identificar), además de los nombres de entidades marcadas como favoritas.
+chs.SharingPreferences=偏好汇总：出演者、创作者、厂牌、系列、手动标签、年代与时长分组的收藏、喜欢、不喜欢、观看数量和评分分布（有编号作品与无编号条目分开），以及主动收藏的实体名称。
+en.SharingCoverage=Library coverage: file counts, identified work counts and unidentified entry counts. Unidentified items contribute only to local summaries.
+es.SharingCoverage=Cobertura de la biblioteca: cantidades de archivos, obras identificadas y entradas sin identificar. Los elementos sin identificar solo contribuyen a los resúmenes locales.
+chs.SharingCoverage=馆藏覆盖：文件数量、有编号作品数量与无编号条目数量。无编号馆藏只参与本机汇总。
+en.SharingVersion=Version and period: Peach version, field schema version and calendar week in UTC.
+es.SharingVersion=Versión y período: versión de Peach, versión del esquema de campos y semana natural en UTC.
+chs.SharingVersion=版本与周期：Peach 版本、字段版本、UTC 自然周。
+en.SharingExcluded=No accounts, device or installation identifiers, internal row IDs, file names, paths, titles, media, URLs, search terms or individual browsing or viewing events are uploaded.
+es.SharingExcluded=No se envían cuentas, identificadores de dispositivo o instalación, IDs de filas internas, nombres de archivo, rutas, títulos, contenido multimedia, URL, búsquedas ni eventos individuales de navegación o reproducción.
+chs.SharingExcluded=不上传账号、设备或安装标识、内部行号、文件名、路径、标题、媒体、网址、搜索词及逐条浏览或观看记录。
+en.SharingSensitive=The full details may reveal adult-content preferences. The receiving service is a separate Sentry project and can see the connection IP address.
+es.SharingSensitive=Los datos completos pueden revelar preferencias de contenido para adultos. El servicio receptor es un proyecto independiente de Sentry y puede ver la dirección IP de la conexión.
+chs.SharingSensitive=完整明细可反映成人内容偏好；接收服务为独立 Sentry 项目，可见连接 IP。
+en.SharingDisable=View a complete local preview or disable uploads in Settings. Disabling stops future sends; data already sent cannot be withdrawn using the local switch.
+es.SharingDisable=Puedes ver una vista previa local completa o desactivar los envíos en Ajustes. Al desactivarlos se detienen los envíos futuros; los datos ya enviados no se pueden retirar con el interruptor local.
+chs.SharingDisable=可在设置页查看完整本机预览或关闭。关闭停止后续发送，已发送数据无法通过本机开关撤回。
+en.ToolsTitle=Prepare media tools
+es.ToolsTitle=Preparar herramientas multimedia
+chs.ToolsTitle=准备媒体工具
+en.ToolsSubtitle=Existing tools are verified and reused; missing tools are downloaded automatically.
+es.ToolsSubtitle=Las herramientas existentes se verifican y reutilizan; las que faltan se descargan automáticamente.
+chs.ToolsSubtitle=已有工具会校验后复用，缺少时自动下载。
+en.ToolsProgress=Checking, downloading and verifying media tools. Please wait.
+es.ToolsProgress=Comprobando, descargando y verificando las herramientas multimedia. Espera, por favor.
+chs.ToolsProgress=正在检查、下载并校验媒体工具，请稍候。
+en.ToolsRetry=You can retry if the download fails. Your existing installation will be kept.
+es.ToolsRetry=Puedes reintentar si falla la descarga. Se conservará la instalación existente.
+chs.ToolsRetry=下载失败可重试，现有安装会保留。
+en.ToolsFailed=Could not prepare media tools. Check your network connection and try again.
+es.ToolsFailed=No se pudieron preparar las herramientas multimedia. Comprueba la conexión de red y vuelve a intentarlo.
+chs.ToolsFailed=媒体工具未能准备完成，请检查网络后重试。
+en.LanguageFailed=Could not save the desktop language. Choose a language from the tray menu after starting Peach.
+es.LanguageFailed=No se pudo guardar el idioma de escritorio. Elige un idioma en el menú de la bandeja después de iniciar Peach.
+chs.LanguageFailed=桌面语言未能保存，启动 Peach 后可从托盘菜单选择语言。
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-Name: "reporting"; Description: "发送版本统计与错误诊断（推荐）：版本、系统信息、故障类型、代码位置与发生次数"; GroupDescription: "数据上传（可在设置页关闭）："
-Name: "librarysharing"; Description: "上传馆藏与各类偏好明细（匿名化处理）"; GroupDescription: "数据上传（可在设置页关闭）："; Flags: unchecked
+Name: "reporting"; Description: "{cm:ReportingTask}"; GroupDescription: "{cm:UploadGroup}"
+Name: "librarysharing"; Description: "{cm:SharingTask}"; GroupDescription: "{cm:UploadGroup}"; Flags: unchecked
 
 [InstallDelete]
 ; PyInstaller 的依赖都在 _internal 里；覆盖安装留下上一版多出来的库会被新版误加载。
@@ -86,7 +171,7 @@ Name: "{userdesktop}\Peach"; Filename: "{app}\Peach.exe"; Parameters: "--show"; 
 
 [Run]
 Filename: "{app}\Peach.exe"; Parameters: "--show"; Description: "{cm:LaunchProgram,Peach}"; Flags: nowait postinstall skipifsilent
-Filename: "https://github.com/peach-mitao/peach"; Description: "打开 Peach 仓库，给项目加星"; Flags: shellexec postinstall skipifsilent unchecked
+Filename: "https://github.com/sanchezrobertodev/peach"; Description: "{cm:OpenRepository}"; Flags: shellexec postinstall skipifsilent unchecked
 
 [UninstallDelete]
 ; 自更新整目录换过之后，卸载记录里的文件清单不再完整，按目录整个移除。
@@ -104,19 +189,23 @@ var
 function GetCurrentProcessId(): LongWord;
   external 'GetCurrentProcessId@kernel32.dll stdcall';
 
+function SetEnvironmentVariable(Name, Value: String): Boolean;
+  external 'SetEnvironmentVariableW@kernel32.dll stdcall';
+
 procedure InitializeWizard();
 begin
+  SetEnvironmentVariable('PEACH_DESKTOP_LANGUAGE', ActiveLanguage());
   LibrarySharingPage := CreateOutputMsgMemoPage(wpSelectTasks,
-    '馆藏与口味明细上传', '用于 Peach 用户群体的馆藏结构与偏好研究。',
-    '继续表示同意每周上传以下明细；不参与可返回取消勾选。', '');
+    CustomMessage('SharingTitle'), CustomMessage('SharingSubtitle'),
+    CustomMessage('SharingConsent'), '');
   LibrarySharingPage.RichEditViewer.Text :=
-    '作品：去重后的作品编号、评分、喜欢、不喜欢、已看、稍后看、播放次数、观看比例与手动添加的标签。' + #13#10#13#10 +
-    '偏好汇总：出演者、创作者、厂牌、系列、手动标签、年代与时长分组的收藏、喜欢、不喜欢、观看数量和评分分布（有编号作品与无编号条目分开），以及主动收藏的实体名称。' + #13#10#13#10 +
-    '馆藏覆盖：文件数量、有编号作品数量与无编号条目数量。无编号馆藏只参与本机汇总。' + #13#10#13#10 +
-    '版本与周期：Peach 版本、字段版本、UTC 自然周。' + #13#10#13#10 +
-    '不上传账号、设备或安装标识、内部行号、文件名、路径、标题、媒体、网址、搜索词及逐条浏览或观看记录。' + #13#10#13#10 +
-    '完整明细可反映成人内容偏好；接收服务为独立 Sentry 项目，可见连接 IP。' + #13#10#13#10 +
-    '可在设置页查看完整本机预览或关闭。关闭停止后续发送，已发送数据无法通过本机开关撤回。';
+    CustomMessage('SharingWorks') + #13#10#13#10 +
+    CustomMessage('SharingPreferences') + #13#10#13#10 +
+    CustomMessage('SharingCoverage') + #13#10#13#10 +
+    CustomMessage('SharingVersion') + #13#10#13#10 +
+    CustomMessage('SharingExcluded') + #13#10#13#10 +
+    CustomMessage('SharingSensitive') + #13#10#13#10 +
+    CustomMessage('SharingDisable');
 end;
 
 function ShouldSkipPage(PageID: Integer): Boolean;
@@ -195,8 +284,8 @@ begin
   if not ToolsPrepared then
   begin
     if ToolsPage = nil then
-      ToolsPage := CreateOutputMarqueeProgressPage('准备媒体工具', '已有工具会校验后复用，缺少时自动下载。');
-    ToolsPage.SetText('正在检查、下载并校验媒体工具，请稍候。', '下载失败可重试，现有安装会保留。');
+      ToolsPage := CreateOutputMarqueeProgressPage(CustomMessage('ToolsTitle'), CustomMessage('ToolsSubtitle'));
+    ToolsPage.SetText(CustomMessage('ToolsProgress'), CustomMessage('ToolsRetry'));
     ToolsPage.Show;
     ToolsPage.Animate;
     try
@@ -209,7 +298,7 @@ begin
     end;
     if not ToolsPrepared then
     begin
-      Result := '媒体工具未能准备完成，请检查网络后重试。';
+      Result := CustomMessage('ToolsFailed');
       if LoadStringFromFile(ExpandConstant('{tmp}\Peach-preflight\tools-error.txt'), ErrorText) then
         Result := UTF8Decode(ErrorText);
       Exit;
@@ -236,6 +325,11 @@ var
   ReportingConsent: String;
   LibraryConsent: String;
 begin
+  if CurStep = ssPostInstall then
+    if not Exec(ExpandConstant('{app}\Peach.exe'),
+      '--installer-language ' + ActiveLanguage(), ExpandConstant('{app}'),
+      SW_HIDE, ewWaitUntilTerminated, ResultCode) or (ResultCode <> 0) then
+      SuppressibleMsgBox(CustomMessage('LanguageFailed'), mbError, MB_OK, IDOK);
   if (CurStep = ssPostInstall) and not WizardSilent() then
   begin
     ReportingConsent := '0';
@@ -266,6 +360,7 @@ function InitializeUninstall(): Boolean;
 var
   ResultCode: Integer;
 begin
+  SetEnvironmentVariable('PEACH_DESKTOP_LANGUAGE', ActiveLanguage());
   Result := True;
   if Exec(ExpandConstant('{app}\Peach.exe'), '--installer-uninstall', ExpandConstant('{app}'),
           SW_HIDE, ewWaitUntilTerminated, ResultCode) and (ResultCode = 1) then

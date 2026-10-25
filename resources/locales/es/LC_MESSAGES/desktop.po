@@ -1,0 +1,1004 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: es\n"
+
+#: tray.py:106
+msgid "未初始化"
+msgstr "Sin configurar"
+
+#: tray.py:106
+msgid "页面文件缺失"
+msgstr "Faltan archivos de la interfaz"
+
+#: tray.py:106
+msgid "数据库打不开"
+msgstr "No se puede abrir la base de datos"
+
+#: tray.py:107
+msgid "数据库结构与迁移不一致"
+msgstr "El esquema de la base de datos no coincide con las migraciones"
+
+#: tray.py:1633 tray.py:1088
+msgid "Peach · 蜜桃"
+msgstr "Peach"
+
+#: tray.py:82
+msgid "同步数据库"
+msgstr "Sincronizar base de datos"
+
+#: tray.py:83
+msgid "由本机接管数据库写入"
+msgstr "Usar este dispositivo para escribir en la base de datos"
+
+#: tray.py:342
+msgid "{p0} · {p1} 项提醒"
+msgstr "{p0} · Avisos: {p1}"
+
+#: tray.py:534
+msgid "数据库同步：{p0} · {p1}"
+msgstr "Sincronización de la base de datos: {p0} · {p1}"
+
+#: tray.py:925
+msgid "重新打开设置页"
+msgstr "Volver a abrir la configuración inicial"
+
+#: tray.py:925
+msgid "打开 Peach"
+msgstr "Abrir Peach"
+
+#: tray.py:932
+msgid "等待完成首次设置"
+msgstr "Esperando la configuración inicial"
+
+#: tray.py:965
+msgid "配置已载入，正在启动服务：{p0}"
+msgstr "Configuración cargada. Iniciando servicios: {p0}"
+
+#: tray.py:999
+msgid "首次扫描已在后台开始，进度写在 {p0}"
+msgstr "El análisis inicial se ha iniciado en segundo plano. El progreso se registra en {p0}"
+
+#: tray.py:1133
+msgid "迁移：%s"
+msgstr "Migración: %s"
+
+#: tray.py:1143
+msgid "服务已就绪"
+msgstr "Los servicios están listos"
+
+#: tray.py:1163
+msgid "{p0}，正在整体重启托盘以同步依赖…"
+msgstr "{p0}. Reiniciando la aplicación de la bandeja para sincronizar las dependencias…"
+
+#: tray.py:1177
+msgid "退出码 {p0}"
+msgstr "Código de salida {p0}"
+
+#: tray.py:1178
+msgid "整托盘重启没有完成：%s"
+msgstr "El reinicio de la aplicación de la bandeja no terminó: %s"
+
+#: tray.py:1179
+msgid "整体重启托盘没有完成：{p0}。只重启子服务。"
+msgstr "El reinicio de la aplicación de la bandeja no terminó: {p0}. Solo se reinician los servicios secundarios."
+
+#: tray.py:1231 tray.py:1613
+msgid "接管写入"
+msgstr "asumir la escritura"
+
+#: tray.py:1231 tray.py:1613
+msgid "同步"
+msgstr "sincronizar"
+
+#: tray.py:1232
+msgid "正在安全停止服务并{p0}…"
+msgstr "Deteniendo los servicios de forma segura para {p0}…"
+
+#: tray.py:1232 tray.py:1614 tray.py:1238 tray.py:1616
+msgid "Peach 数据库"
+msgstr "Base de datos de Peach"
+
+#: tray.py:1276
+msgid "正在检查更新…"
+msgstr "Buscando actualizaciones…"
+
+#: tray.py:1311 tray.py:1576
+msgid "正在检查更新通道…"
+msgstr "Comprobando el canal de actualizaciones…"
+
+#: tray.py:1311 tray.py:1363 tray.py:1576 tray.py:1601 tray.py:1335 tray.py:1346 tray.py:1580 tray.py:1596 tray.py:1331 tray.py:1584 tray.py:1592 tray.py:1328
+msgid "Peach 开发进度"
+msgstr "Actualizaciones de desarrollo de Peach"
+
+#: tray.py:1478
+msgid "托盘启动完成：%s"
+msgstr "Inicio de la aplicación de la bandeja completado: %s"
+
+#: tray.py:1687
+msgid "证书已重签（%s），重启 HTTPS 服务"
+msgstr "Certificado renovado (%s). Reiniciando el servicio HTTPS."
+
+#: tray.py:1739
+msgid "启动 Peach 托盘（macOS 上是菜单栏项）并接管本机服务；通常不带参数直接运行。"
+msgstr "Inicia la aplicación de la bandeja de Peach (barra de menús en macOS) y administra los servicios locales. Normalmente se ejecuta sin argumentos."
+
+#: tray.py:1742
+msgid "启动后仅显示托盘"
+msgstr "Mostrar solo el icono de la bandeja al iniciar"
+
+#: tray.py:1743
+msgid "启动后打开浏览器"
+msgstr "Abrir el navegador al iniciar"
+
+#: tray.py:287 tray.py:371
+msgid "未检测"
+msgstr "Sin comprobar"
+
+#: tray.py:304 tray.py:482
+msgid "状态码 {p0}"
+msgstr "Código de estado {p0}"
+
+#: tray.py:341
+msgid "服务未运行"
+msgstr "Servicios detenidos"
+
+#: tray.py:533
+msgid "未同步：{p0}"
+msgstr "Sin sincronizar: {p0}"
+
+#: tray.py:545
+msgid "未同步：replication.enabled = false，这台机器不做数据库复制"
+msgstr "Sin sincronizar: replication.enabled = false; este dispositivo no replica la base de datos."
+
+#: tray.py:556
+msgid "未同步：{p0} 服务不归本托盘管理"
+msgstr "Sin sincronizar: esta aplicación de la bandeja no administra los servicios {p0}."
+
+#: tray.py:588
+msgid "{p0}；服务未能在 20 秒内恢复"
+msgstr "{p0}; los servicios no se recuperaron en 20 segundos."
+
+#: tray.py:633
+msgid "整托盘重启缺少 {p0}"
+msgstr "El reinicio de la aplicación de la bandeja requiere {p0}"
+
+#: tray.py:1082
+msgid "检查更新"
+msgstr "Buscar actualizaciones"
+
+#: tray.py:1125
+msgid "依赖：%s"
+msgstr "Dependencias: %s"
+
+#: tray.py:1141
+msgid "就绪检查：%s"
+msgstr "Comprobación de disponibilidad: %s"
+
+#: tray.py:1296
+msgid "当前不是打包托盘，源码已是最新。"
+msgstr "Se está ejecutando desde el código fuente, que está actualizado."
+
+#: tray.py:1298
+msgid "独立测试包不自建托盘；请下载新版并完整解压替换程序目录。"
+msgstr "Los paquetes independientes no pueden recompilar la aplicación de la bandeja. Descarga la nueva versión y extráela por completo para sustituir la carpeta de la aplicación."
+
+#: tray.py:1300
+msgid "托盘构建与检出一致（{p0}）。"
+msgstr "La compilación de la bandeja coincide con el código local ({p0})."
+
+#: tray.py:1303
+msgid "检出比托盘构建新，但改动不进打包产物，托盘无需重建。"
+msgstr "El código local es más reciente, pero los cambios no afectan a la aplicación empaquetada. No es necesario recompilar."
+
+#: tray.py:1466
+msgid "首次设置服务没能启动，请查看日志。"
+msgstr "No se pudo iniciar el servicio de configuración inicial. Consulta los registros."
+
+#: tray.py:1468
+msgid "Peach 只启动了部分服务，请查看托盘状态和日志。"
+msgstr "Solo se iniciaron algunos servicios de Peach. Consulta el estado en la bandeja y los registros."
+
+#: tray.py:1645 tray.py:1105
+msgid "重启服务"
+msgstr "Reiniciar servicios"
+
+#: tray.py:1646 tray.py:1106
+msgid "查看日志"
+msgstr "Ver registros"
+
+#: tray.py:1647
+msgid "版本信息"
+msgstr "Información de la versión"
+
+#: tray.py:1653 tray.py:1110
+msgid "退出 Peach"
+msgstr "Salir de Peach"
+
+#: tray.py:1711
+msgid "证书自检重试仍失败，等下一次网络变化再试"
+msgstr "La comprobación del certificado volvió a fallar. Se reintentará tras el próximo cambio de red."
+
+#: tray.py:1770 tray.py:1792 tray.py:1846
+msgid "Peach 启动失败"
+msgstr "No se pudo iniciar Peach"
+
+#: tray.py:1792
+msgid "无法独立启动托盘：{p0}"
+msgstr "No se puede iniciar un proceso independiente de la bandeja: {p0}"
+
+#: tray.py:1844
+msgid "托盘运行失败"
+msgstr "La aplicación de la bandeja falló"
+
+#: tray.py:311
+msgid "无响应"
+msgstr "Sin respuesta"
+
+#: tray.py:341
+msgid "运行中"
+msgstr "En ejecución"
+
+#: tray.py:341
+msgid "部分服务异常"
+msgstr "Algunos servicios tienen errores"
+
+#: tray.py:350 tray.py:331
+msgid "正常"
+msgstr "Correcto"
+
+#: tray.py:415
+msgid "拉起 %s 服务，PID %s"
+msgstr "Servicio %s iniciado, PID %s"
+
+#: tray.py:483
+msgid "{p0} 未就绪：{p1}"
+msgstr "{p0} no está listo: {p1}"
+
+#: tray.py:525
+msgid "未同步：无法判定数据库状态（{p0}）"
+msgstr "Sin sincronizar: no se puede determinar el estado de la base de datos ({p0})"
+
+#: tray.py:528
+msgid "未接管：{p0}；先挂上共享副本所在的盘。"
+msgstr "No se cambió el dispositivo escritor: {p0}; monta primero la unidad que contiene la copia compartida."
+
+#: tray.py:583
+msgid "数据库同步启动失败：{p0}"
+msgstr "No se pudo iniciar la sincronización de la base de datos: {p0}"
+
+#: tray.py:997
+msgid "首次扫描没能启动：{p0}"
+msgstr "No se pudo iniciar el análisis inicial: {p0}"
+
+#: tray.py:1091
+msgid "配置 Peach"
+msgstr "Configurar Peach"
+
+#: tray.py:1101 tray.py:1642
+msgid "同步开发进度"
+msgstr "Sincronizar cambios de desarrollo"
+
+#: tray.py:1107
+msgid "导出诊断报告"
+msgstr "Exportar informe de diagnóstico"
+
+#: tray.py:1108
+msgid "版本与更新"
+msgstr "Versión y actualizaciones"
+
+#: tray.py:1153
+msgid "；点托盘「重启服务」会整体重启托盘并同步依赖"
+msgstr "; elige Reiniciar servicios en el menú de la bandeja para reiniciar la aplicación y sincronizar las dependencias"
+
+#: tray.py:1167
+msgid "整托盘重启没能启动：%s"
+msgstr "No se pudo iniciar el reinicio de la aplicación de la bandeja: %s"
+
+#: tray.py:1168
+msgid "整体重启托盘没能启动（{p0}），只重启子服务。"
+msgstr "No se pudo reiniciar la aplicación de la bandeja ({p0}). Solo se reinician los servicios secundarios."
+
+#: tray.py:1173
+msgid "整体重启托盘还没有结果，详情见 tray-restart.out.log。"
+msgstr "El reinicio de la aplicación de la bandeja aún no ha devuelto un resultado. Consulta tray-restart.out.log."
+
+#: tray.py:1283
+msgid "Peach 版本与更新"
+msgstr "Versión y actualizaciones de Peach"
+
+#: tray.py:1359
+msgid "服务已重启。"
+msgstr "Servicios reiniciados."
+
+#: tray.py:1359
+msgid "服务未能恢复，请查看日志。"
+msgstr "Los servicios no se pudieron recuperar. Consulta los registros."
+
+#: tray.py:1459
+msgid "数据库备份清退失败"
+msgstr "Falló la limpieza de copias de seguridad de la base de datos"
+
+#: tray.py:1601
+msgid "{p0}服务已重启。"
+msgstr "{p0} Servicios reiniciados."
+
+#: tray.py:1614
+msgid "正在判定数据库状态并{p0}…"
+msgstr "Comprobando el estado de la base de datos para {p0}…"
+
+#: tray.py:1636 tray.py:1092
+msgid "状态：{p0}"
+msgstr "Estado: {p0}"
+
+#: tray.py:1683
+msgid "证书自检失败"
+msgstr "Falló la comprobación del certificado"
+
+#: tray.py:1811
+msgid "日志整理：%s"
+msgstr "Limpieza de registros: %s"
+
+#: tray.py:1813
+msgid "日志整理失败"
+msgstr "Falló la limpieza de registros"
+
+#: tray.py:1819
+msgid "更新后的数据目录位置未能保存"
+msgstr "No se pudo guardar la ubicación actualizada del directorio de datos"
+
+#: tray.py:331
+msgid "正常（{p0}）"
+msgstr "Correcto ({p0})"
+
+#: tray.py:331 tray.py:350
+msgid "异常（{p0}）"
+msgstr "Error ({p0})"
+
+#: tray.py:331 tray.py:350
+msgid "异常"
+msgstr "Error"
+
+#: tray.py:438
+msgid "已停止"
+msgstr "Detenido"
+
+#: tray.py:475
+msgid "{p0} 就绪检查无响应（{p1}）"
+msgstr "La comprobación de disponibilidad de {p0} no respondió ({p1})"
+
+#: tray.py:580
+msgid "数据库同步没有输出"
+msgstr "La sincronización de la base de datos no produjo salida"
+
+#: tray.py:1152
+msgid "运行环境准备记录写不进去"
+msgstr "No se pudo guardar el registro de preparación del entorno"
+
+#: tray.py:1238 tray.py:1616
+msgid "Peach 数据库同步失败"
+msgstr "Falló la sincronización de la base de datos de Peach"
+
+#: tray.py:1265 tray.py:1263 tray_diagnostics.py:23
+msgid "Peach 诊断报告"
+msgstr "Informe de diagnóstico de Peach"
+
+#: tray.py:1335
+msgid "待应用记录与当前代码不一致，需要人工检查。"
+msgstr "El registro de actualización pendiente no coincide con el código actual. Se requiere una revisión manual."
+
+#: tray.py:1343
+msgid "Peach 开发进度失败"
+msgstr "Falló la actualización de desarrollo de Peach"
+
+#: tray.py:1595
+msgid "{p0}服务已重启；菜单栏项本身要手动退出重开才会生效。"
+msgstr "{p0} Servicios reiniciados. Cierra y vuelve a abrir la aplicación de la barra de menús para aplicar sus cambios."
+
+#: tray.py:1826
+msgid "托盘异常退出自动恢复未能启用"
+msgstr "No se pudo activar la recuperación automática tras un fallo de la bandeja"
+
+#: tray.py:394
+msgid "%s 端口上已有健康服务，但不是本托盘拉起的，未接管"
+msgstr "Ya hay un servicio correcto en el puerto %s, pero esta aplicación de la bandeja no lo inició. No se ha asumido su control."
+
+#: tray.py:1263
+msgid "诊断报告已保存：\n{p0}\n\n窗口或打开操作未完成：{p1}"
+msgstr "Informe de diagnóstico guardado:\n{p0}\n\nNo se pudo mostrar el diálogo o abrir el informe: {p1}"
+
+#: tray.py:1361
+msgid "但"
+msgstr "pero "
+
+#: tray.py:1584
+msgid "{p0}正在重启菜单栏项…"
+msgstr "{p0} Reiniciando la aplicación de la barra de menús…"
+
+#: tray.py:1215
+msgid "服务已重启，但"
+msgstr "Servicios reiniciados, pero "
+
+#: tray.py:1591
+msgid "代码已同步，但菜单栏项重启失败；服务已恢复。"
+msgstr "Código sincronizado, pero no se pudo reiniciar la aplicación de la barra de menús. Los servicios se han recuperado."
+
+#: tray.py:1639 tray.py:1097
+msgid "查看完整配置"
+msgstr "Ver toda la configuración"
+
+#: tray.py:1212
+msgid "服务未能在 20 秒内恢复，请查看日志"
+msgstr "Los servicios no se recuperaron en 20 segundos. Consulta los registros."
+
+#: tray.py:1638 tray.py:1096
+msgid "地址：{p0}"
+msgstr "Dirección: {p0}"
+
+#: tray_diagnostics.py:31
+msgid "诊断报告已保存，可打开目录或文件。"
+msgstr "Informe de diagnóstico guardado. Abre su carpeta o el archivo."
+
+#: tray_diagnostics.py:34
+msgid "打开目录"
+msgstr "Abrir carpeta"
+
+#: tray_diagnostics.py:35
+msgid "打开文件"
+msgstr "Abrir archivo"
+
+#: tray_diagnostics.py:36
+msgid "关闭"
+msgstr "Cerrar"
+
+#: tray_diagnostics.py:79
+msgid "Peach 诊断报告：诊断报告已保存：{p0}"
+msgstr "Informe de diagnóstico de Peach guardado: {p0}"
+
+#: versioning.py:66
+msgid "{p0} · 托盘构建 {p1} 不在本检出历史里"
+msgstr "{p0} · La compilación de la bandeja {p1} no está en el historial del código local"
+
+#: versioning.py:76
+msgid "更新通道 · {p0}"
+msgstr "Canal de actualizaciones · {p0}"
+
+#: versioning.py:58
+msgid " · 有未提交修改"
+msgstr " · Cambios sin confirmar"
+
+#: versioning.py:63
+msgid "{p0} · 托盘构建身份未取得"
+msgstr "{p0} · Identidad de compilación de la bandeja no disponible"
+
+#: versioning.py:65
+msgid "{p0} · 托盘构建 {p1}，落后 {p2} 个提交"
+msgstr "{p0} · Compilación de la bandeja {p1}, con {p2} commits de retraso"
+
+#: versioning.py:71
+msgid "更新通道 · GitHub 测试版"
+msgstr "Canal de actualizaciones · Versiones preliminares de GitHub"
+
+#: versioning.py:73
+msgid "本地开发版 · 未配置更新源"
+msgstr "Compilación de desarrollo local · Sin fuente de actualizaciones"
+
+#: versioning.py:75
+msgid "已配置更新源 · 未跟踪分支"
+msgstr "Fuente de actualizaciones configurada · Sin rama de seguimiento"
+
+#: versioning.py:207
+msgid "本地领先 {p0} 个提交，远端领先 {p1} 个提交；需要人工合并。"
+msgstr "La rama local tiene {p0} commits adicionales y la remota {p1}. Se requiere una fusión manual."
+
+#: versioning.py:259
+msgid "已同步 {p0} 个提交：{p1} → {p2}。"
+msgstr "Sincronizados {p0} commits: {p1} → {p2}."
+
+#: versioning.py:127
+msgid "测试包"
+msgstr "Versión preliminar"
+
+#: versioning.py:183
+msgid "最新测试版：{p0}。"
+msgstr "Última versión preliminar: {p0}."
+
+#: versioning.py:184
+msgid "当前版本：{p0}。{p1}{p2}"
+msgstr "Versión actual: {p0}. {p1}{p2}"
+
+#: versioning.py:188
+msgid "Peach {p0}（{p1}）\n未配置更新源；当前为本地开发版。"
+msgstr "Peach {p0} ({p1})\nNo hay una fuente de actualizaciones configurada; esta es una compilación de desarrollo local."
+
+#: versioning.py:193
+msgid "无法连接更新源；本地版本未改变。"
+msgstr "No se puede acceder a la fuente de actualizaciones. La versión local no ha cambiado."
+
+#: versioning.py:198
+msgid "更新源已连接，但当前分支没有对应的跟踪分支。"
+msgstr "Conectado a la fuente de actualizaciones, pero la rama actual no tiene una rama de seguimiento."
+
+#: versioning.py:203
+msgid "更新源已连接，但无法比较版本。"
+msgstr "Conectado a la fuente de actualizaciones, pero no se pudieron comparar las versiones."
+
+#: versioning.py:210
+msgid "发现 {p0} 个新提交。为保护并行工作树，只检查、不自动安装。"
+msgstr "Se encontraron {p0} commits nuevos. La instalación automática está desactivada para proteger los árboles de trabajo paralelos."
+
+#: versioning.py:240
+msgid "更新通道有 {p0} 个新提交，但本地检出有未提交修改；先处理掉再同步。"
+msgstr "El canal de actualizaciones tiene {p0} commits nuevos, pero el código local tiene cambios sin confirmar. Resuélvelos antes de sincronizar."
+
+#: versioning.py:249
+msgid "无法快进到 {p0}；本地检出未改变，需要人工处理。"
+msgstr "No se puede avanzar directamente a {p0}. El código local no ha cambiado; se requiere intervención manual."
+
+#: versioning.py:213
+msgid "当前已比更新通道领先 {p0} 个提交。"
+msgstr "Ya hay {p0} commits adicionales respecto al canal de actualizaciones."
+
+#: versioning.py:216
+msgid "Peach {p0} 已是当前更新通道的最新版本。"
+msgstr "Peach {p0} está actualizado respecto al canal de actualizaciones actual."
+
+#: windows_update.py:110
+msgid "暂存包不存在：{p0}"
+msgstr "El paquete preparado no existe: {p0}"
+
+#: windows_update.py:112
+msgid "生产入口不存在或不是 Peach.exe：{p0}"
+msgstr "El ejecutable instalado no existe o no es Peach.exe: {p0}"
+
+#: windows_update.py:114
+msgid "暂存包与生产入口是同一个文件"
+msgstr "El paquete preparado y el ejecutable instalado son el mismo archivo"
+
+#: windows_update.py:366
+msgid "代码、完整测试和新托盘检查均已通过；正在安全替换并重启。"
+msgstr "El código, las pruebas completas y las comprobaciones de la nueva bandeja pasaron. Sustituyendo y reiniciando de forma segura."
+
+#: windows_update.py:286
+msgid "代码已快进，但找不到 PowerShell，未运行测试或重启服务。"
+msgstr "Código actualizado, pero no se encontró PowerShell. No se ejecutaron las pruebas ni se reiniciaron los servicios."
+
+#: windows_update.py:301
+msgid "测试期间代码或依赖持续变化，三次验证均未取得有效记录；请稍后重试。"
+msgstr "El código o las dependencias siguieron cambiando durante las pruebas. Tres intentos no produjeron un registro de verificación válido. Inténtalo más tarde."
+
+#: windows_update.py:305
+msgid "代码已快进，但完整测试失败；服务与托盘均未重启，请查看日志。"
+msgstr "Código actualizado, pero fallaron las pruebas completas. No se reiniciaron los servicios ni la bandeja. Consulta los registros."
+
+#: windows_update.py:309
+msgid "代码与完整测试已通过。"
+msgstr "El código y las pruebas completas pasaron."
+
+#: windows_update.py:314
+msgid "代码与完整测试已通过；当前不是打包托盘，托盘进程需手动重开。"
+msgstr "El código y las pruebas completas pasaron. Se está ejecutando desde el código fuente; vuelve a abrir manualmente el proceso de la bandeja."
+
+#: windows_update.py:319
+msgid "代码与测试已通过，但找不到当前托盘 EXE，未执行替换。"
+msgstr "El código y las pruebas pasaron, pero no se encontró el EXE actual de la bandeja. No se realizó la sustitución."
+
+#: windows_update.py:325
+msgid "代码与测试已通过，但新托盘构建失败；旧托盘和服务保持运行。"
+msgstr "El código y las pruebas pasaron, pero falló la nueva compilación de la bandeja. La bandeja y los servicios existentes siguen en ejecución."
+
+#: windows_update.py:329
+msgid "新托盘未通过打包迁移资源检查；旧托盘和服务保持运行。"
+msgstr "La nueva bandeja no superó la comprobación de recursos de migración empaquetados. La bandeja y los servicios existentes siguen en ejecución."
+
+#: windows_update.py:340
+msgid "新托盘已构建，但替换助手不完整；旧托盘和服务保持运行。"
+msgstr "Nueva bandeja compilada, pero el asistente de sustitución está incompleto. La bandeja y los servicios existentes siguen en ejecución."
+
+#: windows_update.py:89
+msgid "单文件包解压残留未能删除 %s: %s"
+msgstr "No se pudieron eliminar los restos extraídos del paquete de archivo único %s: %s"
+
+#: windows_update.py:363
+msgid "新托盘已构建，但替换助手启动失败；旧托盘和服务保持运行。"
+msgstr "Nueva bandeja compilada, pero no se pudo iniciar el asistente de sustitución. La bandeja y los servicios existentes siguen en ejecución."
+
+#: windows_update.py:192
+msgid "旧托盘备份未能删除 %s: %s"
+msgstr "No se pudo eliminar la copia de seguridad de la bandeja anterior %s: %s"
+
+#: windows_update.py:207
+msgid "暂存构建未能删除 %s: %s"
+msgstr "No se pudo eliminar la compilación preparada %s: %s"
+
+#: desktop_installer.py:133
+msgid "Peach 尚未退出，安装未完成。请稍后重试。"
+msgstr "Peach no se ha cerrado. La instalación está incompleta. Inténtalo más tarde."
+
+#: desktop_installer.py:167
+msgid "媒体工具准备失败：{p0}"
+msgstr "Falló la preparación de las herramientas multimedia: {p0}"
+
+#: desktop_installer.py:154
+msgid "本地工具包校验失败：{p0}。请重新下载或移走此文件后重试。"
+msgstr "Falló la verificación del archivo local de herramientas: {p0}. Descárgalo de nuevo o mueve este archivo antes de reintentar."
+
+#: runtime_prepare.py:76
+msgid "退出码 {p0}，没有输出"
+msgstr "Código de salida {p0}, sin salida"
+
+#: runtime_prepare.py:188
+msgid "本机是写入端"
+msgstr "Este dispositivo es el escritor"
+
+#: runtime_prepare.py:302
+msgid "拒绝重启：这些任务重启后续跑不了：{p0}；等它们结束，或加 --force"
+msgstr "Reinicio rechazado: estas tareas no pueden continuar tras un reinicio: {p0}. Espera a que terminen o añade --force."
+
+#: runtime_prepare.py:167
+msgid "已按 uv.lock 同步依赖（{p0}，用时 {p1:.1f} 秒）"
+msgstr "Dependencias sincronizadas con uv.lock ({p0}, {p1:.1f} segundos)"
+
+#: runtime_prepare.py:174
+msgid "replication.enabled = false，按独立写者"
+msgstr "replication.enabled = false; se usa el modo de escritor independiente"
+
+#: runtime_prepare.py:181
+msgid "本机没有 device-id，判不出是不是写入端"
+msgstr "Este dispositivo no tiene device-id; se desconoce si es el escritor"
+
+#: runtime_prepare.py:185
+msgid "没有可验证的写入端"
+msgstr "No hay un escritor verificable"
+
+#: runtime_prepare.py:187
+msgid "写入端是 {p0}，本机是只读端"
+msgstr "El escritor es {p0}; este dispositivo es de solo lectura"
+
+#: runtime_prepare.py:242
+msgid "已执行迁移 {p0}，迁移前备份 {p1}"
+msgstr "Migraciones aplicadas: {p0}; copia de seguridad previa: {p1}"
+
+#: runtime_prepare.py:300
+msgid "拒绝重启：读不了任务表（{p0}）；确认没有任务在跑后加 --force"
+msgstr "Reinicio rechazado: no se puede leer la tabla de tareas ({p0}). Confirma que no haya tareas en ejecución antes de añadir --force."
+
+#: runtime_prepare.py:373
+msgid "拒绝重启：{p0}，但这些进程还在用项目 venv：PID {p1}；先停掉它们再重启"
+msgstr "Reinicio rechazado: {p0}, pero hay procesos que siguen usando el venv del proyecto: PID {p1}. Detenlos antes de reiniciar."
+
+#: runtime_prepare.py:114
+msgid "打包进程不加载项目 venv，依赖由重启脚本核对"
+msgstr "El proceso empaquetado no carga el venv del proyecto; el script de reinicio comprueba las dependencias"
+
+#: runtime_prepare.py:116
+msgid "没有 uv.lock：{p0}"
+msgstr "No se encontró uv.lock: {p0}"
+
+#: runtime_prepare.py:118
+msgid "没有项目 venv：{p0}"
+msgstr "No se encontró el venv del proyecto: {p0}"
+
+#: runtime_prepare.py:121
+msgid "未取得 uv：PATH 与 winget 安装目录里都没有"
+msgstr "No se encontró uv en PATH ni en el directorio de instalación de winget"
+
+#: runtime_prepare.py:144
+msgid "项目 venv 与 uv.lock 一致"
+msgstr "El venv del proyecto coincide con uv.lock"
+
+#: runtime_prepare.py:147
+msgid "核对依赖失败：{p0}"
+msgstr "Falló la comprobación de dependencias: {p0}"
+
+#: runtime_prepare.py:150
+msgid "等"
+msgstr "y otros"
+
+#: runtime_prepare.py:152
+msgid "项目 venv 与 uv.lock 不一致，要装 {p0} 个包"
+msgstr "El venv del proyecto difiere de uv.lock; hay que instalar {p0} paquetes"
+
+#: runtime_prepare.py:165
+msgid "uv sync 失败：{p0}"
+msgstr "Falló uv sync: {p0}"
+
+#: runtime_prepare.py:214 runtime_prepare.py:318
+msgid "数据库不存在：{p0}"
+msgstr "La base de datos no existe: {p0}"
+
+#: runtime_prepare.py:217
+msgid "不迁移：{p0}"
+msgstr "Migración omitida: {p0}"
+
+#: runtime_prepare.py:224
+msgid "migrate status 失败：{p0}"
+msgstr "Falló migrate status: {p0}"
+
+#: runtime_prepare.py:228
+msgid "migrate status 没有报待迁移数：{p0}"
+msgstr "migrate status no indicó el número de migraciones pendientes: {p0}"
+
+#: runtime_prepare.py:230
+msgid "数据库结构已是最新"
+msgstr "El esquema de la base de datos está actualizado"
+
+#: runtime_prepare.py:237
+msgid "执行 {p0} 个待迁移时失败，数据库目录里有迁移前备份：{p1}"
+msgstr "Falló la aplicación de {p0} migraciones pendientes. Hay una copia de seguridad en el directorio de la base de datos: {p1}"
+
+#: runtime_prepare.py:142 runtime_prepare.py:163
+msgid "uv 没能运行：{p0}"
+msgstr "No se pudo ejecutar uv: {p0}"
+
+#: runtime_prepare.py:222 runtime_prepare.py:234
+msgid "迁移没能启动：{p0}"
+msgstr "No se pudo iniciar la migración: {p0}"
+
+#: runtime_prepare.py:243
+msgid "未取得"
+msgstr "No disponible"
+
+#: runtime_prepare.py:329
+msgid "数据库里还没有可判的任务表：{p0}"
+msgstr "No hay una tabla de tareas utilizable en la base de datos: {p0}"
+
+#: runtime_prepare.py:242
+msgid " 个"
+msgstr " elementos"
+
+#: update_tasks.py:53
+msgid "任务保护状态无效，请检查数据目录后重试。"
+msgstr "Estado de protección de tareas no válido. Comprueba el directorio de datos y vuelve a intentarlo."
+
+#: update_tasks.py:125
+msgid "任务已暂停，安装完成后自动继续。"
+msgstr "Tareas en pausa. Se reanudarán después de la instalación."
+
+#: update_tasks.py:51
+msgid "任务保护状态无法读取，请检查数据目录后重试。"
+msgstr "No se puede leer el estado de protección de tareas. Comprueba el directorio de datos y vuelve a intentarlo."
+
+#: update_tasks.py:78
+msgid "正在准备安装更新，暂时不能启动新任务。请等待安装完成。"
+msgstr "Preparando la instalación de una actualización. No se pueden iniciar tareas nuevas hasta que termine."
+
+#: update_tasks.py:107
+msgid "已有更新安装正在进行，请等待完成。"
+msgstr "Ya se está instalando una actualización. Espera a que termine."
+
+#: update_tasks.py:142
+msgid "任务状态未取得"
+msgstr "Estado de las tareas no disponible"
+
+#: update_tasks.py:193
+msgid "更新安装预约已失效，请重新准备更新。"
+msgstr "La reserva de instalación de la actualización ha caducado. Prepara la actualización de nuevo."
+
+#: update_tasks.py:162
+msgid "馆藏资料与预览处理"
+msgstr "Procesamiento de metadatos y vistas previas de la biblioteca"
+
+#: update_tasks.py:153
+msgid "批处理进程状态无法确认，安装已取消。"
+msgstr "No se puede verificar el estado del proceso por lotes. Instalación cancelada."
+
+#: update_tasks.py:137
+msgid "后台任务"
+msgstr "Tareas en segundo plano"
+
+#: standalone_update.py:100
+msgid "更新包不是独立 Windows 版本"
+msgstr "El paquete de actualización no es una compilación independiente de Windows"
+
+#: standalone_update.py:118
+msgid "更新包校验失败，请重新下载"
+msgstr "Falló la verificación del paquete de actualización. Descárgalo de nuevo."
+
+#: standalone_update.py:206 standalone_update.py:222
+msgid "此安装方式不支持独立包更新"
+msgstr "Este tipo de instalación no admite actualizaciones mediante paquetes independientes"
+
+#: standalone_update.py:215
+msgid "正在连接 GitHub"
+msgstr "Conectando con GitHub"
+
+#: standalone_update.py:276
+msgid "正在更新本地数据库"
+msgstr "Actualizando la base de datos local"
+
+#: standalone_update.py:283
+msgid "数据库更新失败"
+msgstr "Falló la actualización de la base de datos"
+
+#: standalone_update.py:302
+msgid "更新状态文件不匹配"
+msgstr "El archivo de estado de la actualización no coincide"
+
+#: standalone_update.py:310
+msgid "更新目录无效"
+msgstr "Directorio de actualización no válido"
+
+#: standalone_update.py:374
+msgid "新版本未能就绪"
+msgstr "La nueva versión no llegó a estar lista"
+
+#: standalone_update.py:71
+msgid "更新任务已中断，请重试。"
+msgstr "La tarea de actualización se interrumpió. Vuelve a intentarlo."
+
+#: standalone_update.py:81
+msgid "更新包展开体积超限"
+msgstr "El paquete de actualización extraído supera el límite de tamaño"
+
+#: standalone_update.py:142
+msgid "正在下载 {p0} 工具包"
+msgstr "Descargando herramientas de {p0}"
+
+#: standalone_update.py:147
+msgid "正在校验 {p0} 工具包"
+msgstr "Verificando herramientas de {p0}"
+
+#: standalone_update.py:150
+msgid "{p0} 工具包文件校验失败"
+msgstr "Falló la verificación del archivo de herramientas de {p0}"
+
+#: standalone_update.py:157
+msgid "{p0} 工具复用校验失败"
+msgstr "Falló la verificación de las herramientas reutilizadas de {p0}"
+
+#: standalone_update.py:167
+msgid "更新包缺少 SHA-256 校验信息"
+msgstr "El paquete de actualización no tiene una suma de verificación SHA-256"
+
+#: standalone_update.py:170
+msgid "更新包大小无效"
+msgstr "Tamaño del paquete de actualización no válido"
+
+#: standalone_update.py:173
+msgid "数据目录位于程序目录内，不能自动替换"
+msgstr "El directorio de datos está dentro de la carpeta de la aplicación; la sustitución automática no está disponible"
+
+#: standalone_update.py:177
+msgid "正在下载"
+msgstr "Descargando"
+
+#: standalone_update.py:181
+msgid "正在校验"
+msgstr "Verificando"
+
+#: standalone_update.py:182
+msgid "正在解压"
+msgstr "Extrayendo"
+
+#: standalone_update.py:187
+msgid "包内版本与发布版本不符"
+msgstr "La versión del paquete no coincide con la versión publicada"
+
+#: standalone_update.py:191
+msgid "正在准备安装"
+msgstr "Preparando la instalación"
+
+#: standalone_update.py:197
+msgid "更新已准备好，重启后安装。"
+msgstr "Actualización preparada. Reinicia para instalarla."
+
+#: standalone_update.py:226
+msgid "更新尚未准备完成"
+msgstr "La actualización aún no está preparada"
+
+#: standalone_update.py:296
+msgid "数据库恢复检查失败"
+msgstr "Falló la comprobación de recuperación de la base de datos"
+
+#: standalone_update.py:346
+msgid "正在保留旧版本"
+msgstr "Conservando la versión anterior"
+
+#: standalone_update.py:349
+msgid "正在安装新版本"
+msgstr "Instalando la nueva versión"
+
+#: standalone_update.py:352
+msgid "正在启动新版本"
+msgstr "Iniciando la nueva versión"
+
+#: standalone_update.py:395
+msgid "更新未安装：{p0}"
+msgstr "Actualización no instalada: {p0}"
+
+#: standalone_update.py:88
+msgid "更新包含无效路径"
+msgstr "La actualización contiene una ruta no válida"
+
+#: standalone_update.py:90
+msgid "工具包包含清单外的文件"
+msgstr "El archivo de herramientas contiene archivos que no figuran en su manifiesto"
+
+#: standalone_update.py:94
+msgid "更新包路径重复或越界"
+msgstr "La actualización contiene rutas duplicadas o fuera de los límites permitidos"
+
+#: standalone_update.py:189
+msgid "正在复用和校验已安装工具"
+msgstr "Reutilizando y verificando las herramientas instaladas"
+
+#: standalone_update.py:230
+msgid "正在保存任务进度，随后重启安装"
+msgstr "Guardando el progreso de las tareas; después se reiniciará para instalar"
+
+#: standalone_update.py:260
+msgid "未能重启：{p0}"
+msgstr "No se pudo reiniciar: {p0}"
+
+#: standalone_update.py:336
+msgid "安装预检未通过，程序与数据库未更改：{p0}"
+msgstr "Falló la comprobación previa a la instalación. La aplicación y la base de datos no han cambiado: {p0}"
+
+#: standalone_update.py:342
+msgid "托盘尚未退出，安装已取消"
+msgstr "La aplicación de la bandeja no se ha cerrado. Instalación cancelada."
+
+#: standalone_update.py:388
+msgid "更新失败，已恢复旧版本：{p0}"
+msgstr "Falló la actualización. Se restauró la versión anterior: {p0}"
+
+#: standalone_update.py:113
+msgid "下载体积与发布记录不符"
+msgstr "El tamaño de la descarga no coincide con el registro de la versión"
+
+#: standalone_update.py:391
+msgid "更新失败，回滚未完成：{p0}"
+msgstr "Falló la actualización. La reversión está incompleta: {p0}"
+
+#: standalone_update.py:404
+msgid "更新失败，数据库恢复未完成：{p0}"
+msgstr "Falló la actualización. La recuperación de la base de datos está incompleta: {p0}"
+
+#: standalone_update.py:369
+msgid "已更新至 {p0}"
+msgstr "Actualizado a {p0}"
+
+#: release_updates.py:18
+msgid "测试版"
+msgstr "Versión preliminar"
+
+#: release_updates.py:19
+msgid "尚未检查"
+msgstr "Aún sin comprobar"
+
+#: release_updates.py:18
+msgid "独立测试包"
+msgstr "Paquete independiente"
+
+#: release_updates.py:18
+msgid "源码运行"
+msgstr "Ejecución desde el código fuente"
+
+#: release_updates.py:35
+msgid "GitHub 请求受限，请稍后重试。"
+msgstr "Se alcanzó el límite de solicitudes de GitHub. Inténtalo más tarde."
+
+#: release_updates.py:35
+msgid "无法连接 GitHub，请重试。"
+msgstr "No se puede conectar con GitHub. Vuelve a intentarlo."
+
+#: release_updates.py:64
+msgid "有新版本可下载。"
+msgstr "Hay una nueva versión disponible para descargar."
+
+#: release_updates.py:64
+msgid "当前版本高于已发布测试版。"
+msgstr "La versión actual es más reciente que la versión preliminar publicada."
+
+#: release_updates.py:64
+msgid "已是最新测试版。"
+msgstr "Ya tienes la última versión preliminar."
+
+#: release_updates.py:58
+msgid "暂未找到可下载的测试版。"
+msgstr "Todavía no se encontró una versión preliminar descargable."
+
+#: release_updates.py:71
+msgid "未能取得版本信息，请重试。"
+msgstr "No se pudo obtener la información de la versión. Vuelve a intentarlo."

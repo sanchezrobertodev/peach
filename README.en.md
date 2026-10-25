@@ -11,7 +11,7 @@
   <a href="https://peach.video">Upstream website</a> ·
   <a href="https://github.com/sanchezrobertodev/peach/releases">Localized downloads</a> ·
   <a href="https://demo.peach.video">Upstream demo</a> ·
-  <a href="https://github.com/peach-mitao/peach/releases/tag/intro-video">Intro video</a> ·
+  <a href="https://github.com/sanchezrobertodev/peach/releases/tag/intro-video">Intro video</a> ·
   <a href="https://github.com/sanchezrobertodev/peach/issues">Report a fork problem</a> ·
   <a href="https://github.com/orgs/peach-mitao/projects/7/views/1">Requests board</a> ·
   <a href="https://github.com/orgs/peach-mitao/projects/7/views/3">Roadmap</a> ·
@@ -22,7 +22,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/peach-mitao/peach/releases"><img src="https://img.shields.io/github/v/release/peach-mitao/peach?include_prereleases&amp;filter=v*&amp;sort=semver&amp;display_name=tag" alt="release"></a>
+  <a href="https://github.com/sanchezrobertodev/peach/releases"><img src="https://img.shields.io/github/v/release/peach-mitao/peach?include_prereleases&amp;filter=v*&amp;sort=semver&amp;display_name=tag" alt="release"></a>
   <a href="https://github.com/peach-mitao/peach/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/peach-mitao/peach/test.yml?branch=master&amp;label=tests&amp;logo=githubactions&amp;logoColor=white" alt="CI status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0--or--later-blue?logo=gnu&amp;logoColor=white" alt="license"></a>
   <a href="docs/TESTING_DESKTOP.md"><img src="https://img.shields.io/badge/Windows-x64-0078D4" alt="Windows x64"></a>
@@ -38,9 +38,9 @@ This is the [English and Spanish localization fork](https://github.com/sanchezro
 
 ## Interface language
 
-Choose **English**, **Español** or **简体中文** on the setup or login page, or in settings. Peach uses your browser's language when no choice is saved, with English as the fallback. The choice is saved in the current browser; changing it reloads the page.
+Choose **English**, **Español** or **简体中文** on the setup or login page, or in settings. Peach uses your browser's language when no choice is saved, with English as the fallback. The choice is saved in the current browser; changing it reloads the page. Windows installers also offer all three languages. Choose **Language / Idioma** in the Windows tray or macOS menu bar to set and save the desktop language separately, without restarting services.
 
-Localization covers interface text progressively. Media titles, tags, source metadata, some server messages, the desktop tray and most detailed documentation may still appear in their original language. See the [language and source-install guide](docs/LOCALIZATION.md) for the scope and contributor guidance.
+Localization covers interface text progressively. Media titles, tags, source metadata, some server messages and most detailed documentation may still appear in their original language. See the [language and source-install guide](docs/LOCALIZATION.md) for the scope and contributor guidance.
 
 ## Features
 
@@ -93,23 +93,23 @@ Try search, filters and profiles in the [upstream read-only demo](https://demo.p
 
 ## Download and use
 
-For this fork's localized interface, use the [source-install instructions](docs/LOCALIZATION.md#run-this-fork-from-source). The packaged downloads described below are upstream builds; they are not localized builds of this fork.
+Download this fork's localized Windows and macOS packages below, or use the [source-install instructions](docs/LOCALIZATION.md#run-this-fork-from-source).
 
 ### Windows
 
-1. Download the full installer, `Peach-<version>-windows-x64-setup.exe`, from [Releases](https://github.com/peach-mitao/peach/releases) and run it. No administrator rights needed. Alternatively, extract the full portable package and run `Peach.exe`.
+1. Download the full installer, `Peach-<version>-windows-x64-setup.exe`, from [Releases](https://github.com/sanchezrobertodev/peach/releases) and run it. No administrator rights needed. Alternatively, extract the full portable package and run `Peach.exe`.
 2. Choose media directories and access permissions on the setup page that opens in your browser.
 3. Start scanning, then browse and play in your browser.
 
 The full installer includes media tools for offline installation. The smaller lite installer downloads tools as needed during setup.
 
-Test builds are unsigned. If Windows says “Windows protected your PC”, confirm the file came from the upstream project's Releases, then choose “More info → Run anyway”. See the [Windows guide](docs/TESTING_DESKTOP.md) for installation, updates and troubleshooting.
+Test builds are unsigned. If Windows says “Windows protected your PC”, confirm the file came from this fork's Releases, then choose “More info → Run anyway”. See the [Windows guide](docs/TESTING_DESKTOP.md) for installation, updates and troubleshooting.
 
-### Build on macOS
+### macOS
 
 Build a self-contained `.app` and DMG locally on macOS. Running it requires neither Python, a source checkout, nor another computer. See [the macOS build guide](docs/OPERATIONS.md#macos-独立测试包).
 
-The release workflow generates separate Apple Silicon (`macos-arm64.dmg`) and Intel (`macos-x86_64.dmg`) test packages. Check the actual assets on [Releases](https://github.com/peach-mitao/peach/releases) for availability. Check your chip in About This Mac, open the matching image, and drag Peach into Applications. Test packages are not notarized; media tools must be installed separately.
+The release workflow generates separate Apple Silicon (`macos-arm64.dmg`) and Intel (`macos-x86_64.dmg`) test packages. Check the actual assets on [Releases](https://github.com/sanchezrobertodev/peach/releases) for availability. Check your chip in About This Mac, open the matching image, and drag Peach into Applications. Test packages are not notarized; media tools must be installed separately.
 
 ### Run from source (Windows, macOS)
 

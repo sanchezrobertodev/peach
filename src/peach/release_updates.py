@@ -1,6 +1,8 @@
 """GitHub 测试版查询；传输复用共享 HTTPX，安装入口指向正式发行页。"""
 from __future__ import annotations
 
+from .desktop_i18n import tr as desktop_text
+
 import json
 import re
 import httpx
@@ -15,8 +17,8 @@ API_URL = "https://api.github.com/repos/sanchezrobertodev/peach/releases?per_pag
 
 def snapshot() -> dict:
     return {"current_version": __version__, "latest_version": None,
-            "channel": "测试版", "installation": "独立测试包" if distribution.standalone() else "源码运行",
-            "state": "unchecked", "message": "尚未检查", "release_url": RELEASES_URL}
+            "channel": desktop_text('测试版'), "installation": desktop_text('独立测试包') if distribution.standalone() else desktop_text('源码运行'),
+            "state": "unchecked", "message": desktop_text('尚未检查'), "release_url": RELEASES_URL}
 
 
 def _version(value: object) -> tuple[int, ...] | None:
@@ -32,7 +34,7 @@ def check(*, transport=None) -> dict:
         response = client(HttpRequest("GET", API_URL, {"Accept": "application/vnd.github+json",
                           "X-GitHub-Api-Version": "2022-11-28"}), 12.0, 2_000_000)
         if response.status != 200:
-            message = "GitHub 请求受限，请稍后重试。" if response.status in (403, 429) else "无法连接 GitHub，请重试。"
+            message = desktop_text('GitHub 请求受限，请稍后重试。') if response.status in (403, 429) else desktop_text('无法连接 GitHub，请重试。')
             return dict(result, state="error", message=message)
         rows = json.loads(response.body)
         if not isinstance(rows, list):
@@ -55,20 +57,20 @@ def check(*, transport=None) -> dict:
             asset = uploaded.get(prefix + "-update.zip", full) if complete_tools else full
             releases.append((version, tag, asset, full))
         if not releases:
-            return dict(result, state="empty", message="暂未找到可下载的测试版。")
+            return dict(result, state="empty", message=desktop_text('暂未找到可下载的测试版。'))
         version, tag, asset, full = max(releases, key=lambda item: item[0])
         current = _version(result["current_version"])
         if current is None:
             raise ValueError("current version required")
         state = "available" if version > current else "ahead" if version < current else "current"
-        message = {"available": "有新版本可下载。", "ahead": "当前版本高于已发布测试版。", "current": "已是最新测试版。"}[state]
+        message = {"available": desktop_text('有新版本可下载。'), "ahead": desktop_text('当前版本高于已发布测试版。'), "current": desktop_text('已是最新测试版。')}[state]
         return dict(result, latest_version=tag.removeprefix("v"), state=state, message=message,
                     asset_url=f"{RELEASES_URL}/download/{tag}/{asset['name']}",
                     asset_size=asset.get("size", 0), asset_digest=asset.get("digest"),
                     package_kind="update" if asset is not full else "full",
                     release_url=f"{RELEASES_URL}/tag/{tag}")
     except (OSError, ValueError, TypeError, TimeoutError, httpx.HTTPError):
-        return dict(result, state="error", message="未能取得版本信息，请重试。")
+        return dict(result, state="error", message=desktop_text('未能取得版本信息，请重试。'))
     finally:
         if transport is None:
             client.close()

@@ -11,7 +11,7 @@
   <a href="https://peach.video">Web del proyecto original</a> ·
   <a href="https://github.com/sanchezrobertodev/peach/releases">Descargas traducidas</a> ·
   <a href="https://demo.peach.video">Demostración original</a> ·
-  <a href="https://github.com/peach-mitao/peach/releases/tag/intro-video">Vídeo de presentación</a> ·
+  <a href="https://github.com/sanchezrobertodev/peach/releases/tag/intro-video">Vídeo de presentación</a> ·
   <a href="https://github.com/sanchezrobertodev/peach/issues">Informar de un problema</a> ·
   <a href="https://github.com/orgs/peach-mitao/projects/7/views/3">Hoja de ruta original</a> ·
   <a href="#documentación">Documentación</a> ·
@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/peach-mitao/peach/releases"><img src="https://img.shields.io/github/v/release/peach-mitao/peach?include_prereleases&amp;filter=v*&amp;sort=semver&amp;display_name=tag" alt="Versión del proyecto original"></a>
+  <a href="https://github.com/sanchezrobertodev/peach/releases"><img src="https://img.shields.io/github/v/release/peach-mitao/peach?include_prereleases&amp;filter=v*&amp;sort=semver&amp;display_name=tag" alt="Versión del proyecto original"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0--or--later-blue?logo=gnu&amp;logoColor=white" alt="Licencia"></a>
   <a href="docs/TESTING_DESKTOP.md"><img src="https://img.shields.io/badge/Windows-x64-0078D4" alt="Windows x64"></a>
   <a href="docs/OPERATIONS.md#macos-独立测试包"><img src="https://img.shields.io/badge/macOS-DMG-555555?logo=apple&amp;logoColor=white" alt="Compilación e instalación en macOS"></a>
@@ -38,7 +38,9 @@ Esta es la [versión con localización al inglés y al español](https://github.
 
 Elige **English**, **Español** o **简体中文** en la configuración inicial, en la página de inicio de sesión o en los ajustes. Si no has guardado una preferencia, Peach utiliza el idioma del navegador y recurre al inglés cuando no hay un idioma compatible. La elección se guarda en ese navegador; cambiar el idioma recarga la página.
 
-La traducción de la interfaz es progresiva. Los títulos, las etiquetas, los metadatos de las fuentes, algunos mensajes del servidor, el menú de la bandeja del sistema y la mayoría de las guías detalladas pueden aparecer en su idioma original. La [guía de localización](docs/LOCALIZATION.md), en inglés, explica el alcance y cómo contribuir.
+La traducción de la interfaz es progresiva. Los títulos, las etiquetas, los metadatos de las fuentes, algunos mensajes del servidor y la mayoría de las guías detalladas pueden aparecer en su idioma original. La [guía de localización](docs/LOCALIZATION.md), en inglés, explica el alcance y cómo contribuir.
+
+Los instaladores de Windows también ofrecen los tres idiomas. Elige **Language / Idioma** en la bandeja de Windows o la barra de menús de macOS para cambiar y guardar el idioma de escritorio por separado, sin reiniciar los servicios.
 
 ## Funciones
 
@@ -91,7 +93,7 @@ Prueba las búsquedas, los filtros y los perfiles en la [demostración original 
 
 ## Instalación y uso
 
-Para utilizar la interfaz localizada, sigue las instrucciones de código fuente de esta sección. Los paquetes del proyecto original no incluyen la localización de este repositorio.
+Descarga los paquetes localizados para Windows y macOS de este repositorio o utiliza las instrucciones de instalación desde el código fuente de esta sección.
 
 ### Ejecutar esta versión desde el código fuente
 
@@ -120,15 +122,15 @@ uv sync --locked --python 3.14 --extra macos
 
 La bandeja del sistema abre la configuración inicial en el navegador. Elige el idioma, las carpetas de contenido y quién puede acceder; después inicia el escaneo. Los archivos compilados de la interfaz están incluidos en el repositorio. Para modificarla o recompilarla, consulta la [guía de localización](docs/LOCALIZATION.md#rebuild-the-interface).
 
-### Paquetes originales de Windows
+### Paquetes de Windows
 
-Descarga `Peach-<versión>-windows-x64-setup.exe` en las [publicaciones originales](https://github.com/peach-mitao/peach/releases) e instálalo sin permisos de administrador. También puedes extraer el paquete portátil completo y ejecutar `Peach.exe`. El instalador completo incluye herramientas multimedia para instalar sin conexión; el instalador ligero las descarga cuando son necesarias.
+Descarga `Peach-<versión>-windows-x64-setup.exe` en las [publicaciones de este repositorio](https://github.com/sanchezrobertodev/peach/releases) e instálalo sin permisos de administrador. También puedes extraer el paquete portátil completo y ejecutar `Peach.exe`. El instalador completo incluye herramientas multimedia para instalar sin conexión; el instalador ligero las descarga cuando son necesarias.
 
-Los paquetes de prueba no están firmados. Si Windows muestra «Windows protegió su PC», comprueba que el archivo procede de las publicaciones del proyecto original antes de seleccionar «Más información → Ejecutar de todas formas». Consulta la [guía de Windows](docs/TESTING_DESKTOP.md), en chino.
+Los paquetes de prueba no están firmados. Si Windows muestra «Windows protegió su PC», comprueba que el archivo procede de las publicaciones de este repositorio antes de seleccionar «Más información → Ejecutar de todas formas». Consulta la [guía de Windows](docs/TESTING_DESKTOP.md), en chino.
 
 ### macOS y Docker
 
-Puedes compilar una aplicación `.app` y un DMG autónomos en macOS; una vez instalados, no necesitan Python ni el código fuente. Consulta la [guía de compilación](docs/OPERATIONS.md#macos-独立测试包). Las publicaciones originales pueden ofrecer paquetes Apple Silicon (`macos-arm64.dmg`) e Intel (`macos-x86_64.dmg`); comprueba los archivos disponibles y el chip de tu Mac antes de elegir. Los paquetes de prueba no están notarizados y requieren instalar las herramientas multimedia por separado.
+Puedes compilar una aplicación `.app` y un DMG autónomos en macOS; una vez instalados, no necesitan Python ni el código fuente. Consulta la [guía de compilación](docs/OPERATIONS.md#macos-独立测试包). Las publicaciones de este repositorio ofrecen paquetes Apple Silicon (`macos-arm64.dmg`) e Intel (`macos-x86_64.dmg`); comprueba los archivos disponibles y el chip de tu Mac antes de elegir. Los paquetes de prueba no están notarizados y requieren instalar las herramientas multimedia por separado.
 
 Para VPS y NAS, consulta el [despliegue con Docker](docs/DOCKER.md), en chino. Verifica el origen de la imagen: una imagen del proyecto original no incluye los cambios de este repositorio.
 

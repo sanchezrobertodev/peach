@@ -138,6 +138,11 @@ class MenuBarApp:
             menu.addItem_(entry)
         return menu
 
+    def set_items(self, items) -> None:
+        """在菜单动作线程替换语言对应的菜单树。"""
+        self._items = items
+        self.refresh_titles()
+
     def refresh_titles(self) -> None:
         """同时更新摘要与子菜单；已消失的提醒和旧动作不留在原生菜单里。"""
         rendered = self._resolve(self._items)

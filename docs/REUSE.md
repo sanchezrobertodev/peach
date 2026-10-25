@@ -10,6 +10,10 @@ macOS 安装镜像继续复用 dmgbuild `1.6.7`（MIT），选择其正式支持
 
 ## 界面语言
 
+桌面语言复用 Python `3.14.7` 标准库 [gettext](https://docs.python.org/3.14/library/gettext.html)（PSF 许可证），直接读取 GNU MO 词表；无新增 Python 依赖或联网翻译。维护时使用 GNU gettext-tools `0.21.1` 的 `msgfmt --check-format` 编译自有译文，工具本身不进入发行包。Windows 安装器沿用 Inno Setup `6.7.3` 的原生 `[Languages]` 与 `CustomMessage`，英语和西班牙语采用编译器自带词表，Peach 只维护领域提示与同意说明。无需增加 Babel 等运行时库，因为标准库与现有编译器已覆盖消息查找、语言选择和格式化。
+
+Peach 保留语言优先级、用户目录中的偏好、安装器与程序的语言交接，以及菜单刷新策略。功能测试验证跨区域语言、词表字段、语言切换不停止服务和安装器保存；桌面词表沿用现有资源打包流程，约数十 KB。浏览器语言仍按浏览器独立保存；真实 ledger、生产入口和上传同意的默认状态均不改变。
+
 英文与西班牙文界面复用 [i18next](https://www.i18next.com/overview/getting-started)，固定版本 `26.5.10`，[MIT 许可全文](../web/vendor/i18next-LICENSE.txt)。此版本支持本项目 TypeScript 7；`26.0.0` 的可选 peer 范围不含 TypeScript 7，npm 实际拒绝安装，因此采用兼容版本。npm 包展开约 544 KB，浏览器构建只包含运行时及本地词表；没有网络翻译请求或 Python 依赖。
 
 Peach 保留浏览器语言选择、中文原文键、明确的首启服务端提示模板和重新加载策略。`Intl` 负责数字、日期与排序；React Aria 使用同一语言，播放器复用现有 Video.js 10.1.0 的官方西班牙语包。`check:i18n` 验证词表键、占位符和静态消费者；多语言行为用例验证数据键与筛选参数保持稳定。本次实现不改变真实 ledger 或生产入口。
